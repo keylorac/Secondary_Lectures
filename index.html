@@ -96,6 +96,19 @@
             color: var(--text-muted);
         }
 
+        /* Secciones por Grado */
+        .grade-section {
+            margin-bottom: 3rem;
+        }
+
+        .grade-title {
+            font-size: 1.4rem;
+            color: var(--primary);
+            border-bottom: 2px solid var(--secondary);
+            padding-bottom: 0.4rem;
+            margin-bottom: 1.5rem;
+        }
+
         /* Grid de Cursos */
         .grid {
             display: grid;
@@ -203,39 +216,9 @@
             <p>Select your grade level to access step-by-step physics presentations, simulations, and practice problems.</p>
         </section>
 
-        <section class="grid">
-            
-            <!-- 9TH GRADE (ACTIVA) -->
-            <article class="card">
-                <div>
-                    <span class="grade-tag">9th Grade • Physical Science</span>
-                    <h3>Uniformly Accelerated Motion</h3>
-                    <p>Interactive labs, step-by-step solved examples, and practice sets covering every MUA scenario (Starting from rest, speeding up, braking, and vertical motion).</p>
-                </div>
-                <a href="mua-9th-grade.html" class="btn">Launch Presentation →</a>
-            </article>
-
-            <!-- 10TH GRADE (PRÓXIMAMENTE) -->
-            <article class="card disabled">
-                <div>
-                    <span class="grade-tag">10th Grade • Physics</span>
-                    <h3>Upcoming Course Content</h3>
-                    <p>Presentations and interactive materials for 10th grade physics will be available soon.</p>
-                </div>
-                <a class="btn disabled">Coming Soon</a>
-            </article>
-
-            <!-- 11TH GRADE (PRÓXIMAMENTE) -->
-            <article class="card disabled">
-                <div>
-                    <span class="grade-tag">11th Grade • Physics</span>
-                    <h3>Upcoming Course Content</h3>
-                    <p>Advanced physics presentations and problem sets will be added in future units.</p>
-                </div>
-                <a class="btn disabled">Coming Soon</a>
-            </article>
-
-        </section>
+        <div id="content-container">
+            <!-- Carga dinámica vía JavaScript -->
+        </div>
     </main>
 
     <!-- FOOTER -->
@@ -243,5 +226,68 @@
         <p>&copy; Monterrey Christian School — Physics Department | Designed by Prof. Keylor Arley Castro</p>
     </footer>
 
+    <script>
+        const gradeNames = {
+            "9th": "9th Grade • Physical Science",
+            "10th": "10th Grade • Physics",
+            "11th": "11th Grade • Physics"
+        };
+
+        fetch('lectures.json')
+            .then(response => response.json())
+            .then(data => {
+                const container = document.getElementById('content-container');
+                container.innerHTML = '';
+
+                Object.keys(gradeNames).forEach(gradeKey => {
+                    const section = document.createElement('section');
+                    section.className = 'grade-section';
+
+                    const title = document.createElement('h3');
+                    title.className = 'grade-title';
+                    title.textContent = gradeNames[gradeKey];
+                    section.appendChild(title);
+
+                    const grid = document.createElement('div');
+                    grid.className = 'grid';
+
+                    const items = data[gradeKey] || [];
+
+                    if (items.length > 0) {
+                        items.forEach(item => {
+                            const card = document.createElement('article');
+                            card.className = 'card';
+                            card.innerHTML = `
+                                <div>
+                                    <span class="grade-tag">${gradeNames[gradeKey]}</span>
+                                    <h3>${item.title}</h3>
+                                    <p>${item.description}</p>
+                                </div>
+                                <a href="${item.file}" class="btn">Launch Presentation →</a>
+                            `;
+                            grid.appendChild(card);
+                        });
+                    } else {
+                        const card = document.createElement('article');
+                        card.className = 'card disabled';
+                        card.innerHTML = `
+                            <div>
+                                <span class="grade-tag">${gradeNames[gradeKey]}</span>
+                                <h3>Upcoming Course Content</h3>
+                                <p>Presentations and interactive materials for this grade will be available soon.</p>
+                            </div>
+                            <a class="btn disabled">Coming Soon</a>
+                        `;
+                        grid.appendChild(card);
+                    }
+
+                    section.appendChild(grid);
+                    container.appendChild(section);
+                });
+            })
+            .catch(err => {
+                console.error("Error al cargar lectures.json:", err);
+            });
+    </script>
 </body>
 </html>
