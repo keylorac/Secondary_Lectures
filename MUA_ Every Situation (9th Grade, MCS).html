@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Uniformly Accelerated Motion: Every Situation</title>
+<script>window.MathJax={tex:{inlineMath:[['$','$']]},svg:{fontCache:'global'}}</script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/3.2.2/es5/tex-svg.js"></script>
+<style>
+/* MCS palette tokens: edit these to match the official brand colors */
+:root{--bg:#f2f8f9;--card:#fff;--ink:#0d2b3e;--mut:#55707d;--acc:#008c99;--acc2:#0d2b3e;--gold:#e8792b;--ok:#1a8a4a;--line:#c5dadf;--hd:#0d2b3e;box-sizing:border-box}
+@media(prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#0a1a24;--card:#12303f;--ink:#ecf6f8;--mut:#9dbac4;--acc:#2fd0dc;--acc2:#2fd0dc;--gold:#ff9a4d;--ok:#52d18a;--line:#25505f;--hd:#06121a}}
+:root[data-theme="dark"]{--bg:#0a1a24;--card:#12303f;--ink:#ecf6f8;--mut:#9dbac4;--acc:#2fd0dc;--acc2:#2fd0dc;--gold:#ff9a4d;--ok:#52d18a;--line:#25505f;--hd:#06121a}
+*{box-sizing:border-box}html,body{height:100%;margin:0}
+body{background:var(--bg);color:var(--ink);font:17px/1.5 system-ui,Segoe UI,Arial,sans-serif;overflow:hidden}
+header{position:fixed;top:0;left:0;right:0;height:calc(44px + env(safe-area-inset-top,0px));padding:env(safe-area-inset-top,0px) 5vw 0;background:var(--hd);color:#fff;display:flex;align-items:center;justify-content:space-between;border-bottom:4px solid var(--acc);font-size:.85em;letter-spacing:.04em;z-index:5}
+header b{color:var(--acc)}
+.slide{display:none;position:absolute;top:calc(48px + env(safe-area-inset-top,0px));bottom:calc(52px + env(safe-area-inset-bottom,0px));left:0;right:0;overflow-y:auto;padding:18px 5vw}
+.slide.on{display:block}
+h1{font-size:2.2em;margin:.2em 0;color:var(--acc2)}h2{margin:0 0 .3em;color:var(--acc)}
+.card{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:12px 18px;margin:10px 0}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(270px,1fr));gap:12px}
+.gold{border-left:5px solid var(--gold)}.mut{color:var(--mut);font-size:.9em}
+.tag{display:inline-block;background:var(--acc);color:var(--bg);border-radius:20px;padding:1px 12px;font-size:.8em;font-weight:600}
+table.lg{border-collapse:collapse;font-size:.9em;color:var(--mut)}table.lg td{padding:1px 10px 1px 0}
+canvas{width:100%;max-width:780px;height:auto;background:var(--card);border:1px solid var(--line);border-radius:12px;display:block}
+button{background:var(--acc);color:var(--bg);border:0;border-radius:8px;padding:8px 14px;font:inherit;cursor:pointer;margin:4px 6px 4px 0}
+button.alt{background:transparent;color:var(--acc);border:2px solid var(--acc)}
+input[type=range]{width:170px;vertical-align:middle}
+input[type=text]{width:90px;font:inherit;padding:6px;border-radius:6px;border:1px solid var(--line);background:var(--bg);color:var(--ink)}
+.step{display:none;margin:6px 0;padding:6px 10px;border-left:4px solid var(--acc);background:color-mix(in srgb,var(--acc) 9%,transparent)}
+.step.on{display:block}.step b{color:var(--acc)}
+.fb{margin-left:8px;font-weight:600}.fb.ok{color:var(--ok)}.fb.no{color:#d64545}
+nav{position:fixed;bottom:0;left:0;right:0;height:calc(52px + env(safe-area-inset-bottom,0px));padding-bottom:env(safe-area-inset-bottom,0px);display:flex;align-items:center;justify-content:center;gap:14px;background:var(--card);border-top:1px solid var(--line)}
+#bar{position:fixed;top:0;left:0;height:4px;background:var(--gold);transition:width .3s;z-index:6}
+</style></head><body>
+<div id="bar"></div>
+<header><span><b>MCS</b> &middot; 9th Grade Physics</span><span id="tg"></span></header>
+
+<section class="slide on" data-tag="Kinematics">
+<h1>Uniformly Accelerated Motion</h1>
+<p style="font-size:1.2em">Every situation, one toolkit.</p>
+<div class="card gold">In MUA the acceleration $a$ is <b>constant</b>. The sign of $a$ and the starting speed decide the situation. We study four:</div>
+<div class="grid">
+<div class="card"><span class="tag">A</span> <b>Starts from rest</b><br>$v_i=0$, speeding up</div>
+<div class="card"><span class="tag">B</span> <b>Speeds up</b><br>$v_i>0$, $a>0$</div>
+<div class="card"><span class="tag">C</span> <b>Slows down or brakes</b><br>$a<0$, sometimes $v_f=0$</div>
+<div class="card"><span class="tag">D</span> <b>Vertical motion</b><br>free fall and throwing up, $|a|=g$</div></div>
+<p class="mut">Each situation has a lab, a solved example and a hint. We finish with a mixed practice set.</p>
+</section>
+
+<section class="slide" data-tag="Toolkit">
+<h2>The Toolkit: Four Equations</h2>
+<div class="grid">
+<div class="card">$$a=\frac{v_f-v_i}{t}\quad(1)$$</div>
+<div class="card">$$d=\frac{(v_f+v_i)\,t}{2}\quad(2)$$</div>
+<div class="card">$$d=\frac{v_f^2-v_i^2}{2a}\quad(3)$$</div>
+<div class="card">$$d=v_i\,t+\frac{a\,t^2}{2}\quad(4)$$</div></div>
+<p class="mut">$d$ distance (m) &middot; $v_i$ initial speed (m/s) &middot; $v_f$ final speed (m/s) &middot; $a$ acceleration (m/s&sup2;) &middot; $t$ time (s)</p>
+<div class="card gold"><b>Which equation?</b> Each problem has 5 variables. Three are known, one is asked, and <b>one is absent</b>. Pick the absent variable:
+<div><button class="alt" onclick="pk(0)">$d$</button><button class="alt" onclick="pk(1)">$a$</button><button class="alt" onclick="pk(2)">$t$</button><button class="alt" onclick="pk(3)">$v_f$</button></div>
+<div class="step pk">Absent $d$: use $a=\dfrac{v_f-v_i}{t}$, equation (1).</div>
+<div class="step pk">Absent $a$: use $d=\dfrac{(v_f+v_i)t}{2}$, equation (2).</div>
+<div class="step pk">Absent $t$: use $d=\dfrac{v_f^2-v_i^2}{2a}$, equation (3).</div>
+<div class="step pk">Absent $v_f$: use $d=v_it+\dfrac{at^2}{2}$, equation (4).</div></div>
+<div class="card"><b>Sign rule.</b> Choose a positive direction. If the object speeds up, $a$ has the sign of $v$. If it slows down, $a$ is negative when $v$ is positive.</div>
+</section>
+
+<section class="slide" data-tag="MUA Lab">
+<h2>MUA Lab</h2>
+<canvas id="lab" width="780" height="350"></canvas>
+<p>
+<button onclick="pre(0,2,8,1)">A: From rest</button><button onclick="pre(6,1.5,8,1)">B: Speeding up</button><button onclick="pre(20,-4,8,1)">C: Braking</button><button onclick="pre(0,10,4,1)">D: Free fall</button><button onclick="pre(20,-10,4,0)">D: Throw up</button></p>
+<p>$v_i$ <input type="range" id="lvi" min="0" max="30" value="0"> <b id="ovi"></b> m/s &nbsp;
+$a$ <input type="range" id="la" min="-10" max="10" step="0.5" value="2"> <b id="oa"></b> m/s&sup2; &nbsp;
+$T$ <input type="range" id="lT" min="2" max="8" value="8"> <b id="oT"></b> s
+<button onclick="L.play()">Play</button><button class="alt" onclick="L.reset()">Reset</button></p>
+<p id="lsit" style="font-weight:600;color:var(--gold)"></p><p id="lr" class="mut"></p>
+<div class="card gold">Dots mark each second. The shaded area under the $v$&ndash;$t$ graph is the <b>distance</b>. For a trapezoid that area is $\frac{(v_f+v_i)\,t}{2}$, which is equation (2).</div>
+</section>
+
+<section class="slide" data-tag="Situation A">
+<h2><span class="tag">A</span> Starts From Rest</h2>
+<div class="card">Here $v_i=0$. The equations simplify: $v_f=a\,t$ and $d=\dfrac{a\,t^2}{2}$. Distance grows with $t^2$: double the time, four times the distance.<br><button class="alt" onclick="pre(0,2,8,1)">Open in lab</button></div>
+<div class="card"><b>Example.</b> A motorbike starts from rest and reaches 20 m/s in 5 s. Find $a$ and the distance.<br><button onclick="nx(this)">Show next step</button>
+<div class="step"><b>Given:</b> $v_i=0$, $v_f=20$, $t=5$. <b>Unknown:</b> $a$, $d$.</div>
+<div class="step"><b>Acceleration (1):</b> $a=\dfrac{20-0}{5}=4\ \text{m/s}^2$</div>
+<div class="step"><b>Distance (2):</b> $d=\dfrac{(20+0)(5)}{2}=50\ \text{m}$</div>
+<div class="step"><b>Check (4):</b> $d=0+\dfrac{(4)(25)}{2}=50\ \text{m}$ &#10003;</div></div>
+</section>
+
+<section class="slide" data-tag="Situation B">
+<h2><span class="tag">B</span> Speeds Up From a Moving Start</h2>
+<div class="card">Here $v_i>0$ and $a>0$. The object is already moving and gains speed every second.<br><button class="alt" onclick="pre(6,1.5,8,1)">Open in lab</button></div>
+<div class="card"><b>Example 1: time is given.</b> A bus at 10 m/s accelerates at 1.5 m/s&sup2; for 6 s. Find $v_f$ and $d$.<br><button onclick="nx(this)">Show next step</button>
+<div class="step"><b>Given:</b> $v_i=10$, $a=1.5$, $t=6$.</div>
+<div class="step"><b>From (1):</b> $v_f=v_i+at=10+(1.5)(6)=19\ \text{m/s}$</div>
+<div class="step"><b>From (2):</b> $d=\dfrac{(19+10)(6)}{2}=87\ \text{m}$</div>
+<div class="step"><b>Check (4):</b> $d=(10)(6)+\dfrac{(1.5)(36)}{2}=60+27=87\ \text{m}$ &#10003;</div></div>
+<div class="card"><b>Example 2: time is absent.</b> A car at 6 m/s accelerates at 2 m/s&sup2; while covering 40 m. Find $v_f$ and $t$.<br><button onclick="nx(this)">Show next step</button>
+<div class="step"><b>Absent $t$:</b> use (3): $v_f^2=v_i^2+2ad=36+2(2)(40)=196$</div>
+<div class="step"><b>Answer:</b> $v_f=14\ \text{m/s}$</div>
+<div class="step"><b>Time from (1):</b> $t=\dfrac{14-6}{2}=4\ \text{s}$</div>
+<div class="step"><b>Check (2):</b> $d=\dfrac{(14+6)(4)}{2}=40\ \text{m}$ &#10003;</div></div>
+</section>
+
+<section class="slide" data-tag="Situation C">
+<h2><span class="tag">C</span> Slowing Down and Braking</h2>
+<div class="card">Here $a<0$. The velocity and the acceleration point in <b>opposite</b> directions. If the object stops, then $v_f=0$. Keep the minus sign: it is part of the answer.<br><button class="alt" onclick="pre(20,-4,8,1)">Open in lab</button></div>
+<div class="card"><b>Example 1: braking to a stop.</b> A car at 20 m/s brakes at $-4$ m/s&sup2; until it stops. Find the time and stopping distance.<br><button onclick="nx(this)">Show next step</button>
+<div class="step"><b>Given:</b> $v_i=20$, $v_f=0$, $a=-4$.</div>
+<div class="step"><b>Time (1):</b> $t=\dfrac{v_f-v_i}{a}=\dfrac{0-20}{-4}=5\ \text{s}$</div>
+<div class="step"><b>Distance (3):</b> $d=\dfrac{0-400}{2(-4)}=50\ \text{m}$</div>
+<div class="step"><b>Check (2):</b> $d=\dfrac{(0+20)(5)}{2}=50\ \text{m}$ &#10003;</div></div>
+<div class="card"><b>Example 2: slowing without stopping.</b> A cyclist slows from 12 m/s to 4 m/s in 4 s. Find $a$ and $d$.<br><button onclick="nx(this)">Show next step</button>
+<div class="step"><b>(1):</b> $a=\dfrac{4-12}{4}=-2\ \text{m/s}^2$</div>
+<div class="step"><b>(2):</b> $d=\dfrac{(4+12)(4)}{2}=32\ \text{m}$</div>
+<div class="step"><b>Check (4):</b> $d=(12)(4)+\dfrac{(-2)(16)}{2}=48-16=32\ \text{m}$ &#10003;</div></div>
+</section>
+
+<section class="slide" data-tag="Situation D">
+<h2><span class="tag">D</span> Vertical Motion</h2>
+<div class="card">Gravity gives a constant acceleration of about $g=10\ \text{m/s}^2$ downward (we round 9.8). Choose one positive direction and keep it. If <b>down is positive</b>, then $a=+10$. If <b>up is positive</b>, then $a=-10$.<br>Free fall: $v_i=0$. Thrown up: at the top $v=0$, and the ball returns to the start with the same speed.<br>
+<button class="alt" onclick="pre(0,10,4,1)">Free fall in lab</button><button class="alt" onclick="pre(20,-10,4,0)">Throw up in lab</button></div>
+<div class="card"><b>Example 1: free fall.</b> A ball is dropped and hits the ground after 2 s. Find the height and impact speed. (Down is positive here.)<br><button onclick="nx(this)">Show next step</button>
+<div class="step"><b>Given:</b> $v_i=0$, $a=10$, $t=2$.</div>
+<div class="step"><b>Height (4):</b> $d=0+\dfrac{(10)(4)}{2}=20\ \text{m}$</div>
+<div class="step"><b>Speed (1):</b> $v_f=0+(10)(2)=20\ \text{m/s}$</div></div>
+<div class="card"><b>Example 2: thrown up.</b> A ball is thrown up at 20 m/s. Find the time to the top and the maximum height. (Up is positive: $a=-10$.)<br><button onclick="nx(this)">Show next step</button>
+<div class="step"><b>At the top:</b> $v_f=0$. Given $v_i=20$, $a=-10$.</div>
+<div class="step"><b>Time (1):</b> $t=\dfrac{0-20}{-10}=2\ \text{s}$</div>
+<div class="step"><b>Height (3):</b> $d=\dfrac{0-400}{2(-10)}=20\ \text{m}$</div>
+<div class="step"><b>Whole flight:</b> up 2 s and down 2 s, so 4 s. It lands at 20 m/s. &#10003;</div></div>
+</section>
+
+<section class="slide" data-tag="Practice">
+<h2>Mixed Practice</h2>
+<p class="mut">Name the situation (A, B, C or D). Then list Given, Unknown and the absent variable, and choose the equation. Use $g=10$ m/s&sup2;. Type the answer and check it.</p>
+<div id="pr"></div>
+</section>
+
+<nav><button onclick="go(-1)">&larr; Back</button><span id="ct" class="mut"></span><button onclick="go(1)">Next &rarr;</button></nav>
+
+<script>
+const S=[...document.querySelectorAll('.slide')];let i=0;
+function go(d){i=Math.max(0,Math.min(S.length-1,i+d));S.forEach((s,k)=>s.classList.toggle('on',k==i));
+document.getElementById('bar').style.width=(i+1)/S.length*100+'%';document.getElementById('ct').textContent=(i+1)+' / '+S.length;
+document.getElementById('tg').textContent=S[i].dataset.tag;S[i].scrollTop=0;L.draw()}
+document.addEventListener('keydown',e=>{if(e.target.tagName=='INPUT')return;if(e.key=='ArrowRight')go(1);if(e.key=='ArrowLeft')go(-1)});
+function nx(b){const p=b.parentElement,s=p.querySelector('.step:not(.on)');if(s)s.classList.add('on');if(!p.querySelector('.step:not(.on)'))b.disabled=true}
+function pk(k){document.querySelectorAll('.pk').forEach((e,j)=>e.classList.toggle('on',j==k))}
+
+const $=id=>document.getElementById(id),css=n=>getComputedStyle(document.documentElement).getPropertyValue(n);
+const L=(()=>{const c=$('lab'),x=c.getContext('2d'),W=c.width,H=c.height;let t=0,run=false,last=0,clamp=1;
+ const P=()=>({vi:+$('lvi').value,a:+$('la').value,T:+$('lT').value});
+ const te=(s,p)=>clamp&&p.a<0?Math.min(s,p.vi/-p.a):s;
+ const pos=(s,p)=>{s=te(s,p);return p.vi*s+.5*p.a*s*s},vel=(s,p)=>p.vi+p.a*te(s,p);
+ function draw(){const p=P();$('ovi').textContent=p.vi;$('oa').textContent=p.a;$('oT').textContent=p.T;
+  const ink=css('--ink'),acc=css('--acc'),mut=css('--mut'),ln=css('--line'),gd=css('--gold');
+  let xm=1,vlo=0,vhi=1;for(let s=0;s<=p.T+1e-9;s+=.1){xm=Math.max(xm,Math.abs(pos(s,p)));vlo=Math.min(vlo,vel(s,p));vhi=Math.max(vhi,vel(s,p))}
+  const Lm=Math.max(10,Math.ceil(xm/10)*10),X0=30,X1=W-30,tx=m=>X0+(X1-X0)*m/Lm;
+  x.clearRect(0,0,W,H);x.font='12px sans-serif';x.lineWidth=2;x.strokeStyle=ln;x.fillStyle=mut;x.textAlign='center';
+  x.beginPath();x.moveTo(X0,80);x.lineTo(X1,80);x.stroke();
+  for(let k=0;k<=10;k++){const m=Lm*k/10;x.beginPath();x.moveTo(tx(m),80);x.lineTo(tx(m),87);x.stroke();x.fillText(+m.toFixed(1),tx(m),102)}
+  x.textAlign='left';x.fillText('position (m)',X0,20);
+  for(let s=0;s<=Math.floor(t);s++){x.fillStyle=gd;x.beginPath();x.arc(tx(pos(s,p)),72,4,0,7);x.fill()}
+  const cx=tx(pos(t,p));x.fillStyle=acc;x.fillRect(cx-16,50,32,16);x.fillStyle=ink;x.beginPath();x.arc(cx-8,68,4,0,7);x.arc(cx+8,68,4,0,7);x.fill();
+  const gx0=50,gx1=W-30,gy0=140,gy1=H-32,gX=s=>gx0+(gx1-gx0)*s/p.T,gY=v=>gy1-(gy1-gy0)*(v-vlo)/(vhi-vlo);
+  x.strokeStyle=ln;x.beginPath();x.moveTo(gx0,gy0);x.lineTo(gx0,gy1);x.moveTo(gx0,gY(0));x.lineTo(gx1,gY(0));x.stroke();
+  x.fillStyle=mut;x.textAlign='center';for(let s=0;s<=p.T;s+=p.T>4?2:1)x.fillText(s,gX(s),gY(0)+(vlo<0?-6:16));x.fillText('time (s)',(gx0+gx1)/2,H-4);
+  x.textAlign='right';[vlo,0,vhi].forEach(v=>x.fillText(+v.toFixed(0),gx0-6,gY(v)+4));
+  x.textAlign='left';x.fillText('velocity v (m/s), area = distance',gx0+6,gy0-6);
+  x.beginPath();x.moveTo(gX(0),gY(0));for(let s=0;s<=t+1e-9;s+=.05)x.lineTo(gX(s),gY(vel(s,p)));x.lineTo(gX(t),gY(0));x.closePath();x.globalAlpha=.22;x.fillStyle=acc;x.fill();x.globalAlpha=1;
+  x.strokeStyle=gd;x.lineWidth=3;x.beginPath();for(let s=0;s<=t+1e-9;s+=.05)s?x.lineTo(gX(s),gY(vel(s,p))):x.moveTo(gX(s),gY(vel(s,p)));x.stroke();
+  x.fillStyle=acc;x.beginPath();x.arc(gX(t),gY(vel(t,p)),5,0,7);x.fill();
+  $('lsit').textContent=p.a==0?'Uniform motion (a = 0)':p.vi==0&&p.a>0?'Situation A: starts from rest':p.a>0?'Situation B: speeding up':p.vi>0?'Situation C: slowing down (a opposite to v)':'Not moving';
+  $('lr').innerHTML='t = '+t.toFixed(1)+' s &nbsp; v = '+vel(t,p).toFixed(1)+' m/s &nbsp; d = '+pos(t,p).toFixed(1)+' m'}
+ const o={draw,play(){if(t>=P().T)t=0;run=true;last=performance.now();requestAnimationFrame(o.step)},
+  reset(){run=false;t=0;draw()},set(v,a,T,c){$('lvi').value=v;$('la').value=a;$('lT').value=T;clamp=c;o.reset()},
+  step(n){if(!run)return;t=Math.min(P().T,t+(n-last)/1000);last=n;draw();if(t<P().T)requestAnimationFrame(o.step);else run=false}};
+ ['lvi','la','lT'].forEach(k=>$(k).addEventListener('input',()=>{run=false;t=P().T;draw()}));
+ return o})();
+function pre(v,a,T,c){L.set(v,a,T,c);go(2-i)}
+L.reset();
+
+const Q=[
+["<span class='tag'>A</span> A train starts from rest with $a=1.5$ m/s&sup2; for 10 s. Find the distance (m).",75,"(4): $d=\\tfrac12(1.5)(100)$"],
+["<span class='tag'>A</span> A scooter starts from rest and reaches 18 m/s in 6 s. Find $a$ (m/s&sup2;).",3,"(1): $a=18/6$"],
+["<span class='tag'>B</span> A runner at 5 m/s accelerates at 2 m/s&sup2; for 7 s. Find $v_f$ (m/s).",19,"(1): $v_f=5+(2)(7)$"],
+["<span class='tag'>B</span> A car goes from 4 m/s to 10 m/s over 21 m. Find $a$ (m/s&sup2;).",2,"(3): $a=(100-16)/(2\\cdot21)$"],
+["<span class='tag'>C</span> A car at 15 m/s brakes to a stop in 3 s. Find the stopping distance (m).",22.5,"(2): $d=(0+15)(3)/2$"],
+["<span class='tag'>C</span> A truck at 30 m/s brakes at $-5$ m/s&sup2; until it stops. Find the distance (m).",90,"(3): $d=(0-900)/(2\\cdot(-5))$"],
+["<span class='tag'>D</span> A stone is dropped and falls 45 m. Find the time (s).",3,"(4): $45=\\tfrac12(10)t^2$, so $t^2=9$"],
+["<span class='tag'>D</span> A ball is thrown up at 30 m/s. Find the maximum height (m).",45,"(3): $d=(0-900)/(2\\cdot(-10))$"]];
+Q.forEach((q,k)=>$('pr').insertAdjacentHTML('beforeend',`<div class="card"><b>${k+1}.</b> ${q[0]}<br><input type="text" id="a${k}" inputmode="decimal"> <button onclick="chk(${k})">Check</button><span class="fb" id="f${k}"></span><div class="step" id="h${k}"><b>Solution:</b> ${q[2]} $=${q[1]}$</div></div>`));
+function chk(k){const v=parseFloat($('a'+k).value.replace(',','.')),f=$('f'+k),ok=Math.abs(v-Q[k][1])<1e-6;
+f.textContent=ok?'Correct!':'Not yet. Try again.';f.className='fb '+(ok?'ok':'no');if(ok){$('h'+k).classList.add('on');MathJax.typesetPromise([$('h'+k)])}}
+go(0);
+</script></body></html>
