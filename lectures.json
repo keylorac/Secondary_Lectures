@@ -1,19 +1,19 @@
 {
-  "9th": [
+  "9": [
     {
       "title": "Uniformly Accelerated Motion",
       "description": "Interactive labs, step-by-step solved examples, and practice sets covering MUA scenarios.",
       "file": "mua-9th-grade.html"
     }
   ],
-  "10th": [
+  "10": [
     {
       "title": "Kinematics — Parabolic Motion",
       "description": "Interactive simulation, trajectory equations, and practice problems for projectile motion.",
       "file": "MovimientoParabolico.html"
     }
   ],
-  "11th": [
+  "11": [
     {
       "title": "MEP Standardized Test Review — Unit 12",
       "description": "Comprehensive review set covering Gravitation, Coulomb's Law, Fields, Work & Energy, and Orbital Motion.",
