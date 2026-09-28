@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Physics Presentations | Monterrey Christian School</title>
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #0d233a;
+            --secondary: #18a0fb;
+            --accent: #ffc107;
+            --bg: #f4f7f9;
+            --card-bg: #ffffff;
+            --text-dark: #2c3e50;
+            --text-muted: #6c757d;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        body {
+            background-color: var(--bg);
+            color: var(--text-dark);
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+        }
+
+        /* Header / Banner */
+        header {
+            background: linear-gradient(135deg, var(--primary) 0%, #1a365d 100%);
+            color: white;
+            padding: 2.5rem 1.5rem;
+            text-align: center;
+            border-bottom: 5px solid var(--accent);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        }
+
+        .school-badge {
+            display: inline-block;
+            background-color: rgba(255, 255, 255, 0.15);
+            padding: 0.3rem 1rem;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            margin-bottom: 0.8rem;
+            color: var(--accent);
+        }
+
+        header h1 {
+            font-size: 2.2rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+        }
+
+        .teacher-info {
+            font-size: 1.1rem;
+            font-weight: 300;
+            opacity: 0.9;
+        }
+
+        .teacher-info span {
+            font-weight: 600;
+            color: #ffffff;
+        }
+
+        /* Container & Content */
+        main {
+            max-width: 1100px;
+            margin: 2.5rem auto;
+            padding: 0 1.5rem;
+            flex: 1;
+            width: 100%;
+        }
+
+        .intro-text {
+            text-align: center;
+            margin-bottom: 2.5rem;
+        }
+
+        .intro-text h2 {
+            color: var(--primary);
+            font-size: 1.6rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .intro-text p {
+            color: var(--text-muted);
+        }
+
+        /* Grid de Cursos */
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 1.8rem;
+        }
+
+        .card {
+            background: var(--card-bg);
+            border-radius: 12px;
+            padding: 1.8rem;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+            border-top: 4px solid var(--secondary);
+            transition: transform 0.25s ease, box-shadow 0.25s ease;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 25px rgba(0,0,0,0.1);
+        }
+
+        .card.disabled {
+            border-top-color: #bdc3c7;
+            opacity: 0.8;
+        }
+
+        .grade-tag {
+            font-size: 0.8rem;
+            font-weight: 700;
+            color: var(--secondary);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 0.5rem;
+        }
+
+        .card.disabled .grade-tag {
+            color: var(--text-muted);
+        }
+
+        .card h3 {
+            color: var(--primary);
+            font-size: 1.3rem;
+            margin-bottom: 0.8rem;
+        }
+
+        .card p {
+            font-size: 0.95rem;
+            color: var(--text-muted);
+            line-height: 1.5;
+            margin-bottom: 1.5rem;
+        }
+
+        /* Botones */
+        .btn {
+            display: inline-block;
+            text-align: center;
+            background-color: var(--secondary);
+            color: white;
+            text-decoration: none;
+            padding: 0.75rem 1.2rem;
+            border-radius: 6px;
+            font-weight: 600;
+            font-size: 0.95rem;
+            transition: background-color 0.2s ease;
+        }
+
+        .btn:hover {
+            background-color: #0084d6;
+        }
+
+        .btn.disabled {
+            background-color: #e0e0e0;
+            color: #888888;
+            cursor: not-allowed;
+        }
+
+        /* Footer */
+        footer {
+            background-color: var(--primary);
+            color: white;
+            text-align: center;
+            padding: 1.5rem;
+            font-size: 0.85rem;
+            margin-top: 3rem;
+            border-top: 1px solid rgba(255,255,255,0.1);
+        }
+    </style>
+</head>
+<body>
+
+    <!-- PORTADA / HEADER -->
+    <header>
+        <div class="school-badge">Monterrey Christian School</div>
+        <h1>Physics & Science Interactive Hub</h1>
+        <p class="teacher-info">Teacher: <span>Prof. Keylor Arley Castro</span></p>
+    </header>
+
+    <!-- CONTENIDO PRINCIPAL -->
+    <main>
+        <section class="intro-text">
+            <h2>Interactive Class Presentations</h2>
+            <p>Select your grade level to access step-by-step physics presentations, simulations, and practice problems.</p>
+        </section>
+
+        <section class="grid">
+            
+            <!-- 9TH GRADE (ACTIVA) -->
+            <article class="card">
+                <div>
+                    <span class="grade-tag">9th Grade • Physical Science</span>
+                    <h3>Uniformly Accelerated Motion</h3>
+                    <p>Interactive labs, step-by-step solved examples, and practice sets covering every MUA scenario (Starting from rest, speeding up, braking, and vertical motion).</p>
+                </div>
+                <a href="MUA_%20Every%20Situation%20(9th%20Grade,%20MCS).html" class="btn">Launch Presentation →</a>
+            </article>
+
+            <!-- 10TH GRADE (PRÓXIMAMENTE) -->
+            <article class="card disabled">
+                <div>
+                    <span class="grade-tag">10th Grade • Physics</span>
+                    <h3>Upcoming Course Content</h3>
+                    <p>Presentations and interactive materials for 10th grade physics will be available soon.</p>
+                </div>
+                <a class="btn disabled">Coming Soon</a>
+            </article>
+
+            <!-- 11TH GRADE (PRÓXIMAMENTE) -->
+            <article class="card disabled">
+                <div>
+                    <span class="grade-tag">11th Grade • Physics</span>
+                    <h3>Upcoming Course Content</h3>
+                    <p>Advanced physics presentations and problem sets will be added in future units.</p>
+                </div>
+                <a class="btn disabled">Coming Soon</a>
+            </article>
+
+        </section>
+    </main>
+
+    <!-- FOOTER -->
+    <footer>
+        <p>&copy; Monterrey Christian School — Physics Department | Designed by Prof. Keylor Arley Castro</p>
+    </footer>
+
+</body>
+</html>
