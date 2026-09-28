@@ -226,32 +226,35 @@
         <p>&copy; Monterrey Christian School — Physics Department | Designed by Prof. Keylor Arley Castro</p>
     </footer>
 
-    <script>
-        const gradeNames = {
-            "9th": "9th Grade • Physical Science",
-            "10th": "10th Grade • Physics",
-            "11th": "11th Grade • Physics"
-        };
+<script>
+        const gradeMap = [
+            { key: ["9th", "9"], label: "9th Grade • Physical Science" },
+            { key: ["10th", "10"], label: "10th Grade • Physics" },
+            { key: ["11th", "11"], label: "11th Grade • Physics" }
+        ];
 
-        fetch('lectures.json')
+        // Se agrega ?v= timestamp para saltar la caché de GitHub Pages
+        fetch('lectures.json?v=' + new Date().getTime())
             .then(response => response.json())
             .then(data => {
                 const container = document.getElementById('content-container');
                 container.innerHTML = '';
 
-                Object.keys(gradeNames).forEach(gradeKey => {
+                gradeMap.forEach(gradeInfo => {
                     const section = document.createElement('section');
                     section.className = 'grade-section';
 
                     const title = document.createElement('h3');
                     title.className = 'grade-title';
-                    title.textContent = gradeNames[gradeKey];
+                    title.textContent = gradeInfo.label;
                     section.appendChild(title);
 
                     const grid = document.createElement('div');
                     grid.className = 'grid';
 
-                    const items = data[gradeKey] || [];
+                    // Busca si la clave en lectures.json viene como "10th" o como "10"
+                    const foundKey = gradeInfo.key.find(k => data[k]);
+                    const items = foundKey ? data[foundKey] : [];
 
                     if (items.length > 0) {
                         items.forEach(item => {
@@ -259,7 +262,7 @@
                             card.className = 'card';
                             card.innerHTML = `
                                 <div>
-                                    <span class="grade-tag">${gradeNames[gradeKey]}</span>
+                                    <span class="grade-tag">${gradeInfo.label}</span>
                                     <h3>${item.title}</h3>
                                     <p>${item.description}</p>
                                 </div>
@@ -272,7 +275,7 @@
                         card.className = 'card disabled';
                         card.innerHTML = `
                             <div>
-                                <span class="grade-tag">${gradeNames[gradeKey]}</span>
+                                <span class="grade-tag">${gradeInfo.label}</span>
                                 <h3>Upcoming Course Content</h3>
                                 <p>Presentations and interactive materials for this grade will be available soon.</p>
                             </div>
