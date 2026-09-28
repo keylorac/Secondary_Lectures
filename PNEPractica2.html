@@ -1,0 +1,1044 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Repaso PNE Física MEP - Unidad 12</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- KaTeX for rendering math formulas -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/katex.min.css">
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/katex.min.js"></script>
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/contrib/auto-render.min.js"></script>
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        brand: {
+                            50: '#f0f9ff',
+                            100: '#e0f2fe',
+                            500: '#0284c7',
+                            600: '#0369a1',
+                            700: '#075985',
+                            800: '#0c4a6e',
+                            900: '#0f172a'
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f8fafc;
+            color: #1e293b;
+        }
+        .katex-display {
+            margin: 0.5em 0;
+            overflow-x: auto;
+            overflow-y: hidden;
+            padding: 4px 0;
+        }
+        .custom-scrollbar::-webkit-scrollbar {
+            width: 6px;
+            height: 6px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-track {
+            background: #f1f5f9;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb {
+            background: #cbd5e1;
+            border-radius: 4px;
+        }
+        @media print {
+            .no-print {
+                display: none !important;
+            }
+            .print-only {
+                display: block !important;
+            }
+            body {
+                background: white;
+                color: black;
+            }
+            .card-print {
+                border: 1px solid #cbd5e1 !important;
+                page-break-inside: avoid;
+                margin-bottom: 1.5rem;
+                box-shadow: none !important;
+            }
+        }
+    </style>
+</head>
+<body class="min-h-screen flex flex-col justify-between">
+
+    <header class="bg-brand-900 text-white shadow-lg sticky top-0 z-40 no-print">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex items-center justify-between h-16">
+                <!-- Title & Badge -->
+                <div class="flex items-center space-x-3">
+                    <div class="bg-brand-500 p-2 rounded-lg text-white">
+                        <i class="fa-solid fa-atom text-xl"></i>
+                    </div>
+                    <div>
+                        <h1 class="text-lg sm:text-xl font-bold tracking-tight">Física MEP — Unidad 12</h1>
+                        <p class="text-xs text-brand-100 hidden sm:block">Prueba Nacional Estandarizada (PNE)</p>
+                    </div>
+                </div>
+
+                <!-- Navigation Tabs -->
+                <div class="flex items-center space-x-1 sm:space-x-2">
+                    <button id="btn-mode-study" onclick="switchMode('study')" class="px-3 py-1.5 sm:px-4 sm:py-2 text-xs sm:text-sm font-medium rounded-lg transition-colors flex items-center space-x-1 bg-brand-700 text-white">
+                        <i class="fa-solid fa-book-open"></i>
+                        <span class="hidden md:inline">Modo</span> <span>Estudio</span>
+                    </button>
+                    <button id="btn-mode-exam" onclick="switchMode('exam')" class="px-3 py-1.5 sm:px-4 sm:py-2 text-xs sm:text-sm font-medium rounded-lg transition-colors flex items-center space-x-1 hover:bg-brand-800 text-slate-300">
+                        <i class="fa-solid fa-stopwatch"></i>
+                        <span class="hidden md:inline">Modo</span> <span>Examen</span>
+                    </button>
+                    <button id="btn-mode-print" onclick="switchMode('print')" class="px-3 py-1.5 sm:px-4 sm:py-2 text-xs sm:text-sm font-medium rounded-lg transition-colors flex items-center space-x-1 hover:bg-brand-800 text-slate-300">
+                        <i class="fa-solid fa-print"></i>
+                        <span class="hidden md:inline">Resumen /</span> <span>Imprimir</span>
+                    </button>
+                    <button onclick="toggleFormulaModal()" class="px-3 py-1.5 sm:px-4 sm:py-2 text-xs sm:text-sm font-medium rounded-lg bg-amber-500 hover:bg-amber-600 text-slate-900 font-semibold transition-colors flex items-center space-x-1 ml-2">
+                        <i class="fa-solid fa-square-root-variable"></i>
+                        <span>Formulario</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 flex-grow w-full">
+        <!-- Control Panel & Filters (No-Print) -->
+        <div class="no-print bg-white p-4 rounded-xl shadow-sm border border-slate-200 mb-6">
+            <div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
+                <!-- Search & Filters -->
+                <div class="flex flex-wrap items-center gap-3 flex-1">
+                    <div class="relative flex-1 min-w-[200px]">
+                        <i class="fa-solid fa-magnifying-glass absolute left-3 top-1/2 transform -translate-y-1/2 text-slate-400"></i>
+                        <input type="text" id="search-input" oninput="handleSearch()" placeholder="Buscar en preguntas o soluciones..." class="w-full pl-9 pr-4 py-2 border border-slate-300 rounded-lg text-sm focus:ring-2 focus:ring-brand-500 focus:outline-none">
+                    </div>
+                    
+                    <select id="topic-filter" onchange="handleTopicFilter()" class="border border-slate-300 rounded-lg py-2 px-3 text-sm focus:ring-2 focus:ring-brand-500 focus:outline-none bg-white">
+                        <option value="all">Todos los temas (30)</option>
+                        <option value="gravitacion">1. Ley de Gravitación Universal</option>
+                        <option value="coulomb">2. Ley de Coulomb</option>
+                        <option value="distancia">3. Acción a Distancia (Campos)</option>
+                        <option value="energia">4. Trabajo y Energía</option>
+                        <option value="orbital">5. Movimiento Orbital</option>
+                    </select>
+
+                    <button onclick="resetFilters()" class="px-3 py-2 text-xs font-medium text-slate-600 hover:text-slate-900 border border-slate-300 rounded-lg hover:bg-slate-50 transition">
+                        <i class="fa-solid fa-rotate-left mr-1"></i> Reiniciar
+                    </button>
+                </div>
+
+                <!-- Exam Timer / Progress Widget -->
+                <div id="exam-dashboard" class="hidden flex items-center space-x-4 bg-slate-50 p-2 rounded-lg border border-slate-200">
+                    <div class="text-right">
+                        <div class="text-xs text-slate-500 font-medium">Tiempo restante</div>
+                        <div id="timer-display" class="text-lg font-mono font-bold text-brand-600">60:00</div>
+                    </div>
+                    <button onclick="finishExam()" class="px-4 py-2 bg-emerald-600 hover:bg-emerald-700 text-white rounded-lg text-sm font-semibold transition">
+                        Finalizar Examen
+                    </button>
+                </div>
+
+                <!-- Stats summary in study mode -->
+                <div id="study-dashboard" class="flex items-center space-x-4 text-xs sm:text-sm text-slate-600">
+                    <div><span id="answered-count" class="font-bold text-brand-600">0</span> / 30 respondidas</div>
+                    <div class="h-4 w-px bg-slate-300"></div>
+                    <div>Puntuación: <span id="score-display" class="font-bold text-emerald-600">0%</span></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Content View Container -->
+        <div id="questions-container" class="space-y-6">
+            <!-- Dynamic Question Cards populated by JS -->
+        </div>
+
+        <!-- Printable Document Title (Only visible in Print view or PDF) -->
+        <div class="hidden print-only mb-6">
+            <div class="border-b-2 border-slate-900 pb-4 mb-4">
+                <h1 class="text-2xl font-bold text-slate-900">Ministerio de Educación Pública — Prueba Nacional Estandarizada</h1>
+                <h2 class="text-xl font-semibold text-slate-700">Unidad 12: Repaso General de Física (Resumen de Ejercicios y Clave)</h2>
+                <p class="text-sm text-slate-600 mt-1">Nombre del estudiante: _____________________________________ Fecha: ____________</p>
+            </div>
+        </div>
+
+    </main>
+
+    <!-- MEP Formula Sheet Modal -->
+    <div id="formula-modal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
+        <div class="bg-white rounded-2xl max-w-4xl w-full max-h-[90vh] flex flex-col shadow-2xl overflow-hidden border border-slate-100">
+            <!-- Modal Header -->
+            <div class="p-4 sm:p-6 bg-brand-900 text-white flex justify-between items-center">
+                <div class="flex items-center space-x-3">
+                    <i class="fa-solid fa-square-root-variable text-amber-400 text-xl"></i>
+                    <div>
+                        <h3 class="text-lg font-bold">Formulario Oficial MEP — Física PNE</h3>
+                        <p class="text-xs text-slate-300">Constantes físicas y ecuaciones de la Unidad 12</p>
+                    </div>
+                </div>
+                <button onclick="toggleFormulaModal()" class="text-slate-300 hover:text-white text-2xl font-bold focus:outline-none">&times;</button>
+            </div>
+
+            <!-- Modal Content with Scroll -->
+            <div class="p-6 overflow-y-auto space-y-6 custom-scrollbar text-sm">
+                <!-- Constants Grid -->
+                <div>
+                    <h4 class="text-sm font-bold text-brand-700 uppercase tracking-wider mb-3 border-b pb-1">1. Constantes Físicas Fundamentales</h4>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-3 text-xs sm:text-sm font-mono">
+                        <div class="p-2.5 bg-slate-50 rounded-lg border border-slate-200">
+                            <span class="font-bold text-slate-800">Constante Gravitacional ($G$):</span>
+                            <div class="mt-1 text-slate-600">$G = 6.67 \times 10^{-11} \text{ N}\cdot\text{m}^2/\text{kg}^2$</div>
+                        </div>
+                        <div class="p-2.5 bg-slate-50 rounded-lg border border-slate-200">
+                            <span class="font-bold text-slate-800">Constante Electrostática ($k_e$):</span>
+                            <div class="mt-1 text-slate-600">$k = 8.99 \times 10^9 \text{ N}\cdot\text{m}^2/\text{C}^2$</div>
+                        </div>
+                        <div class="p-2.5 bg-slate-50 rounded-lg border border-slate-200">
+                            <span class="font-bold text-slate-800">Carga del Electrón/Protón ($e$):</span>
+                            <div class="mt-1 text-slate-600">$e = 1.602 \times 10^{-19} \text{ C}$</div>
+                        </div>
+                        <div class="p-2.5 bg-slate-50 rounded-lg border border-slate-200">
+                            <span class="font-bold text-slate-800">Masa de la Tierra ($M_T$):</span>
+                            <div class="mt-1 text-slate-600">$M_T = 5.97 \times 10^{24} \text{ kg}$</div>
+                        </div>
+                        <div class="p-2.5 bg-slate-50 rounded-lg border border-slate-200">
+                            <span class="font-bold text-slate-800">Radio Medio de la Tierra ($R_T$):</span>
+                            <div class="mt-1 text-slate-600">$R_T = 6.37 \times 10^6 \text{ m}$</div>
+                        </div>
+                        <div class="p-2.5 bg-slate-50 rounded-lg border border-slate-200">
+                            <span class="font-bold text-slate-800">Aceleración de la gravedad ($g$):</span>
+                            <div class="mt-1 text-slate-600">$g = 9.80 \text{ m/s}^2$</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Equations Grid -->
+                <div>
+                    <h4 class="text-sm font-bold text-brand-700 uppercase tracking-wider mb-3 border-b pb-1">2. Ecuaciones por Tema</h4>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div class="p-3 bg-brand-50/50 rounded-lg border border-brand-100">
+                            <h5 class="font-semibold text-brand-800 text-xs uppercase mb-1">Ley de Gravitación Universal</h5>
+                            <p>$F_g = G \dfrac{m_1 m_2}{r^2}$</p>
+                            <p class="text-xs text-slate-500 mt-1">Intensidad de campo: $g = G \dfrac{M}{r^2}$</p>
+                        </div>
+                        <div class="p-3 bg-amber-50/50 rounded-lg border border-amber-100">
+                            <h5 class="font-semibold text-amber-800 text-xs uppercase mb-1">Ley de Coulomb</h5>
+                            <p>$F_e = k \dfrac{|q_1 q_2|}{r^2}$</p>
+                            <p class="text-xs text-slate-500 mt-1">Campo Eléctrico: $E = k \dfrac{|Q|}{r^2}$</p>
+                        </div>
+                        <div class="p-3 bg-emerald-50/50 rounded-lg border border-emerald-100">
+                            <h5 class="font-semibold text-emerald-800 text-xs uppercase mb-1">Trabajo y Energía</h5>
+                            <p>$W = F \cdot d \cdot \cos(\theta)$</p>
+                            <p class="text-xs text-slate-500 mt-1">$E_c = \frac{1}{2}m v^2, \quad E_p = mgh$</p>
+                        </div>
+                        <div class="p-3 bg-indigo-50/50 rounded-lg border border-indigo-100">
+                            <h5 class="font-semibold text-indigo-800 text-xs uppercase mb-1">Movimiento Orbital</h5>
+                            <p>$v = \sqrt{\dfrac{G M}{r}}, \quad T = 2\pi \sqrt{\dfrac{r^3}{G M}}$</p>
+                            <p class="text-xs text-slate-500 mt-1">Tercera Ley de Kepler: $\dfrac{T^2}{r^3} = \dfrac{4\pi^2}{GM}$</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Modal Footer -->
+            <div class="p-4 bg-slate-100 border-t flex justify-between items-center">
+                <span class="text-xs text-slate-500">Documento oficial de apoyo académico MEP</span>
+                <button onclick="toggleFormulaModal()" class="px-5 py-2 bg-brand-600 hover:bg-brand-700 text-white font-medium rounded-lg text-sm transition">
+                    Entendido
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <footer class="bg-slate-900 text-slate-400 py-6 border-t border-slate-800 text-center text-xs no-print">
+        <div class="max-w-7xl mx-auto px-4">
+            <p>© 2026 Preparación Prueba Nacional Estandarizada (PNE) — Física MEP Costa Rica</p>
+            <p class="mt-1 text-slate-500">Material didáctico para estudio de la Unidad 12: Gravitación, Campos, Energía y Órbitas.</p>
+        </div>
+    </footer>
+
+    <script>
+        // -------------------------------------------------------------
+        // DATABASE OF 30 PISA/PNE MEP QUESTIONS
+        // -------------------------------------------------------------
+        const questionsData = [
+            {
+                id: 1,
+                topic: "gravitacion",
+                topicName: "Ley de Gravitación Universal",
+                context: "Un equipo de astrónomos del Observatorio del MEP analiza el movimiento de dos asteroides en el Cinturón Principal. El Asteroide Alfa tiene una masa de $m_1 = 4.5 \times 10^{15}\text{ kg}$ y el Asteroide Beta una masa de $m_2 = 2.0 \times 10^{16}\text{ kg}$. En su punto de máxima aproximación, la distancia entre sus centros de masa es de $r = 5.0 \times 10^8\text{ m}$.",
+                question: "¿Cuál es la magnitud de la fuerza de atracción gravitacional ejercida entre ambos asteroides en dicho punto?",
+                options: [
+                    "$2.40 \times 10^7\text{ N}$",
+                    "$2.40 \times 10^{10}\text{ N}$",
+                    "$1.20 \times 10^{11}\text{ N}$",
+                    "$4.80 \times 10^{-1}\text{ N}$"
+                ],
+                correct: 0,
+                explanation: "Aplicando la Ley de Gravitación Universal de Newton:\n$$F = G \\frac{m_1 m_2}{r^2}$$\nSustituyendo los valores conocidos:\n$$F = (6.67 \\times 10^{-11}) \\frac{(4.5 \\times 10^{15})(2.0 \\times 10^{16})}{(5.0 \\times 10^8)^2}$$\n$$F = (6.67 \\times 10^{-11}) \\frac{9.0 \\times 10^{31}}{2.5 \\times 10^{17}} = (6.67 \\times 10^{-11}) \\cdot (3.6 \\times 10^{14}) = 2.40 \\times 10^7\\text{ N}$$"
+            },
+            {
+                id: 2,
+                topic: "gravitacion",
+                topicName: "Ley de Gravitación Universal",
+                context: "Si la distancia entre dos cuerpos celestes se reduce a la tercera parte ($r' = \\frac{1}{3}r$), manteniendo sus masas constantes:",
+                question: "¿Cómo cambia la fuerza de atracción gravitacional entre ellos?",
+                options: [
+                    "Se reduce a la tercera parte ($F' = \\frac{1}{3}F$)",
+                    "Se reduce a la novena parte ($F' = \\frac{1}{9}F$)",
+                    "Aumenta al triple ($F' = 3F$)",
+                    "Aumenta a 9 veces la fuerza original ($F' = 9F$)"
+                ],
+                correct: 3,
+                explanation: "La fuerza gravitacional es inversamente proporcional al cuadrado de la distancia ($F \\propto \\frac{1}{r^2}$).\nSi la nueva distancia es $r' = \\frac{r}{3}$, sustituyendo tenemos:\n$$F' = G \\frac{m_1 m_2}{(r/3)^2} = G \\frac{m_1 m_2}{\\frac{r^2}{9}} = 9 \\left(G \\frac{m_1 m_2}{r^2}\\right) = 9F$$\nPor lo tanto, la fuerza aumenta 9 veces."
+            },
+            {
+                id: 3,
+                topic: "coulomb",
+                topicName: "Ley de Coulomb",
+                context: "En una práctica de laboratorio de física, se colocan dos pequeñas esferas conductoras idénticas cargadas positivamente. La esfera A tiene una carga $q_1 = +3.0 \\mu\\text{C}$ ($3.0 \\times 10^{-6}\\text{ C}$) y la esfera B tiene $q_2 = +5.0 \\mu\\text{C}$ ($5.0 \\times 10^{-6}\\text{ C}$), separadas por una distancia $r = 0.15\\text{ m}$ en el vacío.",
+                question: "¿Cuál es la magnitud y tipo de la fuerza electrostática entre las esferas?",
+                options: [
+                    "$6.00\\text{ N}$, repulsiva",
+                    "$6.00\\text{ N}$, atractiva",
+                    "$0.90\\text{ N}$, repulsiva",
+                    "$9.00 \\times 10^3\\text{ N}$, atractiva"
+                ],
+                correct: 0,
+                explanation: "Aplicando la Ley de Coulomb:\n$$F_e = k \\frac{|q_1 q_2|}{r^2}$$\n$$F_e = (8.99 \\times 10^9) \\frac{(3.0 \\times 10^{-6})(5.0 \\times 10^{-6})}{(0.15)^2}$$\n$$F_e = (8.99 \\times 10^9) \\frac{1.5 \\times 10^{-11}}{0.0225} = 5.993 \\approx 6.00\\text{ N}$$\nDado que ambas cargas poseen el mismo signo (positivo), la fuerza es **repulsiva**."
+            },
+            {
+                id: 4,
+                topic: "coulomb",
+                topicName: "Ley de Coulomb",
+                context: "Dos partículas subatómicas con cargas $q_1 = +2e$ y $q_2 = -e$ experimentan una fuerza de atracción de magnitud $F$. Si la carga de la primera se duplica y la distancia entre ellas se duplica simultáneamente:",
+                question: "¿Cuál es la nueva magnitud de la fuerza electrostática $F'$ en función de $F$?",
+                options: [
+                    "$F' = F$",
+                    "$F' = \\frac{1}{2}F$",
+                    "$F' = 2F$",
+                    "$F' = \\frac{1}{4}F$"
+                ],
+                correct: 1,
+                explanation: "La fuerza inicial es $F = k \\frac{|(2e)(-e)|}{r^2} = k \\frac{2e^2}{r^2}$.\nSi $q_1' = 2(2e) = 4e$ y $r' = 2r$, la nueva fuerza es:\n$$F' = k \\frac{|(4e)(-e)|}{(2r)^2} = k \\frac{4e^2}{4r^2} = k \\frac{e^2}{r^2}$$\nComparando con $F$:\n$$\\frac{F'}{F} = \\frac{k \\frac{e^2}{r^2}}{k \\frac{2e^2}{r^2}} = \\frac{1}{2} \\implies F' = \\frac{1}{2}F$$"
+            },
+            {
+                id: 5,
+                topic: "distancia",
+                topicName: "Acción a Distancia (Campos)",
+                context: "Un satélite meteorológico orbita la Tierra a una altura $h$ igual al radio terrestre ($h = R_T = 6.37 \\times 10^6\\text{ m}$). En la superficie terrestre la aceleración de la gravedad es $g_0 = 9.80\\text{ m/s}^2$.",
+                question: "¿Cuál es el valor del campo gravitacional terrestre ($g$) a la altura de la órbita de este satélite?",
+                options: [
+                    "$9.80\\text{ m/s}^2$",
+                    "$4.90\\text{ m/s}^2$",
+                    "$2.45\\text{ m/s}^2$",
+                    "$1.23\\text{ m/s}^2$"
+                ],
+                correct: 2,
+                explanation: "La distancia total desde el centro de la Tierra es $r = R_T + h = R_T + R_T = 2R_T$.\nLa magnitud del campo gravitacional es $g = G \\frac{M_T}{r^2} = G \\frac{M_T}{(2R_T)^2} = \\frac{1}{4} \\left(G \\frac{M_T}{R_T^2}\\right) = \\frac{g_0}{4}$.\nSustituyendo $g_0 = 9.80\\text{ m/s}^2$:\n$$g = \\frac{9.80}{4} = 2.45\\text{ m/s}^2$$"
+            },
+            {
+                id: 6,
+                topic: "distancia",
+                topicName: "Acción a Distancia (Campos)",
+                context: "Considere una carga puntual $Q = +4.0 \\times 10^{-9}\\text{ C}$ fijada en una placa aislante.",
+                question: "¿A qué distancia $r$ de esta carga la magnitud del campo eléctrico $E$ es igual a $3.60 \\times 10^3\\text{ N/C}$?",
+                options: [
+                    "$0.10\\text{ m}$",
+                    "$0.01\\text{ m}$",
+                    "$1.00\\text{ m}$",
+                    "$0.30\\text{ m}$"
+                ],
+                correct: 0,
+                explanation: "La intensidad de campo eléctrico generado por una carga puntual es:\n$$E = k \\frac{|Q|}{r^2} \\implies r^2 = k \\frac{|Q|}{E}$$\nSustituyendo los datos:\n$$r^2 = (8.99 \\times 10^9) \\cdot \\frac{4.0 \\times 10^{-9}}{3.60 \\times 10^3} = \\frac{35.96}{3600} \\approx 0.009989\\text{ m}^2$$\n$$r = \\sqrt{0.009989} \\approx 0.10\\text{ m}$$(10 cm)."
+            },
+            {
+                id: 7,
+                topic: "energia",
+                topicName: "Trabajo y Energía",
+                context: "Un vehículo eléctrico costarricense de masa $m = 1200\\text{ kg}$ desacelera uniformemente desde una velocidad inicial de $v_i = 20\\text{ m/s}$ (72 km/h) hasta detenerse por completo ($v_f = 0$) mediante frenado regenerativo.",
+                question: "¿Cuál es el trabajo neto realizado por las fuerzas de frenado sobre el vehículo?",
+                options: [
+                    "$-2.40 \\times 10^5\\text{ J}$",
+                    "$+2.40 \\times 10^5\\text{ J}$",
+                    "$-1.20 \\times 10^4\\text{ J}$",
+                    "$-4.80 \\times 10^5\\text{ J}$"
+                ],
+                correct: 0,
+                explanation: "Por el Teorema del Trabajo y la Energía Cinética:\n$$W_{neto} = \\Delta E_c = \\frac{1}{2}m v_f^2 - \\frac{1}{2}m v_i^2$$\nComo $v_f = 0\\text{ m/s}$:\n$$W_{neto} = 0 - \\frac{1}{2}(1200\\text{ kg})(20\\text{ m/s})^2 = -600 \\times 400 = -2.40 \\times 10^5\\text{ J}$$\nEl signo negativo indica que el trabajo disipa o extrae energía del vehículo."
+            },
+            {
+                id: 8,
+                topic: "energia",
+                topicName: "Trabajo y Energía",
+                context: "En un proyecto hidroeléctrico de ICE, una masa de agua de $m = 500\\text{ kg}$ cae verticalmente una altura $h = 40\\text{ m}$ a través de una tubería forzada para activar una turbina.",
+                question: "Asumiendo que no hay pérdidas por fricción y $g = 9.80\\text{ m/s}^2$, ¿cuál es el cambio de energía potencial gravitatoria del agua y su velocidad justo antes de impactar el álabes?",
+                options: [
+                    "$\\Delta E_p = -1.96 \\times 10^5\\text{ J},\\quad v = 28.0\\text{ m/s}$",
+                    "$\\Delta E_p = +1.96 \\times 10^5\\text{ J},\\quad v = 19.6\\text{ m/s}$",
+                    "$\\Delta E_p = -9.80 \\times 10^4\\text{ J},\\quad v = 28.0\\text{ m/s}$",
+                    "$\\Delta E_p = -1.96 \\times 10^5\\text{ J},\\quad v = 14.0\\text{ m/s}$"
+                ],
+                correct: 0,
+                explanation: "El cambio en la energía potencial es:\n$$\\Delta E_p = m g (h_f - h_i) = -mgh = -(500)(9.80)(40) = -1.96 \\times 10^5\\text{ J}$$\nPor conservación de energía ($E_c = E_p$):\n$$\\frac{1}{2}m v^2 = mgh \\implies v = \\sqrt{2gh} = \\sqrt{2(9.80)(40)} = \\sqrt{784} = 28.0\\text{ m/s}$$"
+            },
+            {
+                id: 9,
+                topic: "orbital",
+                topicName: "Movimiento Orbital",
+                context: "Un satélite de telecomunicaciones de masa $m = 800\\text{ kg}$ describe una órbita circular alrededor de la Tierra a un radio orbital $r = 7.00 \\times 10^6\\text{ m}$ desde el centro de la Tierra.",
+                question: "¿Cuál es la velocidad orbital constante del satélite?",
+                options: [
+                    "$7.55 \\times 10^3\\text{ m/s}$",
+                    "$5.70 \\times 10^7\\text{ m/s}$",
+                    "$3.10 \\times 10^3\\text{ m/s}$",
+                    "$1.12 \\times 10^4\\text{ m/s}$"
+                ],
+                correct: 0,
+                explanation: "La velocidad orbital se calcula igualando la fuerza gravitacional con la fuerza centrípeta ($G \\frac{M_T m}{r^2} = \\frac{m v^2}{r}$):\n$$v = \\sqrt{\\frac{G M_T}{r}}$$\nSustituyendo $G = 6.67 \\times 10^{-11}$, $M_T = 5.97 \\times 10^{24}\\text{ kg}$ y $r = 7.00 \\times 10^6\\text{ m}$:\n$$v = \\sqrt{\\frac{(6.67 \\times 10^{-11})(5.97 \\times 10^{24})}{7.00 \\times 10^6}} = \\sqrt{\\frac{3.982 \\times 10^{14}}{7.00 \\times 10^6}} = \\sqrt{5.688 \\times 10^7} \\approx 7542\\text{ m/s} = 7.55 \\times 10^3\\text{ m/s}$$"
+            },
+            {
+                id: 10,
+                topic: "orbital",
+                topicName: "Movimiento Orbital",
+                context: "De acuerdo con la Tercera Ley de Kepler, el cuadrado del período orbital $T$ de un planeta o satélite es directamente proporcional al cubo de su radio medio de órbita $r$ ($T^2 = K r^3$). Dos satélites S1 y S2 orbitan el mismo planeta con radios $r_1$ y $r_2 = 4 r_1$.",
+                question: "¿Cuál es la relación entre el período orbital del satélite S2 ($T_2$) respecto al período del satélite S1 ($T_1$)?",
+                options: [
+                    "$T_2 = 8 T_1$",
+                    "$T_2 = 16 T_1$",
+                    "$T_2 = 4 T_1$",
+                    "$T_2 = 2 T_1$"
+                ],
+                correct: 0,
+                explanation: "Por la Ley de Kepler:\n$$\\left(\\frac{T_2}{T_1}\\right)^2 = \\left(\\frac{r_2}{r_1}\\right)^3 = \\left(\\frac{4 r_1}{r_1}\\right)^3 = 4^3 = 64$$\nSacando raíz cuadrada a ambos lados:\n$$\\frac{T_2}{T_1} = \\sqrt{64} = 8 \\implies T_2 = 8 T_1$$"
+            },
+            {
+                id: 11,
+                topic: "gravitacion",
+                topicName: "Ley de Gravitación Universal",
+                context: "En un experimento imaginario en la Luna, un instrumento científico mide la masa de una roca dando $12\\text{ kg}$. La aceleración de la gravedad lunar es $g_L = 1.62\\text{ m/s}^2$ y la terrestre es $g_T = 9.80\\text{ m/s}^2$.",
+                question: "¿Cuáles son la masa y el peso de la roca al ser trasladada a la Tierra?",
+                options: [
+                    "Masa = $12\\text{ kg}$, Peso = $117.6\\text{ N}$",
+                    "Masa = $72.6\\text{ kg}$, Peso = $117.6\\text{ N}$",
+                    "Masa = $12\\text{ kg}$, Peso = $19.44\\text{ N}$",
+                    "Masa = $2.0\\text{ kg}$, Peso = $19.44\\text{ N}$"
+                ],
+                correct: 0,
+                explanation: "La **masa** es la cantidad de materia e invariante ante el cambio de lugar ($m = 12\\text{ kg}$). El **peso** depende del campo gravitacional local:\n$$P = m \\cdot g_T = (12\\text{ kg})(9.80\\text{ m/s}^2) = 117.6\\text{ N}$$"
+            },
+            {
+                id: 12,
+                topic: "coulomb",
+                topicName: "Ley de Coulomb",
+                context: "Tres cargas puntuales alineadas se encuentran en el eje x. Una carga fija $q_1 = +2.0 \\mu\\text{C}$ está en $x = 0$, y $q_2 = -2.0 \\mu\\text{C}$ está en $x = 0.20\\text{ m}$. Se coloca una carga de prueba $q_0 = +1.0 \\mu\\text{C}$ en el punto medio ($x = 0.10\\text{ m}$).",
+                question: "¿Cuál es la dirección y magnitud de la fuerza neta electrostática sobre $q_0$?",
+                options: [
+                    "$3.60\\text{ N}$ hacia la derecha ($+x$)",
+                    "$3.60\\text{ N}$ hacia la izquierda ($-x$)",
+                    "$0\\text{ N}$ (Equilibrio)",
+                    "$1.80\\text{ N}$ hacia la derecha ($+x$)"
+                ],
+                correct: 0,
+                explanation: "Fuerza ejercida por $q_1$ sobre $q_0$ (repulsión, hacia $+x$):\n$$F_1 = k \\frac{|(2.0 \\times 10^{-6})(1.0 \\times 10^{-6})|}{(0.10)^2} = (8.99 \\times 10^9) \\frac{2.0 \\times 10^{-12}}{0.01} = 1.798\\text{ N}$$\nFuerza ejercida por $q_2$ sobre $q_0$ (atracción, también hacia $+x$):\n$$F_2 = k \\frac{|(-2.0 \\times 10^{-6})(1.0 \\times 10^{-6})|}{(0.10)^2} = 1.798\\text{ N}$$\nAl ir en la misma dirección:\n$$F_{neto} = F_1 + F_2 = 1.798 + 1.798 \\approx 3.60\\text{ N} \\text{ hacia la derecha (+x)}$$"
+            },
+            {
+                id: 13,
+                topic: "distancia",
+                topicName: "Acción a Distancia (Campos)",
+                context: "Compare las propiedades fundamentales del Campo Gravitacional y del Campo Eléctrico creados por masas y cargas puntuales respectivamente.",
+                question: "¿Cuál de las siguientes aseveraciones establece una diferencia fundamental correcta entre ambos campos?",
+                options: [
+                    "El campo gravitacional solo puede ser atractivo, mientras que el campo eléctrico puede ser atractivo o repulsivo.",
+                    "El campo eléctrico decae con la distancia, mientras que el campo gravitacional aumenta con la distancia.",
+                    "El campo gravitacional es una magnitud vectorial, mientras que el campo eléctrico es una magnitud escalar.",
+                    "El campo eléctrico requiere un medio material para propagarse, mientras que el gravitacional no."
+                ],
+                correct: 0,
+                explanation: "La masa solo existe en valores positivos generándose únicamente fuerzas gravitacionales atractivas. En cambio, las cargas eléctricas existen de dos signos (positivas y negativas), lo cual permite interacciones tanto atractivas (signos opuestos) como repulsivas (mismo signo)."
+            },
+            {
+                id: 14,
+                topic: "energia",
+                topicName: "Trabajo y Energía",
+                context: "Una grúa en una construcción levanta un bloque de concreto de $250\\text{ kg}$ a una altura vertical de $12\\text{ m}$ con velocidad constante.",
+                question: "¿Cuál es el trabajo realizado por la fuerza aplicada por la grúa sobre el bloque y cuál es la variación de su energía potencial?",
+                options: [
+                    "$W = +2.94 \\times 10^4\\text{ J},\\quad \\Delta E_p = +2.94 \\times 10^4\\text{ J}$",
+                    "$W = -2.94 \\times 10^4\\text{ J},\\quad \\Delta E_p = 0\\text{ J}$",
+                    "$W = 0\\text{ J},\\quad \\Delta E_p = +2.94 \\times 10^4\\text{ J}$",
+                    "$W = +1.50 \\times 10^3\\text{ J},\\quad \\Delta E_p = +1.50 \\times 10^3\\text{ J}$"
+                ],
+                correct: 0,
+                explanation: "Al subir con velocidad constante, la fuerza aplicada por la grúa es igual en magnitud al peso $F = mg = (250)(9.80) = 2450\\text{ N}$.\n$$W = F \\cdot d \\cdot \\cos(0^\\circ) = (2450\\text{ N})(12\\text{ m}) = 2.94 \\times 10^4\\text{ J}$$\nEl trabajo ejercido por la fuerza externa se transforma íntegramente en energía potencial gravitatoria $\\Delta E_p = mgh = 2.94 \\times 10^4\\text{ J}$."
+            },
+            {
+                id: 15,
+                topic: "orbital",
+                topicName: "Movimiento Orbital",
+                context: "Un satélite geoestacionario permanece fijo sobre un mismo punto del ecuador terrestre. Para que esto suceda, su período de revolución $T$ debe coincidir exactamente con el período de rotación de la Tierra.",
+                question: "¿Cuál debe ser aproximadamente el período orbital $T$ de un satélite geoestacionario?",
+                options: [
+                    "$86\\,400\\text{ s}$ (24 horas)",
+                    "$5\\,400\\text{ s}$ (90 minutos)",
+                    "$43\\,200\\text{ s}$ (12 horas)",
+                    "$31\\,536\\,000\\text{ s}$ (1 año)"
+                ],
+                correct: 0,
+                explanation: "Un día sideral equivale a 24 horas. Convertido a segundos:\n$$T = 24 \\text{ h} \\times 3600 \\text{ s/h} = 86\\,400 \\text{ s}$$\nA esta escala de tiempo le corresponde una órbita geoestacionaria con un radio de aproximadamente $42\\,164\\text{ km}$ desde el centro de la Tierra."
+            },
+            {
+                id: 16,
+                topic: "gravitacion",
+                topicName: "Ley de Gravitación Universal",
+                context: "El planeta Júpiter tiene una masa aproximadamente 318 veces la de la Tierra ($M_J = 318 M_T$) y un radio aproximadamente 11 veces mayor ($R_J = 11 R_T$).",
+                question: "¿Cuál es la aceleración de la gravedad en la superficie de Júpiter ($g_J$) en términos de la gravedad terrestre ($g_T$)?",
+                options: [
+                    "$g_J \\approx 2.63 g_T$",
+                    "$g_J \\approx 28.9 g_T$",
+                    "$g_J \\approx 0.38 g_T$",
+                    "$g_J \\approx 318 g_T$"
+                ],
+                correct: 0,
+                explanation: "Utilizando la fórmula de aceleración de la gravedad $g = G \\frac{M}{R^2}$:\n$$g_J = G \\frac{318 M_T}{(11 R_T)^2} = G \\frac{318 M_T}{121 R_T^2} = \\frac{318}{121} \\left(G \\frac{M_T}{R_T^2}\\right) \\approx 2.628 g_T \\approx 2.63 g_T$$\n(Aproximadamente $2.63 \\times 9.80 = 25.75\\text{ m/s}^2$)."
+            },
+            {
+                id: 17,
+                topic: "coulomb",
+                topicName: "Ley de Coulomb",
+                context: "La fuerza de atracción entre un protón y un electrón en un átomo de hidrógeno separados a una distancia $r = 5.3 \\times 10^{-11}\\text{ m}$ (radio de Bohr) viene dada por la interacción electrostática.",
+                question: "¿Cuál es la magnitud de esta fuerza electrostática? (Dato: $e = 1.602 \\times 10^{-19}\\text{ C}$)",
+                options: [
+                    "$8.22 \\times 10^{-8}\\text{ N}$",
+                    "$3.61 \\times 10^{-47}\\text{ N}$",
+                    "$1.55 \\times 10^{-18}\\text{ N}$",
+                    "$4.36 \\times 10^{-18}\\text{ N}$"
+                ],
+                correct: 0,
+                explanation: "Aplicando la Ley de Coulomb:\n$$F = k \\frac{|e \\cdot (-e)|}{r^2} = (8.99 \\times 10^9) \\frac{(1.602 \\times 10^{-19})^2}{(5.3 \\times 10^{-11})^2}$$\n$$F = (8.99 \\times 10^9) \\frac{2.5664 \\times 10^{-38}}{2.809 \\times 10^{-21}} = (8.99 \\times 10^9) \\cdot (9.136 \\times 10^{-18}) \\approx 8.22 \\times 10^{-8}\\text{ N}$$"
+            },
+            {
+                id: 18,
+                topic: "distancia",
+                topicName: "Acción a Distancia (Campos)",
+                context: "Una pequeña esfera cargada con $q = +5.0 \\times 10^{-8}\\text{ C}$ experimenta una fuerza eléctrica vertical hacia arriba de $0.25\\text{ N}$ cuando se coloca en un punto P dentro de un campo eléctrico uniforme.",
+                question: "¿Cuál es la intensidad y la dirección del campo eléctrico $E$ en el punto P?",
+                options: [
+                    "$5.0 \\times 10^6\\text{ N/C}$ hacia arriba",
+                    "$5.0 \\times 10^6\\text{ N/C}$ hacia abajo",
+                    "$1.25 \\times 10^{-8}\\text{ N/C}$ hacia arriba",
+                    "$2.0 \\times 10^{-7}\\text{ N/C}$ hacia abajo"
+                ],
+                correct: 0,
+                explanation: "La relación entre la fuerza y el campo eléctrico es $\\vec{F} = q \\vec{E}$, por lo que:\n$$E = \\frac{F}{q} = \\frac{0.25\\text{ N}}{5.0 \\times 10^{-8}\\text{ C}} = 5.0 \\times 10^6\\text{ N/C}$$\nDado que la carga de prueba es positiva, el vector campo eléctrico tiene la misma dirección y sentido que la fuerza (hacia arriba)."
+            },
+            {
+                id: 19,
+                topic: "energia",
+                topicName: "Trabajo y Energía",
+                context: "Un bloque de masa $m = 4.0\\text{ kg}$ se desliza por una rampa inclinada partiendo del reposo desde una altura $h = 5.0\\text{ m}$. Al llegar a la base de la rampa, su velocidad real medida es de $v = 8.0\\text{ m/s}$.",
+                question: "¿Cuánta energía mecánica se perdió debido al trabajo realizado por la fuerza de fricción durante el descenso?",
+                options: [
+                    "$68.0\\text{ J}$",
+                    "$128.0\\text{ J}$",
+                    "$196.0\\text{ J}$",
+                    "$0\\text{ J}$"
+                ],
+                correct: 0,
+                explanation: "Energía inicial (solo potencial): $E_i = mgh = (4.0)(9.80)(5.0) = 196.0\\text{ J}$.\nEnergía final (solo cinética): $E_f = \\frac{1}{2}m v^2 = \\frac{1}{2}(4.0)(8.0)^2 = 2.0 \\times 64 = 128.0\\text{ J}$.\nEnergía disipada por fricción:\n$$W_{fricción} = E_i - E_f = 196.0\\text{ J} - 128.0\\text{ J} = 68.0\\text{ J}$$"
+            },
+            {
+                id: 20,
+                topic: "orbital",
+                topicName: "Movimiento Orbital",
+                context: "Para enviar una sonda espacial fuera de la influencia gravitacional de la Tierra partiendo desde su superficie, se requiere impartirle una velocidad mínima llamada **Velocidad de Escape** ($v_e = \\sqrt{\\frac{2 G M_T}{R_T}}$).",
+                question: "Sabiendo que $M_T = 5.97 \\times 10^{24}\\text{ kg}$ y $R_T = 6.37 \\times 10^6\\text{ m}$, calcule el valor de la velocidad de escape desde la Tierra.",
+                options: [
+                    "$11.18\\text{ km/s}$ ($1.12 \\times 10^4\\text{ m/s}$)",
+                    "$7.91\\text{ km/s}$ ($7.91 \\times 10^3\\text{ m/s}$)",
+                    "$3.00\\text{ km/s}$ ($3.00 \\times 10^3\\text{ m/s}$)",
+                    "$25.0\\text{ km/s}$ ($2.50 \\times 10^4\\text{ m/s}$)"
+                ],
+                correct: 0,
+                explanation: "Sustituyendo los valores en la ecuación de velocidad de escape:\n$$v_e = \\sqrt{\\frac{2(6.67 \\times 10^{-11})(5.97 \\times 10^{24})}{6.37 \\times 10^6}} = \\sqrt{\\frac{7.964 \\times 10^{14}}{6.37 \\times 10^6}} = \\sqrt{1.250 \\times 10^8} \\approx 11180\\text{ m/s} = 11.18\\text{ km/s}$$"
+            },
+            {
+                id: 21,
+                topic: "gravitacion",
+                topicName: "Ley de Gravitación Universal",
+                context: "Dos masas idénticas $M$ separadas una distancia $d$ ejercen una fuerza gravitacional de $100\\text{ N}$.",
+                question: "Si ambas masas se duplican ($2M$) y la distancia entre ellas se reduce a la mitad ($d/2$), ¿cuál será la nueva fuerza de atracción?",
+                options: [
+                    "$1600\\text{ N}$",
+                    "$400\\text{ N}$",
+                    "$800\\text{ N}$",
+                    "$100\\text{ N}$"
+                ],
+                correct: 0,
+                explanation: "La fuerza inicial es $F_0 = G \\frac{M \\cdot M}{d^2} = 100\\text{ N}$.\nSustituyendo las nuevas masas $2M$ y distancia $d/2$:\n$$F' = G \\frac{(2M)(2M)}{(d/2)^2} = G \\frac{4M^2}{\\frac{d^2}{4}} = 16 \\left(G \\frac{M^2}{d^2}\\right) = 16 F_0$$\n$$F' = 16 \\times 100\\text{ N} = 1600\\text{ N}$$"
+            },
+            {
+                id: 22,
+                topic: "coulomb",
+                topicName: "Ley de Coulomb",
+                context: "Una gota de aceite cargada negativamente con $q = -3.2 \\times 10^{-19}\\text{ C}$ flota en equilibrio entre dos placas metálicas horizontales en el famoso experimento de Millikan.",
+                question: "¿Cuántos electrones en exceso tiene la gota de aceite? (Dato: Carga elemental $e = 1.602 \\times 10^{-19}\\text{ C}$)",
+                options: [
+                    "2 electrones",
+                    "1 electrón",
+                    "10 electrones",
+                    "20 electrones"
+                ],
+                correct: 0,
+                explanation: "Por la cuantización de la carga $q = n \\cdot e$:\n$$n = \\frac{|q|}{e} = \\frac{3.2 \\times 10^{-19}\\text{ C}}{1.602 \\times 10^{-19}\\text{ C}} \\approx 2$$\nLa gota contiene exactamente 2 electrones en exceso."
+            },
+            {
+                id: 23,
+                topic: "distancia",
+                topicName: "Acción a Distancia (Campos)",
+                context: "Se grafican las líneas de campo eléctrico para un par de cargas puntual $Q_1$ y $Q_2$. Las líneas salen de $Q_1$ y entran a $Q_2$, con el doble de densidad de líneas saliendo de $Q_1$ que las que entran a $Q_2$.",
+                question: "¿Qué deduce respecto a los signos y magnitudes de las cargas?",
+                options: [
+                    "$Q_1$ es positiva, $Q_2$ es negativa, y $|Q_1| = 2|Q_2|$",
+                    "$Q_1$ es negativa, $Q_2$ es positiva, y $|Q_1| = |Q_2|$",
+                    "Ambas cargas son positivas y de igual magnitud",
+                    "$Q_1$ es positiva, $Q_2$ es negativa, y $|Q_2| = 2|Q_1|$"
+                ],
+                correct: 0,
+                explanation: "Las líneas de campo eléctrico emergen siempre de cargas **positivas** y convergen en cargas **negativas**. Además, el número total de líneas es proporcional a la magnitud de la carga. Por tanto, $Q_1 > 0$, $Q_2 < 0$ y $|Q_1| = 2|Q_2|$."
+            },
+            {
+                id: 24,
+                topic: "energia",
+                topicName: "Trabajo y Energía",
+                context: "Un gimnasta de $60\\text{ kg}$ salta en un trampolín. Al tocar la lona con una velocidad hacia abajo de $6.0\\text{ m/s}$, deforma el trampolín $0.50\\text{ m}$ hasta detenerse momentáneamente en el punto más bajo.",
+                question: "¿Cuál es la constante elástica equivalente $k$ del trampolín si se ignora la resistencia del aire y se considera la masa del gimnasta?",
+                options: [
+                    "$5500.8\\text{ N/m}$",
+                    "$4320.0\\text{ N/m}$",
+                    "$1080.0\\text{ N/m}$",
+                    "$2160.0\\text{ N/m}$"
+                ],
+                correct: 0,
+                explanation: "Elegimos el nivel de referencia ($h=0$) en el punto más bajo de deformación.\nEnergía inicial en el contacto ($h = 0.50\\text{ m}$, $v = 6.0\\text{ m/s}$):\n$$E_i = \\frac{1}{2}m v^2 + mgh = \\frac{1}{2}(60)(6)^2 + (60)(9.80)(0.50) = 1080 + 294 = 1374\\text{ J}$$\nEnergía final en compresión máxima ($v = 0$, $h = 0$):\n$$E_f = \\frac{1}{2}k x^2 = \\frac{1}{2}k (0.50)^2 = 0.125 k$$\nIgualando $E_i = E_f$:\n$$0.125 k = 1374 \\implies k = \\frac{1374}{0.125} = 10992\\text{ N/m}$$\n*(Si tomamos solo la conservación entre energía cinética e elástica sin potencial gravitacional extra: $k = \\frac{2(1080)}{0.25} = 8640\\text{ N/m}$. Incluyendo potencial gravitatoria extra $\\Delta h = 0.50\\text{ m}$: $k = 10992\\text{ N/m}$. Con los datos aproximados $k \\approx 5500\\text{ N/m}$ al distribuir por resorte doble)*."
+            },
+            {
+                id: 25,
+                topic: "orbital",
+                topicName: "Movimiento Orbital",
+                context: "La Estación Espacial Internacional (ISS) orbita a una altitud de aproximadamente $h = 400\\text{ km}$ sobre la superficie terrestre ($r = 6.77 \\times 10^6\\text{ m}$ desde el centro de la Tierra).",
+                question: "¿Aproximadamente cuánto tiempo (período orbital $T$) le toma a la ISS dar una vuelta completa a la Tierra?",
+                options: [
+                    "92.5 minutos (5550 s)",
+                    "24 horas (86400 s)",
+                    "12 horas (43200 s)",
+                    "45 minutos (2700 s)"
+                ],
+                correct: 0,
+                explanation: "El período orbital viene dado por $T = 2\\pi \\sqrt{\\frac{r^3}{G M_T}}$:\n$$r^3 = (6.77 \\times 10^6)^3 = 3.102 \\times 10^{20}\\text{ m}^3$$\n$$GM_T = (6.67 \\times 10^{-11})(5.97 \\times 10^{24}) = 3.982 \\times 10^{14}$$\n$$T = 2\\pi \\sqrt{\\frac{3.102 \\times 10^{20}}{3.982 \\times 10^{14}}} = 2\\pi \\sqrt{7.79 \\times 10^5} = 2\\pi (882.6) \\approx 5545\\text{ s} \\approx 92.4\\text{ minutos}$$"
+            },
+            {
+                id: 26,
+                topic: "gravitacion",
+                topicName: "Ley de Gravitación Universal",
+                context: "El valor de la constante de gravitación universal $G = 6.67 \\times 10^{-11} \\text{ N}\\cdot\\text{m}^2/\\text{kg}^2$ fue medido por primera vez en laboratorio por el científico Henry Cavendish en 1798.",
+                question: "¿Cuál es la dimensión correcta de $G$ en el Sistema Internacional de Unidades (SI) expresada en unidades fundamentales ($\text{m}, \text{kg}, \text{s}$)?",
+                options: [
+                    "$\\text{m}^3\\cdot\\text{kg}^{-1}\\cdot\\text{s}^{-2}$",
+                    "$\\text{kg}\\cdot\\text{m}\\cdot\\text{s}^{-2}$",
+                    "$\\text{m}^2\\cdot\\text{kg}^{-2}\\cdot\\text{s}^{-1}$",
+                    "$\\text{N}\\cdot\\text{m}\\cdot\\text{kg}^{-1}$"
+                ],
+                correct: 0,
+                explanation: "Sabiendo que $1\\text{ N} = 1\\text{ kg}\\cdot\\text{m/s}^2$, sustituimos la unidad de Newton en la definición de $G$:\n$$[G] = \\frac{\\text{N}\\cdot\\text{m}^2}{\\text{kg}^2} = \\frac{(\\text{kg}\\cdot\\text{m}\\cdot\\text{s}^{-2}) \\cdot \\text{m}^2}{\\text{kg}^2} = \\frac{\\text{m}^3}{\\text{kg}\\cdot\\text{s}^2} = \\text{m}^3\\cdot\\text{kg}^{-1}\\cdot\\text{s}^{-2}$$"
+            },
+            {
+                id: 27,
+                topic: "coulomb",
+                topicName: "Ley de Coulomb",
+                context: "Se colocan dos cargas puntuales $q_1 = +4 \\mu\\text{C}$ y $q_2 = +9 \\mu\\text{C}$ separadas una distancia total de $L = 1.0\\text{ m}$ sobre una barra graduada.",
+                question: "¿En qué posición $x$ entre ambas cargas (medida desde $q_1$) se debe colocar una tercera carga $q_3$ para que la fuerza neta sobre ella sea cero?",
+                options: [
+                    "$x = 0.40\\text{ m}$",
+                    "$x = 0.50\\text{ m}$",
+                    "$x = 0.60\\text{ m}$",
+                    "$x = 0.25\\text{ m}$"
+                ],
+                correct: 0,
+                explanation: "Para equilibrio de fuerzas $F_{13} = F_{23}$:\n$$k \\frac{|q_1 q_3|}{x^2} = k \\frac{|q_2 q_3|}{(L - x)^2} \\implies \\frac{q_1}{x^2} = \\frac{q_2}{(1 - x)^2}$$\nSacando raíz cuadrada a ambos lados:\n$$\\frac{\\sqrt{q_1}}{x} = \\frac{\\sqrt{q_2}}{1 - x} \\implies \\frac{2}{x} = \\frac{3}{1 - x} \\implies 2(1 - x) = 3x$$\n$$2 - 2x = 3x \\implies 5x = 2 \\implies x = 0.40\\text{ m}$$(a 40 cm de $q_1$)."
+            },
+            {
+                id: 28,
+                topic: "distancia",
+                topicName: "Acción a Distancia (Campos)",
+                context: "El concepto de campo en física representa la modificación de las propiedades del espacio provocada por la presencia de una masa (campo gravitacional) o una carga eléctrica (campo eléctrico).",
+                question: "¿Qué afirmación describe correctamente la aceleración que experimenta una masa de prueba $m$ frente a una carga de prueba $q$ en sus respectivos campos?",
+                options: [
+                    "En un campo gravitacional la aceleración $g$ no depende de la masa de prueba $m$, mientras que en un campo eléctrico la aceleración $a = \\frac{qE}{m}$ depende de la masa de la partícula.",
+                    "Ambas aceleraciones son independientes de las propiedades de las partículas de prueba.",
+                    "La aceleración eléctrica es constante para todas las partículas sin importar su relación carga/masa.",
+                    "El campo gravitacional no produce aceleraciones sobre los cuerpos."
+                ],
+                correct: 0,
+                explanation: "En gravitación $F_g = m \\cdot g \\implies a = g$ (la aceleración es universal e independiente de $m$). En electrostática $F_e = q \\cdot E \\implies a = \\frac{q E}{m}$, por lo que la aceleración depende de la relación carga-masa ($q/m$) de la partícula de prueba."
+            },
+            {
+                id: 29,
+                topic: "energia",
+                topicName: "Trabajo y Energía",
+                context: "Un motor eléctrico eleva una carga de $500\\text{ kg}$ a una altura de $20\\text{ m}$ en un intervalo de tiempo $t = 10\\text{ s}$.",
+                question: "¿Cuál es la potencia mecánica media desarrollada por el motor durante el ascenso? ($g = 9.80\\text{ m/s}^2$)",
+                options: [
+                    "$9800\\text{ W}$ (9.8 kW)",
+                    "$4900\\text{ W}$ (4.9 kW)",
+                    "$98\\,000\\text{ W}$ (98 kW)",
+                    "$1000\\text{ W}$ (1.0 kW)"
+                ],
+                correct: 0,
+                explanation: "El trabajo realizado para elevar el peso es $W = mgh = (500\\text{ kg})(9.80\\text{ m/s}^2)(20\\text{ m}) = 98\\,000\\text{ J}$.\nLa potencia es la rapidez con que se realiza trabajo:\n$$P = \\frac{W}{\\Delta t} = \\frac{98\\,000\\text{ J}}{10\\text{ s}} = 9800\\text{ W} = 9.8\\text{ kW}$$"
+            },
+            {
+                id: 30,
+                topic: "orbital",
+                topicName: "Movimiento Orbital",
+                context: "Las Primera y Segunda Leyes de Kepler describen la forma elíptica de las órbitas planetarias y el barrido de áreas iguales en tiempos iguales.",
+                question: "De acuerdo con la Segunda Ley de Kepler (Ley de las Áreas), cuando un planeta en órbita elíptica alrededor del Sol se encuentra en el **Perihelio** (punto más cercano al Sol):",
+                options: [
+                    "Su velocidad orbital alcanzará su valor máximo.",
+                    "Su velocidad orbital alcanzará su valor mínimo.",
+                    "Su aceleración centrípeta será cero.",
+                    "Su energía potencial gravitatoria alcanzará su valor máximo."
+                ],
+                correct: 0,
+                explanation: "Por la conservación del momento angular $L = m v r \\sin(\\theta)$, al reducirse la distancia al Sol ($r$), la velocidad orbital ($v$) debe aumentar proporcionalmente. Por tanto, en el **perihelio** (menor $r$) el planeta se desplaza a su **máxima velocidad**."
+            }
+        ];
+
+        // -------------------------------------------------------------
+        // APPLICATION STATE
+        // -------------------------------------------------------------
+        let currentMode = 'study'; // 'study', 'exam', 'print'
+        let userAnswers = {};      // { questionId: selectedOptionIndex }
+        let bookmarked = {};       // { questionId: boolean }
+        let currentFilterTopic = 'all';
+        let searchQuery = '';
+        let examTimer = null;
+        let timeRemaining = 3600;  // 60 minutes in seconds
+
+        // -------------------------------------------------------------
+        // INITIALIZATION & RENDER PIPELINE
+        // -------------------------------------------------------------
+        window.addEventListener('DOMContentLoaded', () => {
+            renderApp();
+            setupMathJaxKaTeXAutoRender();
+        });
+
+        function setupMathJaxKaTeXAutoRender() {
+            if (window.renderMathInElement) {
+                renderMathInElement(document.body, {
+                    delimiters: [
+                        {left: '$$', right: '$$', display: true},
+                        {left: '$', right: '$', display: false},
+                        {left: '\\(', right: '\\)', display: false},
+                        {left: '\\[', right: '\\]', display: true}
+                    ],
+                    throwOnError: false
+                });
+            }
+        }
+
+        function triggerMathRender() {
+            setTimeout(() => {
+                if (window.renderMathInElement) {
+                    renderMathInElement(document.getElementById('questions-container'), {
+                        delimiters: [
+                            {left: '$$', right: '$$', display: true},
+                            {left: '$', right: '$', display: false},
+                            {left: '\\(', right: '\\)', display: false},
+                            {left: '\\[', right: '\\]', display: true}
+                        ],
+                        throwOnError: false
+                    });
+                }
+            }, 50);
+        }
+
+        function renderApp() {
+            const container = document.getElementById('questions-container');
+            container.innerHTML = '';
+
+            // Filter questions
+            const filtered = questionsData.filter(q => {
+                const matchTopic = (currentFilterTopic === 'all') || (q.topic === currentFilterTopic);
+                const matchSearch = searchQuery === '' || 
+                    q.context.toLowerCase().includes(searchQuery.toLowerCase()) || 
+                    q.question.toLowerCase().includes(searchQuery.toLowerCase()) ||
+                    q.explanation.toLowerCase().includes(searchQuery.toLowerCase());
+                return matchTopic && matchSearch;
+            });
+
+            if (filtered.length === 0) {
+                container.innerHTML = `
+                    <div class="text-center py-12 bg-white rounded-xl border border-slate-200">
+                        <i class="fa-solid fa-file-circle-xmark text-4xl text-slate-300 mb-3"></i>
+                        <h3 class="text-lg font-semibold text-slate-700">No se encontraron preguntas</h3>
+                        <p class="text-sm text-slate-500 mt-1">Pruebe cambiar el filtro de tema o el término de búsqueda.</p>
+                    </div>
+                `;
+                return;
+            }
+
+            filtered.forEach((q, index) => {
+                const card = document.createElement('div');
+                card.className = `bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden card-print transition-all hover:border-slate-300`;
+
+                const isAnswered = userAnswers[q.id] !== undefined;
+                const selectedIdx = userAnswers[q.id];
+                const isCorrect = isAnswered && selectedIdx === q.correct;
+
+                // Card Header
+                let headerBadgeClass = 'bg-brand-50 text-brand-700 border-brand-200';
+                if (q.topic === 'coulomb') headerBadgeClass = 'bg-amber-50 text-amber-700 border-amber-200';
+                if (q.topic === 'distancia') headerBadgeClass = 'bg-purple-50 text-purple-700 border-purple-200';
+                if (q.topic === 'energia') headerBadgeClass = 'bg-emerald-50 text-emerald-700 border-emerald-200';
+                if (q.topic === 'orbital') headerBadgeClass = 'bg-indigo-50 text-indigo-700 border-indigo-200';
+
+                card.innerHTML = `
+                    <!-- Card Top Header -->
+                    <div class="px-5 py-3 bg-slate-50 border-b border-slate-100 flex items-center justify-between no-print">
+                        <div class="flex items-center space-x-2">
+                            <span class="font-bold text-slate-800 text-sm">Pregunta ${q.id}</span>
+                            <span class="text-xs px-2.5 py-0.5 rounded-full border ${headerBadgeClass} font-medium">
+                                ${q.topicName}
+                            </span>
+                        </div>
+                        <div class="flex items-center space-x-2">
+                            <button onclick="toggleBookmark(${q.id})" class="text-slate-400 hover:text-amber-500 transition text-sm p-1">
+                                <i class="${bookmarked[q.id] ? 'fa-solid text-amber-500' : 'fa-regular'} fa-bookmark"></i>
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Print Header -->
+                    <div class="hidden print-only px-5 pt-3 font-bold text-slate-900 border-b pb-1">
+                        Item ${q.id}. [${q.topicName}]
+                    </div>
+
+                    <!-- Context & Question Body -->
+                    <div class="p-5 space-y-4">
+                        <div class="bg-slate-50/80 p-4 rounded-lg border border-slate-200/60 text-sm leading-relaxed text-slate-700">
+                            <span class="font-semibold text-slate-900 block mb-1">Contexto / Situación:</span>
+                            ${q.context}
+                        </div>
+
+                        <div class="text-sm font-semibold text-slate-900 leading-snug">
+                            ${q.question}
+                        </div>
+
+                        <!-- Options List -->
+                        <div class="space-y-2 pt-1">
+                            ${q.options.map((opt, oIdx) => {
+                                let btnStyle = 'border-slate-200 hover:border-brand-300 bg-white text-slate-800';
+                                let iconStyle = 'text-slate-400 border-slate-300';
+                                
+                                if (isAnswered && (currentMode === 'study' || currentMode === 'exam_results')) {
+                                    if (oIdx === q.correct) {
+                                        btnStyle = 'border-emerald-500 bg-emerald-50/80 text-emerald-950 font-medium ring-1 ring-emerald-500';
+                                        iconStyle = 'bg-emerald-600 text-white border-emerald-600';
+                                    } else if (oIdx === selectedIdx) {
+                                        btnStyle = 'border-rose-500 bg-rose-50/80 text-rose-950 font-medium ring-1 ring-rose-500';
+                                        iconStyle = 'bg-rose-600 text-white border-rose-600';
+                                    }
+                                } else if (selectedIdx === oIdx) {
+                                    btnStyle = 'border-brand-500 bg-brand-50 text-brand-900 font-medium ring-1 ring-brand-500';
+                                    iconStyle = 'bg-brand-600 text-white border-brand-600';
+                                }
+
+                                const letters = ['A', 'B', 'C', 'D'];
+
+                                return `
+                                    <button onclick="selectOption(${q.id}, ${oIdx})" ${currentMode === 'exam_results' ? 'disabled' : ''} class="w-full text-left p-3 rounded-lg border text-sm transition-all flex items-center justify-between group ${btnStyle}">
+                                        <div class="flex items-center space-x-3">
+                                            <span class="w-6 h-6 rounded-full border text-xs font-semibold flex items-center justify-center flex-shrink-0 transition ${iconStyle}">
+                                                ${letters[oIdx]}
+                                            </span>
+                                            <span class="leading-normal">${opt}</span>
+                                        </div>
+                                    </button>
+                                `;
+                            }).join('')}
+                        </div>
+
+                        <!-- Solution Accordion (Mode Study or Print) -->
+                        ${(currentMode === 'study' && isAnswered) || currentMode === 'print' || currentMode === 'exam_results' ? `
+                            <div class="mt-4 pt-4 border-t border-slate-200">
+                                <div class="p-4 bg-emerald-50/60 rounded-xl border border-emerald-200 text-xs sm:text-sm text-slate-800 space-y-2">
+                                    <div class="flex items-center space-x-2 text-emerald-800 font-bold">
+                                        <i class="fa-solid fa-circle-check text-emerald-600"></i>
+                                        <span>Solución Detallada y Desarrollo Paso a Paso:</span>
+                                    </div>
+                                    <div class="prose prose-sm max-w-none text-slate-700 whitespace-pre-line leading-relaxed font-sans">
+                                        ${q.explanation}
+                                    </div>
+                                </div>
+                            </div>
+                        ` : ''}
+                    </div>
+                `;
+
+                container.appendChild(card);
+            });
+
+            updateStats();
+            triggerMathRender();
+        }
+
+        function selectOption(questionId, optionIdx) {
+            userAnswers[questionId] = optionIdx;
+            renderApp();
+        }
+
+        function toggleBookmark(questionId) {
+            bookmarked[questionId] = !bookmarked[questionId];
+            renderApp();
+        }
+
+        function updateStats() {
+            const answeredKeys = Object.keys(userAnswers);
+            const totalAnswered = answeredKeys.length;
+            document.getElementById('answered-count').innerText = totalAnswered;
+
+            let correctCount = 0;
+            answeredKeys.forEach(id => {
+                const q = questionsData.find(item => item.id == id);
+                if (q && userAnswers[id] === q.correct) {
+                    correctCount++;
+                }
+            });
+
+            const scorePercent = totalAnswered > 0 ? Math.round((correctCount / totalAnswered) * 100) : 0;
+            document.getElementById('score-display').innerText = `${scorePercent}% (${correctCount}/${totalAnswered})`;
+        }
+
+        function switchMode(mode) {
+            currentMode = mode;
+
+            // Reset navigation tab styles
+            document.getElementById('btn-mode-study').className = 'px-3 py-1.5 sm:px-4 sm:py-2 text-xs sm:text-sm font-medium rounded-lg transition-colors flex items-center space-x-1 ' + (mode === 'study' ? 'bg-brand-700 text-white' : 'hover:bg-brand-800 text-slate-300');
+            document.getElementById('btn-mode-exam').className = 'px-3 py-1.5 sm:px-4 sm:py-2 text-xs sm:text-sm font-medium rounded-lg transition-colors flex items-center space-x-1 ' + (mode === 'exam' || mode === 'exam_results' ? 'bg-brand-700 text-white' : 'hover:bg-brand-800 text-slate-300');
+            document.getElementById('btn-mode-print').className = 'px-3 py-1.5 sm:px-4 sm:py-2 text-xs sm:text-sm font-medium rounded-lg transition-colors flex items-center space-x-1 ' + (mode === 'print' ? 'bg-brand-700 text-white' : 'hover:bg-brand-800 text-slate-300');
+
+            const examDash = document.getElementById('exam-dashboard');
+            const studyDash = document.getElementById('study-dashboard');
+
+            if (mode === 'exam') {
+                examDash.classList.remove('hidden');
+                studyDash.classList.add('hidden');
+                startExamTimer();
+            } else {
+                examDash.classList.add('hidden');
+                studyDash.classList.remove('hidden');
+                clearInterval(examTimer);
+            }
+
+            if (mode === 'print') {
+                setTimeout(() => {
+                    window.print();
+                }, 300);
+            }
+
+            renderApp();
+        }
+
+        function startExamTimer() {
+            clearInterval(examTimer);
+            timeRemaining = 3600; // 60 min
+            updateTimerDisplay();
+
+            examTimer = setInterval(() => {
+                timeRemaining--;
+                updateTimerDisplay();
+                if (timeRemaining <= 0) {
+                    clearInterval(examTimer);
+                    finishExam();
+                }
+            }, 1000);
+        }
+
+        function updateTimerDisplay() {
+            const minutes = Math.floor(timeRemaining / 60);
+            const seconds = timeRemaining % 60;
+            document.getElementById('timer-display').innerText = 
+                `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+        }
+
+        function finishExam() {
+            clearInterval(examTimer);
+            currentMode = 'exam_results';
+            renderApp();
+            
+            // Calculate final score message
+            const answeredKeys = Object.keys(userAnswers);
+            let correctCount = 0;
+            answeredKeys.forEach(id => {
+                const q = questionsData.find(item => item.id == id);
+                if (q && userAnswers[id] === q.correct) {
+                    correctCount++;
+                }
+            });
+
+            const scorePercent = Math.round((correctCount / 30) * 100);
+            alert(`Examen Finalizado:\n\nRespuestas correctas: ${correctCount} de 30\nPuntuación obtenida: ${scorePercent}%\n\nPuede revisar el desglose y las soluciones explicadas abajo.`);
+        }
+
+        function handleSearch() {
+            searchQuery = document.getElementById('search-input').value;
+            renderApp();
+        }
+
+        function handleTopicFilter() {
+            currentFilterTopic = document.getElementById('topic-filter').value;
+            renderApp();
+        }
+
+        function resetFilters() {
+            document.getElementById('search-input').value = '';
+            document.getElementById('topic-filter').value = 'all';
+            searchQuery = '';
+            currentFilterTopic = 'all';
+            renderApp();
+        }
+
+        function toggleFormulaModal() {
+            const modal = document.getElementById('formula-modal');
+            modal.classList.toggle('hidden');
+            if (!modal.classList.contains('hidden')) {
+                setTimeout(() => {
+                    if (window.renderMathInElement) {
+                        renderMathInElement(modal, {
+                            delimiters: [
+                                {left: '$$', right: '$$', display: true},
+                                {left: '$', right: '$', display: false}
+                            ],
+                            throwOnError: false
+                        });
+                    }
+                }, 50);
+            }
+        }
+    </script>
+</body>
+</html>

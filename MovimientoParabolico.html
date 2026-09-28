@@ -1,0 +1,496 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Unidad 2: Cinemática - Movimiento Parabólico | Monterrey Christian School</title>
+<script>
+window.MathJax = {
+  tex: { inlineMath: [['$', '$'], ['\\(', '\\)']] },
+  svg: { fontCache: 'global' }
+};
+</script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/3.2.2/es5/tex-svg.js"></script>
+<style>
+:root {
+  --bg: #f2f8f9;
+  --card: #ffffff;
+  --ink: #0d2b3e;
+  --mut: #55707d;
+  --acc: #008c99;
+  --acc2: #0d2b3e;
+  --gold: #e8792b;
+  --ok: #1a8a4a;
+  --line: #c5dadf;
+  --hd: #0d2b3e;
+  box-sizing: border-box;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #0a1a24;
+    --card: #12303f;
+    --ink: #ecf6f8;
+    --mut: #9dbac4;
+    --acc: #2fd0dc;
+    --acc2: #2fd0dc;
+    --gold: #ff9a4d;
+    --ok: #52d18a;
+    --line: #25505f;
+    --hd: #06121a;
+  }
+}
+
+:root[data-theme="dark"] {
+  --bg: #0a1a24;
+  --card: #12303f;
+  --ink: #ecf6f8;
+  --mut: #9dbac4;
+  --acc: #2fd0dc;
+  --acc2: #2fd0dc;
+  --gold: #ff9a4d;
+  --ok: #52d18a;
+  --line: #25505f;
+  --hd: #06121a;
+}
+
+* { box-sizing: border-box; }
+html, body { height: 100%; margin: 0; }
+body {
+  background: var(--bg);
+  color: var(--ink);
+  font: 17px/1.5 system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif;
+  overflow: hidden;
+}
+
+header {
+  position: fixed;
+  top: 0; left: 0; right: 0;
+  height: calc(44px + env(safe-area-inset-top, 0px));
+  padding: env(safe-area-inset-top, 0px) 5vw 0;
+  background: var(--hd);
+  color: #ffffff;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-bottom: 4px solid var(--acc);
+  font-size: 0.85em;
+  letter-spacing: 0.04em;
+  z-index: 5;
+}
+header b { color: var(--acc); }
+
+.slide {
+  display: none;
+  position: absolute;
+  top: calc(48px + env(safe-area-inset-top, 0px));
+  bottom: calc(52px + env(safe-area-inset-bottom, 0px));
+  left: 0; right: 0;
+  overflow-y: auto;
+  padding: 18px 5vw;
+}
+.slide.on { display: block; }
+
+h1 { font-size: 2.2em; margin: 0.2em 0; color: var(--acc2); }
+h2 { margin: 0 0 0.3em; color: var(--acc); }
+
+.card {
+  background: var(--card);
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  padding: 12px 18px;
+  margin: 10px 0;
+}
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(270px, 1fr));
+  gap: 12px;
+}
+.gold { border-left: 5px solid var(--gold); }
+.mut { color: var(--mut); font-size: 0.9em; }
+
+.tag {
+  display: inline-block;
+  background: var(--acc);
+  color: var(--bg);
+  border-radius: 20px;
+  padding: 1px 12px;
+  font-size: 0.8em;
+  font-weight: 600;
+}
+
+canvas {
+  width: 100%;
+  max-width: 780px;
+  height: auto;
+  background: var(--card);
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  display: block;
+}
+
+button {
+  background: var(--acc);
+  color: var(--bg);
+  border: 0;
+  border-radius: 8px;
+  padding: 8px 14px;
+  font: inherit;
+  cursor: pointer;
+  margin: 4px 6px 4px 0;
+}
+button.alt {
+  background: transparent;
+  color: var(--acc);
+  border: 2px solid var(--acc);
+}
+
+input[type=range] { width: 150px; vertical-align: middle; }
+input[type=text] {
+  width: 100px;
+  font: inherit;
+  padding: 6px;
+  border-radius: 6px;
+  border: 1px solid var(--line);
+  background: var(--bg);
+  color: var(--ink);
+}
+
+.step {
+  display: none;
+  margin: 6px 0;
+  padding: 6px 10px;
+  border-left: 4px solid var(--acc);
+  background: color-mix(in srgb, var(--acc) 9%, transparent);
+}
+.step.on { display: block; }
+.step b { color: var(--acc); }
+
+.fb { margin-left: 8px; font-weight: 600; }
+.fb.ok { color: var(--ok); }
+.fb.no { color: #d64545; }
+
+nav {
+  position: fixed;
+  bottom: 0; left: 0; right: 0;
+  height: calc(52px + env(safe-area-inset-bottom, 0px));
+  padding-bottom: env(safe-area-inset-bottom, 0px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 14px;
+  background: var(--card);
+  border-top: 1px solid var(--line);
+}
+
+#bar {
+  position: fixed;
+  top: 0; left: 0;
+  height: 4px;
+  background: var(--gold);
+  transition: width 0.3s;
+  z-index: 6;
+}
+</style>
+</head>
+<body>
+
+<div id="bar"></div>
+
+<header>
+  <span><b>MCS</b> &middot; 10th Grade Physics &middot; Colegio Monterrey</span>
+  <span id="tg"></span>
+</header>
+
+<!-- SLIDE 1 -->
+<section class="slide on" data-tag="Unidad 2: Cinemática">
+  <h1>Movimiento Parabólico</h1>
+  <p style="font-size:1.2em">Compuesto por MRU horizontal y MRUV vertical</p>
+  <div class="card gold">
+    El <b>movimiento parabólico</b> es una combinación de dos movimientos independientes y simultáneos: un movimiento horizontal a velocidad constante ($v_x$) y un movimiento vertical en caída libre ($v_y$), afectado únicamente por la fuerza de gravedad.
+  </div>
+  <div class="grid">
+    <div class="card">
+      <span class="tag">X</span> <b>Componente Horizontal ($v_x$)</b><br>
+      Velocidad constante (MRU). No hay fuerzas actuando en $x$, por lo que $a_x = 0$.
+    </div>
+    <div class="card">
+      <span class="tag">Y</span> <b>Componente Vertical ($v_y$)</b><br>
+      Aceleración constante por gravedad ($a_y = -9.8\text{ m/s}^2$). Se comporta como caída libre.
+    </div>
+    <div class="card">
+      <span class="tag">R</span> <b>Alcance ($R$ o $\Delta x$)</b><br>
+      Distancia horizontal total recorrida. Depende de $v_x$ y del tiempo de vuelo $t$.
+    </div>
+    <div class="card">
+      <span class="tag">Ymax</span> <b>Altura Máxima ($y_{\max}$)</b><br>
+      Punto más alto de la trayectoria. En este punto la velocidad vertical es exactamente $v_y = 0$.
+    </div>
+  </div>
+  <p class="mut">Nivel 10.º Año &middot; Monterrey Christian School &middot; Guía de Cinemática Qualitativa y Cuantitativa.</p>
+</section>
+
+<!-- SLIDE 2 -->
+<section class="slide" data-tag="Ecuaciones">
+  <h2>Formulario de Movimiento Parabólico</h2>
+  <div class="grid">
+    <div class="card">
+      <b>Componentes Iniciales</b>
+      $$v_{x0} = v_0 \cos\theta$$
+      $$v_{y0} = v_0 \sin\theta$$
+    </div>
+    <div class="card">
+      <b>Movimiento Horizontal (MRU)</b>
+      $$x(t) = v_{x0} \cdot t$$
+      $$a_x = 0$$
+    </div>
+    <div class="card">
+      <b>Movimiento Vertical (MRUV)</b>
+      $$v_y(t) = v_{y0} - g \cdot t$$
+      $$y(t) = y_0 + v_{y0} \cdot t - \frac{1}{2}g t^2$$
+    </div>
+    <div class="card">
+      <b>Parámetros Clave ($g = 9.8\text{ m/s}^2$)</b>
+      $$t_{\text{subida}} = \frac{v_{y0}}{g}$$
+      $$y_{\max} = \frac{v_{y0}^2}{2g} \quad \vert{} \quad R = \frac{v_0^2 \sin(2\theta)}{g}$$
+    </div>
+  </div>
+  <div class="card gold">
+    <b>Reglas Cualitativas Fundamentales:</b>
+    <ul>
+      <li>$v_x$ <b>nunca cambia</b> durante todo el vuelo (sin resistencia del aire).</li>
+      <li>En el punto más alto, la velocidad del cuerpo <b>no es cero</b>; es igual a $v_x$.</li>
+      <li>El tiempo de caída depende exclusivamente de la altura vertical y de la gravedad $g$.</li>
+    </ul>
+  </div>
+</section>
+
+<!-- SLIDE 3 -->
+<section class="slide" data-tag="Laboratorio Interactivo">
+  <h2>Simulador: Movimiento Parabólico</h2>
+  <canvas id="lab" width="780" height="340"></canvas>
+  <p>
+    <button onclick="setSim(20, 45)">Parábola Completa (45°)</button>
+    <button onclick="setSim(25, 60)">Lanzamiento Elevado (60°)</button>
+    <button onclick="setSim(20, 0)">Lanzamiento Horizontal (0°)</button>
+  </p>
+  <p>
+    $v_0$: <input type="range" id="lvi" min="5" max="40" value="20"> <b id="ovi">20</b> m/s &nbsp;
+    $\theta$: <input type="range" id="lang" min="0" max="85" value="45"> <b id="oang">45</b>° &nbsp;
+    <button onclick="L.play()">Lanzar</button>
+    <button class="alt" onclick="L.reset()">Reiniciar</button>
+  </p>
+  <p id="lsit" style="font-weight:600; color:var(--gold)"></p>
+  <p id="lr" class="mut"></p>
+</section>
+
+<!-- SLIDE 4 -->
+<section class="slide" data-tag="Análisis Cualitativo">
+  <h2>Lanzamiento Horizontal vs. Caída Libre</h2>
+  <div class="card gold">
+    <b>Independencia de Movimientos:</b> Si se deja caer una bola A verticalmente y se lanza una bola B horizontalmente desde la misma altura al mismo tiempo:
+    <ul>
+      <li>Ambas bolas caen con la misma aceleración vertical ($g = 9.8\text{ m/s}^2$).</li>
+      <li>Ambas bolas tardan exactamente el <b>mismo tiempo</b> en tocar el suelo.</li>
+      <li>La velocidad horizontal $v_x$ no afecta en absoluto el tiempo de caída.</li>
+    </ul>
+  </div>
+  <div class="card">
+    <b>Ejemplo Conceptual: Avión y Bomba</b>
+    <p>Un avión vuela horizontalmente a velocidad constante y soltar un paquete (o bomba):</p>
+    <button onclick="nx(this)">Ver explicación paso a paso</button>
+    <div class="step">1. El paquete mantiene la velocidad horizontal del avión debido a la inercia ($v_x = v_{\text{avión}}$).</div>
+    <div class="step">2. En todo momento de la caída, el paquete permanece directamente <b>debajo del avión</b>.</div>
+    <div class="step">3. La trayectoria vista desde tierra es una <b>semi-parábola</b>.</div>
+  </div>
+</section>
+
+<!-- SLIDE 5 -->
+<section class="slide" data-tag="Práctica Interactiva">
+  <h2>Práctica: Selección Única y Preguntas de Repaso</h2>
+  <p class="mut">Basado en las guías de práctica de 10.º año del Colegio Monterrey MCS.</p>
+  <div id="pr"></div>
+</section>
+
+<nav>
+  <button onclick="go(-1)">&larr; Anterior</button>
+  <span id="ct" class="mut"></span>
+  <button onclick="go(1)">Siguiente &rarr;</button>
+</nav>
+
+<script>
+const S = [...document.querySelectorAll('.slide')];
+let i = 0;
+
+function go(d) {
+  i = Math.max(0, Math.min(S.length - 1, i + d));
+  S.forEach((s, k) => s.classList.toggle('on', k === i));
+  document.getElementById('bar').style.width = ((i + 1) / S.length * 100) + '%';
+  document.getElementById('ct').textContent = (i + 1) + ' / ' + S.length;
+  document.getElementById('tg').textContent = S[i].dataset.tag;
+  S[i].scrollTop = 0;
+  L.draw();
+}
+
+document.addEventListener('keydown', e => {
+  if (e.target.tagName === 'INPUT') return;
+  if (e.key === 'ArrowRight') go(1);
+  if (e.key === 'ArrowLeft') go(-1);
+});
+
+function nx(b) {
+  const p = b.parentElement, s = p.querySelector('.step:not(.on)');
+  if (s) s.classList.add('on');
+  if (!p.querySelector('.step:not(.on)')) b.disabled = true;
+}
+
+const $ = id => document.getElementById(id);
+const css = n => getComputedStyle(document.documentElement).getPropertyValue(n);
+
+// Simulador de Movimiento Parabólico
+const L = (() => {
+  const c = $('lab'), x = c.getContext('2d'), W = c.width, H = c.height;
+  let t = 0, run = false, last = 0;
+  const g = 9.8;
+
+  const P = () => ({
+    v0: +$('lvi').value,
+    ang: +$('lang').value * Math.PI / 180
+  });
+
+  function draw() {
+    const p = P();
+    $('ovi').textContent = p.v0;
+    $('oang').textContent = +$('lang').value;
+
+    const vx = p.v0 * Math.cos(p.ang);
+    const vy0 = p.v0 * Math.sin(p.ang);
+    const tTotal = p.ang === 0 ? Math.sqrt(2 * 15 / g) : (2 * vy0 / g);
+    const range = vx * (p.ang === 0 ? Math.sqrt(2 * 25 / g) : tTotal);
+    const hMax = p.ang === 0 ? 0 : (vy0 * vy0) / (2 * g);
+
+    const ink = css('--ink'), acc = css('--acc'), mut = css('--mut'), ln = css('--line'), gd = css('--gold');
+
+    x.clearRect(0, 0, W, H);
+    x.font = '12px sans-serif';
+    x.lineWidth = 2;
+
+    // Suelo
+    const groundY = H - 40;
+    x.strokeStyle = ln;
+    x.beginPath();
+    x.moveTo(30, groundY);
+    x.lineTo(W - 30, groundY);
+    x.stroke();
+
+    // Escala
+    const maxDist = Math.max(50, range * 1.1);
+    const scaleX = (W - 80) / maxDist;
+    const scaleY = (H - 80) / Math.max(20, hMax * 1.2 || 20);
+
+    // Dibuja Trayectoria Teórica
+    x.strokeStyle = mut;
+    x.setLineDash([4, 4]);
+    x.beginPath();
+    const steps = 100;
+    for (let k = 0; k <= steps; k++) {
+      const st = (tTotal || 1) * (k / steps);
+      const px = 40 + (vx * st) * scaleX;
+      const py = p.ang === 0 
+        ? (groundY - 100) + (0.5 * g * st * st) * scaleY 
+        : groundY - (vy0 * st - 0.5 * g * st * st) * scaleY;
+      if (k === 0) x.moveTo(px, py);
+      else x.lineTo(px, py);
+    }
+    x.stroke();
+    x.setLineDash([]);
+
+    // Posición proyectil
+    const curVx = vx;
+    const curVy = vy0 - g * t;
+    const cx = 40 + (curVx * t) * scaleX;
+    const cy = p.ang === 0 
+      ? (groundY - 100) + (0.5 * g * t * t) * scaleY 
+      : groundY - (vy0 * t - 0.5 * g * t * t) * scaleY;
+
+    if (cy <= groundY) {
+      x.fillStyle = acc;
+      x.beginPath();
+      x.arc(cx, cy, 6, 0, 7);
+      x.fill();
+
+      // Vectores de Velocidad
+      x.strokeStyle = gd;
+      x.beginPath(); x.moveTo(cx, cy); x.lineTo(cx + curVx * 1.5, cy); x.stroke(); // Vx
+      x.strokeStyle = '#d64545';
+      x.beginPath(); x.moveTo(cx, cy); x.lineTo(cx, cy - curVy * 1.5); x.stroke(); // Vy
+    }
+
+    $('lsit').textContent = p.ang === 0 ? 'Lanzamiento Horizontal' : 'Lanzamiento Parabólico Completo';
+    $('lr').innerHTML = `t = ${t.toFixed(2)} s &nbsp;|&nbsp; v<sub>x</sub> = ${curVx.toFixed(1)} m/s &nbsp;|&nbsp; v<sub>y</sub> = ${curVy.toFixed(1)} m/s &nbsp;|&nbsp; Alcance = ${(vx * t).toFixed(1)} m`;
+  }
+
+  return {
+    draw,
+    play() {
+      t = 0;
+      run = true;
+      last = performance.now();
+      requestAnimationFrame(L.step);
+    },
+    reset() {
+      run = false;
+      t = 0;
+      draw();
+    },
+    step(n) {
+      if (!run) return;
+      const p = P();
+      const vy0 = p.v0 * Math.sin(p.ang);
+      const tMax = p.ang === 0 ? 2.2 : (2 * vy0 / g);
+      t = Math.min(tMax, t + (n - last) / 1000);
+      last = n;
+      draw();
+      if (t < tMax) requestAnimationFrame(L.step);
+      else run = false;
+    }
+  };
+})();
+
+function setSim(v, a) {
+  $('lvi').value = v;
+  $('lang').value = a;
+  L.reset();
+}
+
+// Preguntas
+const Q = [
+  ["Si no existiera la gravedad, la trayectoria de un proyectil lanzado con un ángulo de elevación sería:", "Rectilínea en la dirección inicial", ["Parabólica", "Irregular", "Rectilínea horizontal", "Rectilínea en la dirección inicial"]],
+  ["Las componentes horizontal y vertical en el movimiento parabólico corresponden respectivamente a movimientos:", "Constante y acelerado", ["Acelerado y acelerado", "Constante y constante", "Acelerado y constante", "Constante y acelerado"]],
+  ["Desde la misma altura, dos balas son disparadas horizontalmente al mismo tiempo a 400 m/s y 800 m/s. La segunda toca el suelo en un tiempo:", "Igual t", ["t", "2t", "t/2", "t²"]],
+  ["En el punto más alto de la trayectoria de un proyectil en parábola completa, se cumple que:", "La velocidad vertical es cero", ["La velocidad total es cero", "La velocidad vertical es cero", "La aceleración es cero", "La velocidad horizontal es cero"]]
+];
+
+Q.forEach((q, k) => {
+  const opts = q[2].map(o => `<button class="alt" onclick="chk(${k}, '${o}')">${o}</button>`).join(' ');
+  $('pr').insertAdjacentHTML('beforeend', `
+    <div class="card">
+      <b>${k + 1}.</b> ${q[0]}<br>
+      <div style="margin: 8px 0;">${opts}</div>
+      <span class="fb" id="f${k}"></span>
+    </div>
+  `);
+});
+
+function chk(k, ans) {
+  const f = $('f' + k);
+  const ok = ans === Q[k][1];
+  f.textContent = ok ? '¡Correcto!' : 'Incorrecto, vuelve a intentarlo.';
+  f.className = 'fb ' + (ok ? 'ok' : 'no');
+}
+
+['lvi', 'lang'].forEach(k => $(k).addEventListener('input', () => L.reset()));
+go(0);
+</script>
+</body>
+</html>
