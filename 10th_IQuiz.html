@@ -1,0 +1,305 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Examen Controlado - Física</title>
+    <style>
+        /* Estilos generales */
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; line-height: 1.6; max-width: 850px; margin: 0 auto; padding: 20px; background-color: #f4f6f9; color: #333; user-select: none; -webkit-user-select: none; }
+        h1, h2 { text-align: center; color: #1a365d; }
+        
+        /* Pantalla de inicio */
+        #start-container { text-align: center; background: white; padding: 40px; border-radius: 12px; box-shadow: 0 4px 10px rgba(0,0,0,0.1); margin-top: 5%; }
+        
+        /* Formularios de estudiante */
+        .student-info { text-align: left; background: #f8fafc; padding: 20px; border-radius: 8px; margin: 20px 0; border: 1px solid #e2e8f0; }
+        .student-info label { font-weight: bold; color: #2c5282; margin-bottom: 5px; }
+        .student-info input, .student-info select { width: 100%; padding: 10px; margin-bottom: 15px; border: 1px solid #cbd5e0; border-radius: 5px; font-size: 1em; box-sizing: border-box; }
+        
+        /* Contenedor del examen */
+        #quiz-layout { display: none; }
+        .question { margin-bottom: 25px; padding: 20px; background: white; border-radius: 8px; border-left: 5px solid #2b6cb0; box-shadow: 0 2px 5px rgba(0,0,0,0.05); }
+        .correct { background-color: #c6f6d5 !important; border-left-color: #38a169 !important; }
+        .incorrect { background-color: #fed7d7 !important; border-left-color: #e53e3e !important; }
+        
+        label.option { display: block; margin: 10px 0; cursor: pointer; padding: 8px; border-radius: 4px; transition: background 0.2s; }
+        label.option:hover { background-color: #edf2f7; }
+        
+        /* Botones */
+        button { padding: 15px 30px; font-size: 1.2em; cursor: pointer; border-radius: 6px; border: none; font-weight: bold; width: 100%; transition: 0.3s; margin-top: 15px; }
+        .btn-start { background-color: #2b6cb0; color: white; }
+        .btn-start:hover { background-color: #2c5282; }
+        #submitBtn { background-color: #2c5282; color: white; }
+        #pdfBtn { background-color: #319795; color: white; display: none; }
+        
+        /* Reporte Final */
+        #report-card { display: none; background: #ebf8ff; border: 2px solid #3182ce; border-radius: 10px; padding: 25px; margin: 20px 0; text-align: center; }
+        .report-metric { font-size: 1.3em; margin: 10px 0; color: #2c5282; }
+        #sync-status { font-weight: bold; margin-top: 15px; padding: 10px; border-radius: 5px; }
+        
+        /* Estilos de impresión para PDF */
+        @media print {
+            body { background: white; color: black; }
+            #submitBtn, #pdfBtn, p.instructions, #start-container { display: none !important; }
+            .question { border: 1px solid #ccc; box-shadow: none; page-break-inside: avoid; }
+            #report-card { border: 2px solid black; background: none; display: block !important; }
+        }
+    </style>
+</head>
+<body oncontextmenu="return false;">
+
+    <!-- PANTALLA DE BIENVENIDA -->
+    <div id="start-container">
+        <h2>Práctica Calificada III Quarter - Física</h2>
+        
+        <div class="student-info">
+            <label for="studentName">Nombre Completo del Estudiante:</label>
+            <input type="text" id="studentName" placeholder="Ej. Juan Pérez" required>
+            
+            <label for="studentGrade">Sección / Grado:</label>
+            <select id="studentGrade" required>
+                <option value="">Seleccione su sección...</option>
+                <option value="10-A">10-A</option>
+                <option value="10-B">10-B</option>
+                <option value="10-C">10-C</option>
+            </select>
+        </div>
+
+        <p class="instructions">Este examen cuenta con un sistema de seguridad activa.</p>
+        <p class="instructions" style="color: #c53030; font-weight: bold;">
+            ⚠️ ATENCIÓN: Si cambias de pestaña, minimizas el navegador o sales del modo pantalla completa, el examen se enviará y calificará automáticamente.
+        </p>
+        <button class="btn-start" onclick="startExam()">Comenzar Examen</button>
+    </div>
+
+    <!-- CUERPO DEL EXAMEN -->
+    <div id="quiz-layout">
+        <h1>Evaluación de Física</h1>
+        <div id="student-header" style="text-align: left; font-size: 1.1em; color: #2b6cb0; font-weight: bold; margin-bottom: 5px;"></div>
+        <div id="timer-banner" style="text-align: right; font-weight: bold; color: #c53030; margin-bottom: 20px;">Tiempo transcurrido: <span id="time-display">00:00</span></div>
+        
+        <form id="quiz-form">
+            <div id="quiz-container"></div>
+            <button type="button" id="submitBtn" onclick="evaluateExam(false)">Enviar Examen y Calificar</button>
+        </form>
+
+        <!-- REPORTE DE NOTA -->
+        <div id="report-card">
+            <h2>Resultados del Examen</h2>
+            <div class="report-metric" id="rep-student"></div>
+            <div class="report-metric" id="rep-score"></div>
+            <div class="report-metric" id="rep-grade"></div>
+            <div class="report-metric" id="rep-time"></div>
+            <div class="report-metric" id="rep-status"></div>
+            
+            <!-- Estado de envío a Google Sheets -->
+            <div id="sync-status" style="background-color: #fefcbf; color: #b7791f;">⏳ Enviando nota al profesor...</div>
+            
+            <p style="margin-top: 15px; font-size: 0.9em;">Guarde este reporte como comprobante físico o envíe el PDF al docente si ocurre un error de conexión.</p>
+        </div>
+        
+        <button id="pdfBtn" onclick="window.print()">Guardar Reporte en PDF</button>
+    </div>
+
+    <script>
+        // LA URL DE TU BASE DE DATOS (Google Apps Script)
+        const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbynuv8jssLYUUsobXebDC0G7me4t5fyfOQigWdh2dmTyh_QMSFLqCzmt-u8fd0Cz_Kr4w/exec';
+
+        // 40 Preguntas (dejé 5 como muestra, reemplázalas con las 40 tuyas)
+        const questions = [
+            { q: "1. Si al empujar un mueble pesado, este no se desplaza ni un solo milímetro a pesar de tu esfuerzo, ¿cuánto trabajo físico has realizado sobre el mueble?", options: ["A) Trabajo máximo positivo", "B) Trabajo negativo", "C) Trabajo igual a cero", "D) Falta información de la fuerza"], correct: 2 },
+            { q: "2. Un automóvil viaja por carretera. Si el conductor decide duplicar la velocidad del vehículo, ¿qué sucede exactamente con su energía cinética?", options: ["A) Se duplica", "B) Se cuadruplica", "C) Se reduce a la mitad", "D) Se mantiene constante"], correct: 1 },
+            { q: "3. En el diseño de una montaña rusa sin fricción, ¿qué transformación energética ocurre cuando el carrito desciende desde la cúspide más alta?", options: ["A) La energía mecánica se pierde por completo", "B) La energía potencial gravitacional se transforma en energía cinética", "C) La energía cinética se almacena como energía elástica", "D) No ocurre ninguna transformación"], correct: 1 },
+            { q: "4. Un sonar emite una onda sonora bajo el agua que se desplaza a 1500 m/s con una frecuencia de 500 Hz. ¿Cuál es su longitud de onda?", options: ["A) 3 metros", "B) 0.33 metros", "C) 750 metros", "D) 5 metros"], correct: 0 },
+            { q: "5. ¿Cuál es la unidad oficial del Sistema Internacional (SI) utilizada para cuantificar el trabajo mecánico y cualquier tipo de energía?", options: ["A) Newton", "B) Watt", "C) Joule", "D) Pascal"], correct: 2 }
+        ];
+
+        let startTime;
+        let timerInterval;
+        let focusLossCount = 0;
+        let isExamActive = false;
+
+        // Cargar las preguntas en el DOM
+        const container = document.getElementById('quiz-container');
+        questions.forEach((item, index) => {
+            const div = document.createElement('div');
+            div.className = 'question';
+            div.id = 'q' + index;
+            div.innerHTML = `<p><strong>${item.q}</strong></p>` + 
+                item.options.map((opt, i) => `<label class="option"><input type="radio" name="q${index}" value="${i}" onchange="autoSave()"> ${opt}</label>`).join('');
+            container.appendChild(div);
+        });
+
+        // Iniciar examen
+        function startExam() {
+            const nameInput = document.getElementById('studentName').value.trim();
+            const gradeInput = document.getElementById('studentGrade').value;
+
+            if (!nameInput || !gradeInput) {
+                alert("Por favor, ingresa tu nombre completo y selecciona tu sección antes de comenzar.");
+                return;
+            }
+
+            // Guardar datos del estudiante localmente
+            localStorage.setItem('activeExamName', nameInput);
+            localStorage.setItem('activeExamGrade', gradeInput);
+
+            // Mostrar el nombre en el encabezado
+            document.getElementById('student-header').innerText = `Estudiante: ${nameInput} | Sección: ${gradeInput}`;
+
+            // Solicitar pantalla completa obligatoria
+            const docEl = document.documentElement;
+            if (docEl.requestFullscreen) { docEl.requestFullscreen(); }
+            else if (docEl.webkitRequestFullscreen) { docEl.webkitRequestFullscreen(); }
+
+            document.getElementById('start-container').style.display = 'none';
+            document.getElementById('quiz-layout').style.display = 'block';
+
+            isExamActive = true;
+            startTime = Date.now();
+            timerInterval = setInterval(updateTimer, 1000);
+            setupSecurityListeners();
+        }
+
+        function updateTimer() {
+            const elapsed = Math.floor((Date.now() - startTime) / 1000);
+            const mins = String(Math.floor(elapsed / 60)).padStart(2, '0');
+            const secs = String(elapsed % 60).padStart(2, '0');
+            document.getElementById('time-display').innerText = `${mins}:${secs}`;
+        }
+
+        function setupSecurityListeners() {
+            window.addEventListener('blur', triggerSecurityWarning);
+            document.addEventListener('visibilitychange', () => {
+                if (document.visibilityState === 'hidden') triggerSecurityWarning();
+            });
+
+            document.addEventListener('keydown', (e) => {
+                if (e.ctrlKey && (e.key === 'c' || e.key === 'v' || e.key === 'u' || e.key === 'p')) {
+                    e.preventDefault();
+                    alert("Función deshabilitada por seguridad.");
+                }
+            });
+        }
+
+        function triggerSecurityWarning() {
+            if (!isExamActive) return;
+            focusLossCount++;
+            
+            if (focusLossCount === 1) {
+                alert("⚠️ ADVERTENCIA:\nHas salido de la pantalla del examen. Si vuelves a hacerlo, tu prueba será enviada automáticamente con la nota acumulada.");
+            } else if (focusLossCount >= 2) {
+                alert("🚨 EXAMEN BLOQUEADO:\nHas infringido las normas saliendo de la pestaña por segunda vez. Tu prueba ha sido enviada.");
+                evaluateExam(true); 
+            }
+        }
+
+        function autoSave() {
+            if (!isExamActive) return;
+            const data = {};
+            questions.forEach((_, i) => {
+                const s = document.querySelector(`input[name="q${i}"]:checked`);
+                if(s) data[i] = s.value;
+            });
+            localStorage.setItem('activeExamData', JSON.stringify(data));
+        }
+
+        // Evaluar y enviar datos a Google Sheets
+        function evaluateExam(forced = false) {
+            if (!forced && !confirm("¿Estás seguro de que deseas finalizar tu examen? Ya no podrás realizar modificaciones.")) return;
+
+            isExamActive = false;
+            clearInterval(timerInterval);
+            const endTime = Date.now();
+            window.removeEventListener('blur', triggerSecurityWarning);
+
+            let score = 0;
+            const totalQuestions = questions.length;
+
+            questions.forEach((item, index) => {
+                const sel = document.querySelector(`input[name="q${index}"]:checked`);
+                const div = document.getElementById('q' + index);
+                if (sel && parseInt(sel.value) === item.correct) {
+                    div.className = 'question correct';
+                    score++;
+                } else {
+                    div.className = 'question incorrect';
+                }
+            });
+
+            const grade = ((score / totalQuestions) * 100).toFixed(2);
+            const totalSeconds = Math.floor((endTime - startTime) / 1000);
+            const timeStr = `${Math.floor(totalSeconds / 60)}m ${totalSeconds % 60}s`;
+
+            // Recuperar datos del estudiante
+            const studentName = localStorage.getItem('activeExamName');
+            const studentGrade = localStorage.getItem('activeExamGrade');
+            
+            let statusText = "Completado Seguro";
+            if (forced) statusText = "Bloqueado (Salida de pestaña)";
+            else if (focusLossCount > 0) statusText = `Advertencias: ${focusLossCount}`;
+
+            // Actualizar interfaz del reporte
+            document.getElementById('rep-student').innerText = `Estudiante: ${studentName} (${studentGrade})`;
+            document.getElementById('rep-score').innerText = `Aciertos: ${score} / ${totalQuestions}`;
+            document.getElementById('rep-grade').innerText = `Calificación: ${grade}%`;
+            document.getElementById('rep-time').innerText = `Tiempo empleado: ${timeStr}`;
+            document.getElementById('rep-status').innerText = `Seguridad: ${statusText}`;
+            
+            document.getElementById('report-card').style.display = 'block';
+            localStorage.setItem('activeExamSubmitted', 'true');
+            lockExam();
+
+            // Preparar el paquete de datos para enviar
+            const payload = {
+                estudiante: studentName,
+                grado: studentGrade,
+                prueba: "Práctica Calificada - 10th Grade", // Aquí puedes cambiar el nombre de la prueba
+                nota: grade,
+                puntos: score,
+                tiempo: timeStr,
+                seguridad: statusText
+            };
+
+            // Enviar a Google Sheets
+            fetch(SCRIPT_URL, {
+                method: 'POST',
+                mode: 'no-cors', // Fundamental para evitar bloqueos de seguridad del navegador
+                headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+                body: JSON.stringify(payload)
+            })
+            .then(() => {
+                const syncStatus = document.getElementById('sync-status');
+                syncStatus.style.backgroundColor = "#c6f6d5";
+                syncStatus.style.color = "#2f855a";
+                syncStatus.innerText = "✅ ¡Tu nota ha sido guardada y enviada al profesor correctamente!";
+            })
+            .catch(error => {
+                const syncStatus = document.getElementById('sync-status');
+                syncStatus.style.backgroundColor = "#fed7d7";
+                syncStatus.style.color = "#c53030";
+                syncStatus.innerText = "❌ Error de conexión: No se pudo enviar la nota automáticamente. Por favor, guarda el PDF y envíalo a tu profesor.";
+            });
+
+            if (document.exitFullscreen) { document.exitFullscreen().catch(err => console.log(err)); }
+        }
+
+        function lockExam() {
+            document.querySelectorAll('input, select').forEach(i => i.disabled = true);
+            document.getElementById('submitBtn').style.display = 'none';
+            document.getElementById('pdfBtn').style.display = 'block';
+            window.scrollTo(0,0);
+        }
+
+        window.onload = () => {
+            if(localStorage.getItem('activeExamSubmitted') === 'true') {
+                document.getElementById('start-container').style.display = 'none';
+                document.getElementById('quiz-layout').style.display = 'block';
+                lockExam();
+                document.getElementById('report-card').style.display = 'block';
+                document.getElementById('report-card').innerHTML = "<h3>Examen previamente completado. Los resultados ya se han registrado en este dispositivo.</h3>";
+            }
+        };
+    </script>
+</body>
+</html>
