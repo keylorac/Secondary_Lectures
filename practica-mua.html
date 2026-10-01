@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <!-- Configuración y carga de MathJax para renderizar código LaTeX -->
+    <script>
+      MathJax = {
+        tex: {
+          inlineMath: [['$', '$'], ['\\(', '\\)']]
+        }
+      };
+    </script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js"></script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Práctica: Movimiento Rectilíneo Uniformemente Acelerado | MCS</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #0d233a;
+            --secondary: #18a0fb;
+            --accent: #ffc107;
+            --bg: #f4f7f9;
+            --card-bg: #ffffff;
+            --text-dark: #2c3e50;
+        }
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Poppins', sans-serif; }
+        body { background-color: var(--bg); color: var(--text-dark); padding: 2rem; }
+        
+        header { text-align: center; margin-bottom: 3rem; }
+        header h1 { color: var(--primary); font-size: 2.2rem; }
+        header p { color: var(--secondary); font-weight: 600; }
+        
+        .container { max-width: 850px; margin: 0 auto; }
+        
+        .section-title {
+            color: var(--primary);
+            border-bottom: 3px solid var(--secondary);
+            padding-bottom: 0.5rem;
+            margin: 2rem 0 1.5rem 0;
+            font-size: 1.4rem;
+        }
+
+        .question-card {
+            background: var(--card-bg);
+            border-radius: 10px;
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+            border-left: 5px solid var(--secondary);
+        }
+        
+        .question { font-weight: 600; margin-bottom: 1rem; font-size: 1.05rem; line-height: 1.6; }
+        .formula-hint { font-style: italic; color: #555; background: #eef7fe; padding: 0.5rem 1rem; border-radius: 5px; margin-bottom: 1rem; font-size: 0.9rem; }
+
+        .btn-answer {
+            background-color: var(--secondary);
+            color: white;
+            border: none;
+            padding: 0.5rem 1rem;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: background 0.3s;
+        }
+        .btn-answer:hover { background-color: #0d8ce0; }
+        
+        .answer {
+            margin-top: 1rem;
+            padding: 1rem;
+            background-color: #e2f0d9;
+            border-left: 4px solid #548235;
+            display: none;
+            border-radius: 5px;
+            line-height: 1.6;
+        }
+        
+        .back-link {
+            display: inline-block;
+            margin-top: 2rem;
+            text-decoration: none;
+            color: var(--primary);
+            font-weight: 600;
+        }
+        .back-link:hover { color: var(--secondary); }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <header>
+            <h1>Práctica Integral: Movimiento Rectilíneo Uniformemente Acelerado (MRUA)</h1>
+            <p>9th Grade | Physics - Prof. Keylor Arley</p>
+        </header>
+
+        <!-- PARTE I: CONCEPTOS FUNDAMENTALES -->
+        <h2 class="section-title">Parte I: Análisis Cualitativo y Conceptual</h2>
+
+        <div class="question-card">
+            <div class="question">1. ¿Qué significa que un cuerpo se mueva con una aceleración constante de $a = 3\text{ m/s}^2$? Si el objeto parte del reposo, ¿cuál será su velocidad después de 4 segundos?</div>
+            <button class="btn-answer" onclick="toggleAnswer('ans1')">Ver Respuesta</button>
+            <div id="ans1" class="answer">
+                Significa que por cada segundo que transcurre, la velocidad del objeto **aumenta en $3\text{ m/s}$**. Partiendo del reposo ($v_i = 0$), al cabo de $4\text{ s}$ su velocidad será de **$12\text{ m/s}$**.
+            </div>
+        </div>
+
+        <div class="question-card">
+            <div class="question">2. Un automóvil viaja hacia el este a $20\text{ m/s}$ y el conductor aplica los frenos, reduciendo su velocidad. ¿Qué signo tiene la aceleración en este caso y qué relación existe entre las direcciones de la velocidad y la aceleración?</div>
+            <button class="btn-answer" onclick="toggleAnswer('ans2')">Ver Respuesta</button>
+            <div id="ans2" class="answer">
+                Dado que el vehículo está frenando (desacelerando), la aceleración tiene un signo **negativo** respecto al movimiento. La velocidad apunta hacia el este, mientras que el vector de aceleración apunta en **sentido opuesto (hacia el oeste)**.
+            </div>
+        </div>
+
+        <div class="question-card">
+            <div class="question">3. En una gráfica de Velocidad contra Tiempo ($v$ vs $t$) para un objeto en MRUA, ¿qué representan físicamente la pendiente de la recta y el área bajo la curva?</div>
+            <button class="btn-answer" onclick="toggleAnswer('ans3')">Ver Respuesta</button>
+            <div id="ans3" class="answer">
+                • La **pendiente** de la recta representa la **aceleración ($a$)** del objeto.<br>
+                • El **área bajo la curva** representa la **distancia recorrida ($d$)** por el móvil.
+            </div>
+        </div>
+
+        <!-- PARTE II: RESOLUCIÓN DE PROBLEMAS Y ECUACIONES -->
+        <h2 class="section-title">Parte II: Resolución de Problemas con Formulario</h2>
+
+        <!-- Problema 4 -->
+        <div class="question-card">
+            <div class="question">4. Partiendo del Reposo: Un motocicleta arranca desde el reposo y acelera a razón constante de $2.5\text{ m/s}^2$ durante $8\text{ s}$. Calcule:<br>a) La velocidad final alcanzada.<br>b) La distancia total recorrida.</div>
+            <div class="formula-hint">Fórmulas: $v_f = v_i + a \cdot t \quad | \quad d = v_i \cdot t + \frac{1}{2}a t^2$</div>
+            <button class="btn-answer" onclick="toggleAnswer('ans4')">Ver Respuesta</button>
+            <div id="ans4" class="answer">
+                <strong>a) Velocidad final:</strong> $v_f = 0 + (2.5 \cdot 8) = \mathbf{20\text{ m/s}}$<br>
+                <strong>b) Distancia recorrida:</strong> $d = (0 \cdot 8) + \frac{1}{2}(2.5)(8)^2 = \frac{1}{2}(2.5)(64) = \mathbf{80\text{ m}}$
+            </div>
+        </div>
+
+        <!-- Problema 5 -->
+        <div class="question-card">
+            <div class="question">5. Aceleración con Velocidad Inicial: Un autobús que viaja a $12\text{ m/s}$ acelera uniformemente a $1.8\text{ m/s}^2$ para rebasar a un camión en un tiempo de $5\text{ s}$. Determine la velocidad final del autobús y la distancia recorrida en ese intervalo.</div>
+            <div class="formula-hint">Fórmulas: $v_f = v_i + a \cdot t \quad | \quad d = \frac{(v_i + v_f)}{2} \cdot t$</div>
+            <button class="btn-answer" onclick="toggleAnswer('ans5')">Ver Respuesta</button>
+            <div id="ans5" class="answer">
+                • <strong>Velocidad final:</strong> $v_f = 12 + (1.8 \cdot 5) = 12 + 9 = \mathbf{21\text{ m/s}}$<br>
+                • <strong>Distancia recorrida:</strong> $d = \frac{(12 + 21)}{2} \cdot 5 = \frac{33}{2} \cdot 5 = \mathbf{82.5\text{ m}}$
+            </div>
+        </div>
+
+        <!-- Problema 6 -->
+        <div class="question-card">
+            <div class="question">6. Frenado y Detención (Sin Tiempo): Un vehículo eléctrico se desplaza a $25\text{ m/s}$ cuando el conductor divisa un obstáculo y frena bruscamente, deteniéndose por completo en una distancia de $50\text{ m}$. Calcule la magnitud de la aceleración de frenado.</div>
+            <div class="formula-hint">Fórmula: $v_f^2 = v_i^2 + 2ad \implies a = \frac{v_f^2 - v_i^2}{2d}$</div>
+            <button class="btn-answer" onclick="toggleAnswer('ans6')">Ver Respuesta</button>
+            <div id="ans6" class="answer">
+                Sustituyendo los datos ($v_f = 0\text{ m/s}$, $v_i = 25\text{ m/s}$, $d = 50\text{ m}$):<br>
+                $a = \frac{0^2 - (25)^2}{2 \cdot 50} = \frac{-625}{100} = \mathbf{-6.25\text{ m/s}^2}$<br>
+                <em>(El signo negativo indica que es una desaceleración).</em>
+            </div>
+        </div>
+
+        <!-- Problema 7 -->
+        <div class="question-card">
+            <div class="question">7. Caída Libre (Caso Particular de MRUA): Se deja caer una piedra desde lo alto de un puente y tarda $3.2\text{ s}$ en impactar contra el agua. Considerando $g = 9.8\text{ m/s}^2$ y $v_i = 0\text{ m/s}$, calcule:<br>a) La altura del puente.<br>b) La velocidad con la que la piedra toca el agua.</div>
+            <div class="formula-hint">Fórmulas: $y = \frac{1}{2}g t^2 \quad | \quad v_f = g \cdot t$</div>
+            <button class="btn-answer" onclick="toggleAnswer('ans7')">Ver Respuesta</button>
+            <div id="ans7" class="answer">
+                <strong>a) Altura del puente:</strong> $y = \frac{1}{2}(9.8)(3.2)^2 = 4.9 \cdot 10.24 = \mathbf{50.18\text{ m}}$<br>
+                <strong>b) Velocidad de impacto:</strong> $v_f = 9.8 \cdot 3.2 = \mathbf{31.36\text{ m/s}}$
+            </div>
+        </div>
+
+        <a href="index.html" class="back-link">← Volver al Hub de Ciencias</a>
+    </div>
+
+    <script>
+        function toggleAnswer(id) {
+            var element = document.getElementById(id);
+            if (element.style.display === "block") {
+                element.style.display = "none";
+            } else {
+                element.style.display = "block";
+            }
+        }
+    </script>
+</body>
+</html>
