@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="es">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -17,50 +17,124 @@
         }
 
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Poppins', sans-serif; }
-        body { background-color: var(--bg); color: var(--text-dark); display: flex; flex-direction: column; min-height: 100vh; }
+        body { background-color: var(--bg); color: var(--text-dark); display: flex; flex-direction: column; min-height: 100vh; overflow-x: hidden; }
 
-        /* Header */
-        header {
-            background: linear-gradient(135deg, var(--primary) 0%, #1a365d 100%);
-            color: white; padding: 2.5rem 1.5rem; text-align: center;
-            border-bottom: 5px solid var(--accent); box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        /* Canvas Background para Partículas/Animación 3D */
+        #physics-canvas {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            z-index: -1;
+            pointer-events: none;
+            opacity: 0.5;
         }
+
+        /* Ecuaciones flotantes */
+        .equation {
+            position: absolute;
+            color: rgba(24, 160, 251, 0.15);
+            font-size: 2.5rem;
+            font-weight: bold;
+            font-style: italic;
+            z-index: -1;
+            pointer-events: none;
+            animation: float 12s infinite ease-in-out alternate;
+        }
+        @keyframes float {
+            0% { transform: translateY(0px) rotate(0deg) scale(1); }
+            100% { transform: translateY(-40px) rotate(5deg) scale(1.1); }
+        }
+
+        /* Header tipo Tarjeta de Presentación */
+        header {
+            background: linear-gradient(135deg, rgba(13, 35, 58, 0.95) 0%, rgba(26, 54, 93, 0.95) 100%);
+            color: white; padding: 3rem 1.5rem; text-align: center;
+            border-bottom: 5px solid var(--accent);
+            box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+            position: relative;
+            z-index: 1;
+        }
+
+        .profile-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        /* Foto del Profesor */
+        .profile-photo {
+            width: 160px;
+            height: 160px;
+            border-radius: 50%;
+            border: 4px solid var(--accent);
+            object-fit: cover;
+            box-shadow: 0 8px 25px rgba(0,0,0,0.4);
+            margin-bottom: 1.5rem;
+            animation: glow 3s infinite alternate;
+        }
+
+        @keyframes glow {
+            from { box-shadow: 0 0 10px rgba(255, 193, 7, 0.5); }
+            to { box-shadow: 0 0 25px rgba(255, 193, 7, 1), 0 0 15px rgba(24, 160, 251, 0.8); }
+        }
+
         .school-badge {
             display: inline-block; background-color: rgba(255, 255, 255, 0.15);
-            padding: 0.3rem 1rem; border-radius: 20px; font-size: 0.85rem; font-weight: 600;
+            padding: 0.4rem 1.2rem; border-radius: 20px; font-size: 0.9rem; font-weight: 600;
             text-transform: uppercase; margin-bottom: 0.8rem; color: var(--accent);
+            letter-spacing: 1px;
         }
+        
         header h1 { font-size: 2.2rem; font-weight: 700; margin-bottom: 0.5rem; }
-        .teacher-info { font-size: 1.1rem; font-weight: 300; opacity: 0.9; }
-        .teacher-info span { font-weight: 600; color: #ffffff; }
+        .teacher-info { font-size: 1.3rem; font-weight: 600; color: var(--secondary); margin-bottom: 0.5rem; }
+        .teacher-bio { font-size: 0.95rem; font-weight: 300; opacity: 0.9; max-width: 600px; line-height: 1.6; }
 
         /* Contenedor Principal */
-        main { max-width: 1000px; margin: 2.5rem auto; padding: 0 1.5rem; flex: 1; width: 100%; }
+        main { max-width: 1000px; margin: 2.5rem auto; padding: 0 1.5rem; flex: 1; width: 100%; position: relative; z-index: 1; }
 
-        /* Estilo de Acordeones / Secciones por Grado */
+        /* Estilo de Secciones por Grado */
         .grade-section {
-            background: var(--card-bg); border-radius: 12px; margin-bottom: 2rem;
+            background: rgba(255, 255, 255, 0.95); border-radius: 12px; margin-bottom: 2rem;
             box-shadow: 0 4px 15px rgba(0,0,0,0.05); overflow: hidden;
             border-left: 6px solid var(--secondary);
+            backdrop-filter: blur(10px);
         }
         
         .grade-header {
-            background-color: #ffffff; padding: 1.5rem; display: flex;
+            background-color: transparent; padding: 1.5rem; display: flex;
             justify-content: space-between; align-items: center; border-bottom: 1px solid #edf2f7;
         }
-        .grade-header h2 { color: var(--primary); font-size: 1.5rem; }
+        .grade-header h2 { color: var(--primary); font-size: 1.5rem; display: flex; align-items: center; gap: 15px; }
         .grade-header .tag { font-size: 0.85rem; background: var(--secondary); color: white; padding: 0.3rem 0.8rem; border-radius: 15px; font-weight: 600; }
 
+        /* Animación del Átomo 3D en los títulos */
+        .atom { width: 35px; height: 35px; position: relative; display: inline-block; }
+        .electron { position: absolute; width: 100%; height: 100%; border-radius: 50%; border: 2px solid var(--secondary); }
+        .electron:nth-child(1) { animation: spin 2s linear infinite; }
+        .electron:nth-child(2) { animation: spin 2s linear infinite; transform: rotateX(60deg) rotateY(60deg); animation-name: spin2; }
+        .electron:nth-child(3) { animation: spin 2s linear infinite; transform: rotateX(-60deg) rotateY(60deg); animation-name: spin3; }
+        .nucleus { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 10px; height: 10px; background: var(--accent); border-radius: 50%; box-shadow: 0 0 8px var(--accent); }
+        
+        @keyframes spin { 100% { transform: rotate(360deg); } }
+        @keyframes spin2 { 0% { transform: rotateX(60deg) rotateY(60deg) rotate(0deg); } 100% { transform: rotateX(60deg) rotateY(60deg) rotate(360deg); } }
+        @keyframes spin3 { 0% { transform: rotateX(-60deg) rotateY(60deg) rotate(0deg); } 100% { transform: rotateX(-60deg) rotateY(60deg) rotate(360deg); } }
+
         /* Botones de Categorías */
-        .categories-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 1rem; padding: 1.5rem; background-color: #f8fafc; }
+        .categories-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 1rem; padding: 1.5rem; }
         
         .category-item {
             display: flex; flex-direction: column; text-decoration: none;
             background: white; padding: 1.2rem; border-radius: 8px; text-align: center;
-            border: 1px solid #e2e8f0; transition: transform 0.2s, box-shadow 0.2s; color: var(--text-dark); font-weight: 600; font-size: 0.95rem;
+            border: 1px solid #e2e8f0; transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275), box-shadow 0.3s; 
+            color: var(--text-dark); font-weight: 600; font-size: 0.95rem;
         }
         
-        .category-item:hover { transform: translateY(-3px); box-shadow: 0 5px 15px rgba(0,0,0,0.08); border-color: var(--secondary); color: var(--secondary); }
+        .category-item:hover { 
+            transform: translateY(-5px) scale(1.03); 
+            box-shadow: 0 8px 20px rgba(24, 160, 251, 0.15); 
+            border-color: var(--secondary); color: var(--secondary); 
+        }
         .category-item.disabled { opacity: 0.5; pointer-events: none; border-style: dashed; }
         .category-icon { font-size: 1.8rem; margin-bottom: 0.5rem; }
 
@@ -69,16 +143,35 @@
             background-color: var(--primary); color: white; text-align: center;
             padding: 1.5rem; font-size: 0.85rem; margin-top: 3rem;
             border-top: 1px solid rgba(255,255,255,0.1);
+            position: relative; z-index: 1;
         }
     </style>
 </head>
 <body>
 
-    <!-- PORTADA -->
+    <!-- Fondo Interactivo 3D -->
+    <canvas id="physics-canvas"></canvas>
+
+    <!-- Fórmulas flotantes de fondo -->
+    <div class="equation" style="top: 15%; left: 10%;">E = mc²</div>
+    <div class="equation" style="top: 40%; right: 5%; animation-delay: -2s;">F = m·a</div>
+    <div class="equation" style="top: 70%; left: 8%; animation-delay: -4s;">v = d/t</div>
+    <div class="equation" style="top: 80%; right: 15%; animation-delay: -6s;">W = F·d·cos(θ)</div>
+
+    <!-- PORTADA / PERFIL -->
     <header>
-        <div class="school-badge">Monterrey Christian School</div>
-        <h1>Secondary Science Hub</h1>
-        <p class="teacher-info">Teacher: <span>Prof. Keylor Arley Castro</span></p>
+        <div class="profile-container">
+            <!-- Conectado al archivo que subiste al repo -->
+            <img src="foto-profesor.png" alt="Prof. Keylor Arley Castro" class="profile-photo" onerror="this.src='https://via.placeholder.com/160?text=Foto'">
+            
+            <div class="school-badge">Monterrey Christian School</div>
+            <h1>Secondary Science Hub</h1>
+            <p class="teacher-info">Prof. Keylor Arley Castro</p>
+            <p class="teacher-bio">
+                Lecturer & Researcher (UCR) | Educador STEM<br>
+                Acompañando a las nuevas generaciones en el descubrimiento y comprensión del universo a través de la ciencia y la física.
+            </p>
+        </div>
     </header>
 
     <main>
@@ -86,7 +179,10 @@
         <!-- 9TH GRADE -->
         <section class="grade-section">
             <div class="grade-header">
-                <h2>9th Grade</h2>
+                <h2>
+                    <div class="atom"><div class="electron"></div><div class="electron"></div><div class="electron"></div><div class="nucleus"></div></div>
+                    9th Grade
+                </h2>
                 <span class="tag">Physical Science</span>
             </div>
             <div class="categories-grid">
@@ -111,38 +207,45 @@
         <!-- 10TH GRADE -->
         <section class="grade-section">
             <div class="grade-header">
-                <h2>10th Grade</h2>
+                <h2>
+                    <div class="atom"><div class="electron"></div><div class="electron"></div><div class="electron"></div><div class="nucleus"></div></div>
+                    10th Grade
+                </h2>
                 <span class="tag">Physics</span>
             </div>
             <div class="categories-grid">
                 <a href="MovimientoParabolico.html" class="category-item">
                     <span class="category-icon">📊</span>Presentaciones
                 </a>
-                <!-- Veo que tienes el archivo PNEPractica2.html, lo enlazamos aquí de una vez -->
-                <a href="PNEPractica2.html" class="category-item">
+                <a href="#" class="category-item disabled">
                     <span class="category-icon">📝</span>Prácticas
                 </a>
-                <a href="10th_IQuiz.html" class="category-item" style="border-color: #38a169; color: #2f855a; background-color: #f0fff4;">
-                    <span class="category-icon">⭐</span>Práctica Calificada
+                <!-- Examen Histórico III Quarter -->
+                <a href="10th_IQuiz.html" class="category-item" style="border-color: #cbd5e0; background-color: #f8fafc;">
+                    <span class="category-icon">📁</span>Quiz III Q.
                 </a>
-                <a href="#" class="category-item disabled">
-                    <span class="category-icon">⏱️</span>Quices
-                </a>
-                <a href="#" class="category-item disabled">
-                    <span class="category-icon">🎓</span>Exámenes
+                <!-- Espacio listo para el IV Quarter -->
+                <a href="#" class="category-item disabled" style="border-color: #38a169; color: #2f855a; background-color: #f0fff4;">
+                    <span class="category-icon">⭐</span>Examen IV Q. (Próximamente)
                 </a>
             </div>
         </section>
 
         <!-- 11TH GRADE -->
-        <section class="grade-section" style="border-left-color: #e2e8f0; opacity: 0.8;">
+        <section class="grade-section" style="border-left-color: #4a5568;">
             <div class="grade-header">
-                <h2 style="color: #4a5568;">11th Grade</h2>
-                <span class="tag" style="background: #a0aec0;">Advanced Physics</span>
+                <h2 style="color: #2c3e50;">
+                    <div class="atom"><div class="electron"></div><div class="electron"></div><div class="electron"></div><div class="nucleus"></div></div>
+                    11th Grade
+                </h2>
+                <span class="tag" style="background: #4a5568;">Advanced Physics</span>
             </div>
             <div class="categories-grid">
                 <a href="#" class="category-item disabled"><span class="category-icon">📊</span>Presentaciones</a>
-                <a href="#" class="category-item disabled"><span class="category-icon">📝</span>Prácticas</a>
+                <!-- Práctica movida de 10mo a 11vo -->
+                <a href="PNEPractica2.html" class="category-item" style="border-color: #3182ce; color: #2b6cb0; background-color: #ebf8ff;">
+                    <span class="category-icon">📝</span>Práctica PNE
+                </a>
                 <a href="#" class="category-item disabled"><span class="category-icon">⭐</span>Práctica Calificada</a>
                 <a href="#" class="category-item disabled"><span class="category-icon">⏱️</span>Quices</a>
                 <a href="#" class="category-item disabled"><span class="category-icon">🎓</span>Exámenes</a>
@@ -152,8 +255,88 @@
     </main>
 
     <footer>
-        <p>&copy; Monterrey Christian School — Science Department | Designed by Prof. Keylor Arley Castro</p>
+        <p>&copy; 2024 Monterrey Christian School — Science Department | Designed by Prof. Keylor Arley Castro</p>
     </footer>
 
+    <!-- Script de Animación (Canvas) de Partículas/Red -->
+    <script>
+        const canvas = document.getElementById('physics-canvas');
+        const ctx = canvas.getContext('2d');
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+
+        let particlesArray = [];
+        const colors = ['#18a0fb', '#ffc107', '#cbd5e0'];
+
+        class Particle {
+            constructor(x, y, directionX, directionY, size, color) {
+                this.x = x; this.y = y;
+                this.directionX = directionX; this.directionY = directionY;
+                this.size = size; this.color = color;
+            }
+            draw() {
+                ctx.beginPath();
+                ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2, false);
+                ctx.fillStyle = this.color;
+                ctx.fill();
+            }
+            update() {
+                if(this.x > canvas.width || this.x < 0) this.directionX = -this.directionX;
+                if(this.y > canvas.height || this.y < 0) this.directionY = -this.directionY;
+                this.x += this.directionX;
+                this.y += this.directionY;
+                this.draw();
+            }
+        }
+
+        function init() {
+            particlesArray = [];
+            let numberOfParticles = (canvas.height * canvas.width) / 12000;
+            for(let i=0; i<numberOfParticles; i++) {
+                let size = (Math.random() * 2) + 1;
+                let x = (Math.random() * ((innerWidth - size * 2) - (size * 2)) + size * 2);
+                let y = (Math.random() * ((innerHeight - size * 2) - (size * 2)) + size * 2);
+                let directionX = (Math.random() * 0.8) - 0.4;
+                let directionY = (Math.random() * 0.8) - 0.4;
+                let color = colors[Math.floor(Math.random() * colors.length)];
+                particlesArray.push(new Particle(x, y, directionX, directionY, size, color));
+            }
+        }
+
+        function animate() {
+            requestAnimationFrame(animate);
+            ctx.clearRect(0,0,innerWidth, innerHeight);
+            for(let i=0; i<particlesArray.length; i++) {
+                particlesArray[i].update();
+            }
+            connect();
+        }
+
+        function connect() {
+            let opacityValue = 1;
+            for(let a=0; a<particlesArray.length; a++) {
+                for(let b=a; b<particlesArray.length; b++) {
+                    let distance = ((particlesArray[a].x - particlesArray[b].x) * (particlesArray[a].x - particlesArray[b].x)) + 
+                                   ((particlesArray[a].y - particlesArray[b].y) * (particlesArray[a].y - particlesArray[b].y));
+                    if(distance < (canvas.width/7) * (canvas.height/7)) {
+                        opacityValue = 1 - (distance/15000);
+                        ctx.strokeStyle = 'rgba(24, 160, 251,' + opacityValue + ')';
+                        ctx.lineWidth = 0.8;
+                        ctx.beginPath();
+                        ctx.moveTo(particlesArray[a].x, particlesArray[a].y);
+                        ctx.lineTo(particlesArray[b].x, particlesArray[b].y);
+                        ctx.stroke();
+                    }
+                }
+            }
+        }
+
+        window.addEventListener('resize', () => {
+            canvas.width = innerWidth; canvas.height = innerHeight; init();
+        });
+
+        init();
+        animate();
+    </script>
 </body>
 </html>
