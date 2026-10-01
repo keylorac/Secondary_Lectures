@@ -21,8 +21,16 @@
         header h1 { color: var(--primary); font-size: 2.2rem; }
         header p { color: var(--secondary); font-weight: 600; }
         
-        .container { max-width: 800px; margin: 0 auto; }
+        .container { max-width: 850px; margin: 0 auto; }
         
+        .section-title {
+            color: var(--primary);
+            border-bottom: 3px solid var(--secondary);
+            padding-bottom: 0.5rem;
+            margin: 2rem 0 1.5rem 0;
+            font-size: 1.4rem;
+        }
+
         .question-card {
             background: var(--card-bg);
             border-radius: 10px;
@@ -32,8 +40,9 @@
             border-left: 5px solid var(--secondary);
         }
         
-        .question { font-weight: 600; margin-bottom: 1rem; font-size: 1.1rem; }
-        
+        .question { font-weight: 600; margin-bottom: 1rem; font-size: 1.05rem; line-height: 1.6; }
+        .formula-hint { font-style: italic; color: #555; background: #eef7fe; padding: 0.5rem 1rem; border-radius: 5px; margin-bottom: 1rem; font-size: 0.9rem; }
+
         .btn-answer {
             background-color: var(--secondary);
             color: white;
@@ -53,6 +62,7 @@
             border-left: 4px solid #548235;
             display: none;
             border-radius: 5px;
+            line-height: 1.6;
         }
         
         .back-link {
@@ -69,44 +79,81 @@
 
     <div class="container">
         <header>
-            <h1>Práctica: Movimiento Parabólico</h1>
+            <h1>Práctica Integral: Movimiento Parabólico</h1>
             <p>10th Grade | Physics - Prof. Keylor Arley</p>
         </header>
 
-        <!-- Pregunta 1 -->
+        <!-- PARTE I: CONCEPTOS FUNDAMENTALES -->
+        <h2 class="section-title">Parte I: Análisis Cualitativo y Conceptual</h2>
+
         <div class="question-card">
-            <div class="question">1. De acuerdo con los principios del lanzamiento horizontal, ¿de qué depende el tiempo que tardan los objetos en llegar al suelo? ¿Tiene la velocidad horizontal inicial algún efecto en el tiempo de caída?</div>
+            <div class="question">1. De acuerdo con los principios del movimiento de proyectiles, ¿de qué depende el tiempo que tarda un objeto lanzado horizontalmente en llegar al suelo? ¿Tiene la velocidad horizontal inicial algún efecto en el tiempo de caída?</div>
             <button class="btn-answer" onclick="toggleAnswer('ans1')">Ver Respuesta</button>
             <div id="ans1" class="answer">
-                El tiempo de caída depende únicamente de la altura (y de la gravedad). La velocidad horizontal ($V_x$) no afecta en absoluto el tiempo que tarda el objeto en caer, solo afecta la distancia horizontal alcanzada.
+                El tiempo de caída depende <strong>exclusivamente de la altura vertical ($y$) y de la gravedad ($g$)</strong>. La velocidad horizontal ($v_x$) no afecta en nada el tiempo de caída, solo determina el alcance horizontal ($x$)[cite: 3, 4].
             </div>
         </div>
 
-        <!-- Pregunta 2 -->
         <div class="question-card">
-            <div class="question">2. Analice la situación de un avión que vuela con Movimiento Rectilíneo Uniforme (M.R.U.) y deja caer una bomba. ¿Por qué la bomba se mantiene en todo momento directamente debajo del avión que la lanzó mientras cae?</div>
+            <div class="question">2. Un avión vuela horizontalmente a velocidad constante y suelta un paquete. Ignorando la resistencia del aire, ¿por qué el paquete se mantiene en todo momento directamente debajo del avión mientras cae?</div>
             <button class="btn-answer" onclick="toggleAnswer('ans2')">Ver Respuesta</button>
             <div id="ans2" class="answer">
-                Aunque la velocidad vertical ($V_y$) va cambiando debido a la gravedad, la velocidad horizontal ($V_x$) permanece constante (ignorando la fricción del aire). Por lo tanto, la bomba avanza horizontalmente a la misma velocidad que el avión.
+                Porque en el eje horizontal no actúa ninguna fuerza ($a_x = 0$), por lo que la velocidad horizontal ($v_x$) se mantiene constante durante todo el vuelo ($MRU$)[cite: 3, 4]. Tanto el avión como el paquete avanzan horizontalmente a la misma velocidad.
             </div>
         </div>
 
-        <!-- Pregunta 3 -->
         <div class="question-card">
-            <div class="question">3. En un movimiento parabólico completo (lanzamiento de proyectil con ángulo), ¿cuál es el valor de la velocidad vertical ($V_y$) en el punto más alto de la trayectoria?</div>
+            <div class="question">3. En un lanzamiento parabólico con ángulo $\theta$, ¿cuál es el valor de la velocidad vertical ($v_y$) y de la velocidad total en el punto más alto de la trayectoria?</div>
             <button class="btn-answer" onclick="toggleAnswer('ans3')">Ver Respuesta</button>
             <div id="ans3" class="answer">
-                Al igual que en caída libre, en el punto más alto de la trayectoria la velocidad vertical ($V_y$) es de 0 m/s.
+                En el punto más alto, la velocidad vertical es <strong>$v_y = 0\text{ m/s}$</strong>[cite: 3, 4]. Sin embargo, la velocidad del cuerpo <strong>no es cero</strong>, sino que es exactamente igual a su componente horizontal ($v_x = v_{x0}$).
             </div>
         </div>
 
-        <!-- Pregunta 4 -->
+        <!-- PARTE II: RESOLUCIÓN DE PROBLEMAS Y ECUACIONES -->
+        <h2 class="section-title">Parte II: Resolución de Problemas con Formulario</h2>
+
+        <!-- Problema 4 -->
         <div class="question-card">
-            <div class="question">4. Problema de cálculo: Un objeto se lanza horizontalmente desde una altura de 2 m con una velocidad inicial de 1 m/s. Calcule: <br>a) El tiempo que tarda en llegar al suelo.<br>b) La distancia horizontal que recorre.</div>
+            <div class="question">4. Descomposición de Vectores: Se dispara un proyectil con una velocidad inicial de $v_0 = 50\text{ m/s}$ y un ángulo de elevación de $\theta = 37^\circ$. Calcule las componentes iniciales de la velocidad ($v_{x0}$ y $v_{y0}$).</div>
+            <div class="formula-hint">Fórmulas: $v_{x0} = v_0 \cos\theta \quad | \quad v_{y0} = v_0 \sin\theta$[cite: 3]</div>
             <button class="btn-answer" onclick="toggleAnswer('ans4')">Ver Respuesta</button>
             <div id="ans4" class="answer">
-                <strong>a)</strong> Despejando el tiempo de la fórmula $d = V_i \cdot t + \frac{1}{2} a \cdot t^2$ (con $V_i = 0$ en Y, $d = 2m$ y $a = 9,8 m/s^2$), el tiempo es <strong>$t = 0,64 s$</strong>.<br>
-                <strong>b)</strong> Como en X la velocidad es constante, se usa $d = v \cdot t$. Entonces $d = 1 m/s \cdot 0,64 s =$ <strong>$0,64 m$</strong>.
+                • <strong>Componente Horizontal ($v_{x0}$):</strong> $50 \cdot \cos(37^\circ) \approx \mathbf{39.93\text{ m/s}}$[cite: 3]<br>
+                • <strong>Componente Vertical ($v_{y0}$):</strong> $50 \cdot \sin(37^\circ) \approx \mathbf{30.09\text{ m/s}}$[cite: 3]
+            </div>
+        </div>
+
+        <!-- Problema 5 -->
+        <div class="question-card">
+            <div class="question">5. Tiempo de Subida y Altura Máxima: Para el proyectil del problema anterior ($v_{y0} \approx 30.09\text{ m/s}$ y $g = 9.8\text{ m/s}^2$), determine: <br>a) El tiempo que tarda en alcanzar la altura máxima ($t_{\text{subida}}$).<br>b) La altura máxima alcanzada ($y_{\text{max}}$).</div>
+            <div class="formula-hint">Fórmulas: $t_{\text{subida}} = \frac{v_{y0}}{g} \quad | \quad y_{\text{max}} = \frac{v_{y0}^2}{2g}$[cite: 3]</div>
+            <button class="btn-answer" onclick="toggleAnswer('ans5')">Ver Respuesta</button>
+            <div id="ans5" class="answer">
+                <strong>a) Tiempo de subida:</strong> $t_{\text{subida}} = \frac{30.09}{9.8} = \mathbf{3.07\text{ s}}$[cite: 3]<br>
+                <strong>b) Altura máxima:</strong> $y_{\text{max}} = \frac{(30.09)^2}{2 \cdot 9.8} = \frac{905.4}{19.6} = \mathbf{46.19\text{ m}}$[cite: 3]
+            </div>
+        </div>
+
+        <!-- Problema 6 -->
+        <div class="question-card">
+            <div class="question">6. Alcance Horizontal Total ($R$): Un cañón dispara un proyectil con velocidad $v_0 = 40\text{ m/s}$ y un ángulo $\theta = 30^\circ$. Calcule la distancia horizontal total alcanzada ($R$).</div>
+            <div class="formula-hint">Fórmula: $R = \frac{v_0^2 \sin(2\theta)}{g}$[cite: 3]</div>
+            <button class="btn-answer" onclick="toggleAnswer('ans6')">Ver Respuesta</button>
+            <div id="ans6" class="answer">
+                Sustituyendo los datos ($2\theta = 60^\circ$):<br>
+                $R = \frac{(40)^2 \cdot \sin(60^\circ)}{9.8} = \frac{1600 \cdot 0.866}{9.8} = \frac{1385.6}{9.8} = \mathbf{141.38\text{ m}}$[cite: 3]
+            </div>
+        </div>
+
+        <!-- Problema 7 -->
+        <div class="question-card">
+            <div class="question">7. Lanzamiento Horizontal: Un objeto se lanza horizontalmente desde la azotea de un edificio de $20\text{ m}$ de altura con una velocidad de $15\text{ m/s}$. Calcule: <br>a) El tiempo que tarda en llegar al suelo.<br>b) El alcance horizontal ($x$).</div>
+            <div class="formula-hint">Fórmulas: $y(t) = \frac{1}{2}g t^2 \quad | \quad x(t) = v_{x0} \cdot t$[cite: 3]</div>
+            <button class="btn-answer" onclick="toggleAnswer('ans7')">Ver Respuesta</button>
+            <div id="ans7" class="answer">
+                <strong>a) Tiempo de caída:</strong> Despejando $t = \sqrt{\frac{2y}{g}} = \sqrt{\frac{2 \cdot 20}{9.8}} = \sqrt{4.08} = \mathbf{2.02\text{ s}}$[cite: 3, 4]<br>
+                <strong>b) Alcance horizontal:</strong> $x = 15\text{ m/s} \cdot 2.02\text{ s} = \mathbf{30.3\text{ m}}$[cite: 3]
             </div>
         </div>
 
