@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Práctica: Movimiento Parabólico | MCS</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #0d233a;
+            --secondary: #18a0fb;
+            --accent: #ffc107;
+            --bg: #f4f7f9;
+            --card-bg: #ffffff;
+            --text-dark: #2c3e50;
+        }
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Poppins', sans-serif; }
+        body { background-color: var(--bg); color: var(--text-dark); padding: 2rem; }
+        
+        header { text-align: center; margin-bottom: 3rem; }
+        header h1 { color: var(--primary); font-size: 2.2rem; }
+        header p { color: var(--secondary); font-weight: 600; }
+        
+        .container { max-width: 800px; margin: 0 auto; }
+        
+        .question-card {
+            background: var(--card-bg);
+            border-radius: 10px;
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+            border-left: 5px solid var(--secondary);
+        }
+        
+        .question { font-weight: 600; margin-bottom: 1rem; font-size: 1.1rem; }
+        
+        .btn-answer {
+            background-color: var(--secondary);
+            color: white;
+            border: none;
+            padding: 0.5rem 1rem;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: background 0.3s;
+        }
+        .btn-answer:hover { background-color: #0d8ce0; }
+        
+        .answer {
+            margin-top: 1rem;
+            padding: 1rem;
+            background-color: #e2f0d9;
+            border-left: 4px solid #548235;
+            display: none;
+            border-radius: 5px;
+        }
+        
+        .back-link {
+            display: inline-block;
+            margin-top: 2rem;
+            text-decoration: none;
+            color: var(--primary);
+            font-weight: 600;
+        }
+        .back-link:hover { color: var(--secondary); }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <header>
+            <h1>Práctica: Movimiento Parabólico</h1>
+            <p>10th Grade | Physics - Prof. Keylor Arley</p>
+        </header>
+
+        <!-- Pregunta 1 -->
+        <div class="question-card">
+            <div class="question">1. De acuerdo con los principios del lanzamiento horizontal, ¿de qué depende el tiempo que tardan los objetos en llegar al suelo? ¿Tiene la velocidad horizontal inicial algún efecto en el tiempo de caída?</div>
+            <button class="btn-answer" onclick="toggleAnswer('ans1')">Ver Respuesta</button>
+            <div id="ans1" class="answer">
+                El tiempo de caída depende únicamente de la altura (y de la gravedad). La velocidad horizontal ($V_x$) no afecta en absoluto el tiempo que tarda el objeto en caer, solo afecta la distancia horizontal alcanzada.
+            </div>
+        </div>
+
+        <!-- Pregunta 2 -->
+        <div class="question-card">
+            <div class="question">2. Analice la situación de un avión que vuela con Movimiento Rectilíneo Uniforme (M.R.U.) y deja caer una bomba. ¿Por qué la bomba se mantiene en todo momento directamente debajo del avión que la lanzó mientras cae?</div>
+            <button class="btn-answer" onclick="toggleAnswer('ans2')">Ver Respuesta</button>
+            <div id="ans2" class="answer">
+                Aunque la velocidad vertical ($V_y$) va cambiando debido a la gravedad, la velocidad horizontal ($V_x$) permanece constante (ignorando la fricción del aire). Por lo tanto, la bomba avanza horizontalmente a la misma velocidad que el avión.
+            </div>
+        </div>
+
+        <!-- Pregunta 3 -->
+        <div class="question-card">
+            <div class="question">3. En un movimiento parabólico completo (lanzamiento de proyectil con ángulo), ¿cuál es el valor de la velocidad vertical ($V_y$) en el punto más alto de la trayectoria?</div>
+            <button class="btn-answer" onclick="toggleAnswer('ans3')">Ver Respuesta</button>
+            <div id="ans3" class="answer">
+                Al igual que en caída libre, en el punto más alto de la trayectoria la velocidad vertical ($V_y$) es de 0 m/s.
+            </div>
+        </div>
+
+        <!-- Pregunta 4 -->
+        <div class="question-card">
+            <div class="question">4. Problema de cálculo: Un objeto se lanza horizontalmente desde una altura de 2 m con una velocidad inicial de 1 m/s. Calcule: <br>a) El tiempo que tarda en llegar al suelo.<br>b) La distancia horizontal que recorre.</div>
+            <button class="btn-answer" onclick="toggleAnswer('ans4')">Ver Respuesta</button>
+            <div id="ans4" class="answer">
+                <strong>a)</strong> Despejando el tiempo de la fórmula $d = V_i \cdot t + \frac{1}{2} a \cdot t^2$ (con $V_i = 0$ en Y, $d = 2m$ y $a = 9,8 m/s^2$), el tiempo es <strong>$t = 0,64 s$</strong>.<br>
+                <strong>b)</strong> Como en X la velocidad es constante, se usa $d = v \cdot t$. Entonces $d = 1 m/s \cdot 0,64 s =$ <strong>$0,64 m$</strong>.
+            </div>
+        </div>
+
+        <a href="index.html" class="back-link">← Volver al Hub de Ciencias</a>
+    </div>
+
+    <script>
+        function toggleAnswer(id) {
+            var element = document.getElementById(id);
+            if (element.style.display === "block") {
+                element.style.display = "none";
+            } else {
+                element.style.display = "block";
+            }
+        }
+    </script>
+</body>
+</html>
