@@ -6,6 +6,20 @@
     <title>Physics & Science Hub | Monterrey Christian School</title>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
     <style>
+        /* Estilos para las Figuras 3D */
+        .icon-3d {
+            width: 48px;
+            height: 48px;
+            margin: 0 auto 0.8rem auto;
+            filter: drop-shadow(0px 6px 8px rgba(0,0,0,0.15));
+            transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+        .category-item:hover .icon-3d {
+            transform: translateY(-8px) scale(1.15) rotate(5deg);
+        }
+        .category-item {
+            align-items: center; /* Centrar contenido */
+        }
         :root {
             --primary: #0d233a;
             --secondary: #18a0fb;
@@ -192,21 +206,43 @@
                 <span class="tag">Physical Science</span>
             </div>
             <div class="categories-grid">
+                <!-- Presentaciones: Cilindro 3D -->
                 <a href="mua-9th-grade.html" class="category-item">
-                    <span class="category-icon">📊</span>Presentaciones
+                    <svg class="icon-3d" viewBox="0 0 100 100">
+                        <defs><linearGradient id="cyl1" x1="0%" y1="0%" x2="100%" y2="0%"><stop offset="0%" stop-color="#4facfe"/><stop offset="50%" stop-color="#00f2fe"/><stop offset="100%" stop-color="#4facfe"/></linearGradient></defs>
+                        <ellipse cx="50" cy="25" rx="35" ry="15" fill="#c3e8ff"/>
+                        <rect x="15" y="25" width="70" height="50" fill="url(#cyl1)"/>
+                        <ellipse cx="50" cy="75" rx="35" ry="15" fill="#00c6ff"/>
+                    </svg>
+                    Presentaciones
                 </a>
-                <!-- CÓDIGO ACTUALIZADO -->
-                <a href="practica-mua.html" class="category-item" style="border-color: #3182ce; color: #2b6cb0; background-color: #ebf8ff;">
-                    <span class="category-icon">📝</span>Prácticas
+                
+                <!-- Animaciones: Esfera 3D -->
+                <a href="#" class="category-item" style="border-color: #f59e0b; color: #d97706; background-color: #fffbeb;">
+                    <svg class="icon-3d" viewBox="0 0 100 100">
+                        <defs><radialGradient id="sph1" cx="35%" cy="35%" r="65%"><stop offset="0%" stop-color="#fcd34d"/><stop offset="100%" stop-color="#d97706"/></radialGradient></defs>
+                        <circle cx="50" cy="50" r="40" fill="url(#sph1)" />
+                        <polygon points="42,35 42,65 65,50" fill="#fff" opacity="0.9"/>
+                    </svg>
+                    Animaciones
                 </a>
+
+                <!-- Prácticas: Cubo 3D -->
                 <a href="#" class="category-item disabled">
-                    <span class="category-icon">⭐</span>Práctica Calificada
+                    <svg class="icon-3d" viewBox="0 0 100 100">
+                        <defs><linearGradient id="cubeT1" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#e2e8f0"/><stop offset="100%" stop-color="#cbd5e1"/></linearGradient><linearGradient id="cubeL1" x1="0%" y1="0%" x2="0%" y2="100%"><stop offset="0%" stop-color="#94a3b8"/><stop offset="100%" stop-color="#64748b"/></linearGradient><linearGradient id="cubeR1" x1="0%" y1="0%" x2="0%" y2="100%"><stop offset="0%" stop-color="#cbd5e1"/><stop offset="100%" stop-color="#94a3b8"/></linearGradient></defs>
+                        <polygon points="50,15 85,35 50,55 15,35" fill="url(#cubeT1)"/><polygon points="15,35 50,55 50,90 15,70" fill="url(#cubeL1)"/><polygon points="85,35 50,55 50,90 85,70" fill="url(#cubeR1)"/>
+                    </svg>
+                    Prácticas
                 </a>
+
+                <!-- Evaluaciones: Pirámide 3D -->
                 <a href="#" class="category-item disabled">
-                    <span class="category-icon">⏱️</span>Quices
-                </a>
-                <a href="#" class="category-item disabled">
-                    <span class="category-icon">🎓</span>Exámenes
+                    <svg class="icon-3d" viewBox="0 0 100 100">
+                        <defs><linearGradient id="pyrL1" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#f87171"/><stop offset="100%" stop-color="#dc2626"/></linearGradient><linearGradient id="pyrR1" x1="0%" y1="0%" x2="0%" y2="100%"><stop offset="0%" stop-color="#fca5a5"/><stop offset="100%" stop-color="#ef4444"/></linearGradient></defs>
+                        <polygon points="50,15 15,80 50,90" fill="url(#pyrL1)"/><polygon points="50,15 85,80 50,90" fill="url(#pyrR1)"/>
+                    </svg>
+                    Exámenes
                 </a>
             </div>
         </section>
@@ -221,20 +257,31 @@
                 <span class="tag">Physics</span>
             </div>
             <div class="categories-grid">
+                <!-- Presentaciones -->
                 <a href="MovimientoParabolico.html" class="category-item">
-                    <span class="category-icon">📊</span>Presentaciones
+                    <svg class="icon-3d" viewBox="0 0 100 100"><ellipse cx="50" cy="25" rx="35" ry="15" fill="#c3e8ff"/><rect x="15" y="25" width="70" height="50" fill="url(#cyl1)"/><ellipse cx="50" cy="75" rx="35" ry="15" fill="#00c6ff"/></svg>
+                    Presentaciones
                 </a>
-                <!-- Práctica Movimiento Parabólico -->
+                
+                <!-- Animaciones -->
+                <a href="#" class="category-item" style="border-color: #f59e0b; color: #d97706; background-color: #fffbeb;">
+                    <svg class="icon-3d" viewBox="0 0 100 100"><circle cx="50" cy="50" r="40" fill="url(#sph1)" /><polygon points="42,35 42,65 65,50" fill="#fff" opacity="0.9"/></svg>
+                    Animaciones
+                </a>
+
+                <!-- Prácticas (Movimiento Parabólico activo) -->
                 <a href="practica-parabolico.html" class="category-item" style="border-color: #3182ce; color: #2b6cb0; background-color: #ebf8ff;">
-                    <span class="category-icon">📝</span>Prácticas
+                    <svg class="icon-3d" viewBox="0 0 100 100">
+                        <defs><linearGradient id="cubeT2" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#93c5fd"/><stop offset="100%" stop-color="#60a5fa"/></linearGradient><linearGradient id="cubeL2" x1="0%" y1="0%" x2="0%" y2="100%"><stop offset="0%" stop-color="#3b82f6"/><stop offset="100%" stop-color="#1d4ed8"/></linearGradient><linearGradient id="cubeR2" x1="0%" y1="0%" x2="0%" y2="100%"><stop offset="0%" stop-color="#60a5fa"/><stop offset="100%" stop-color="#2563eb"/></linearGradient></defs>
+                        <polygon points="50,15 85,35 50,55 15,35" fill="url(#cubeT2)"/><polygon points="15,35 50,55 50,90 15,70" fill="url(#cubeL2)"/><polygon points="85,35 50,55 50,90 85,70" fill="url(#cubeR2)"/>
+                    </svg>
+                    Prácticas
                 </a>
-                <!-- Examen Histórico III Quarter -->
-                <a href="10th_IQuiz.html" class="category-item disabled" style="border-color: #cbd5e0; background-color: #f8fafc;">
-                    <span class="category-icon">📁</span>Quiz III Q.
-                </a>
-                <!-- Espacio listo para el IV Quarter -->
-                <a href="#" class="category-item disabled" style="border-color: #38a169; color: #2f855a; background-color: #f0fff4;">
-                    <span class="category-icon">⭐</span>Examen IV Q. (Próximamente)
+
+                <!-- Evaluaciones (Quiz y Examen) -->
+                <a href="10th_IQuiz.html" class="category-item" style="border-color: #cbd5e0; background-color: #f8fafc;">
+                    <svg class="icon-3d" viewBox="0 0 100 100"><polygon points="50,15 15,80 50,90" fill="url(#pyrL1)"/><polygon points="50,15 85,80 50,90" fill="url(#pyrR1)"/></svg>
+                    Quiz III Q.
                 </a>
             </div>
         </section>
@@ -249,27 +296,40 @@
                 <span class="tag" style="background: #4a5568;">Advanced Physics</span>
             </div>
             <div class="categories-grid">
-                <a href="#" class="category-item disabled"><span class="category-icon">📊</span>Presentaciones</a>
-                
-                <!-- Prácticas Antiguas -->
-                <a href="URL_AQUI.html" class="category-item"><span class="category-icon">📝</span>Práctica PNE</a>
-                <a href="URL_AQUI.html" class="category-item"><span class="category-icon">⭐</span>Práctica Calificada</a>
+                <!-- Presentaciones -->
+                <a href="#" class="category-item disabled">
+                    <svg class="icon-3d" viewBox="0 0 100 100"><ellipse cx="50" cy="25" rx="35" ry="15" fill="#e2e8f0"/><rect x="15" y="25" width="70" height="50" fill="#cbd5e1"/><ellipse cx="50" cy="75" rx="35" ry="15" fill="#94a3b8"/></svg>
+                    Presentaciones
+                </a>
 
+                <!-- Animaciones -->
+                <a href="#" class="category-item" style="border-color: #f59e0b; color: #d97706; background-color: #fffbeb;">
+                    <svg class="icon-3d" viewBox="0 0 100 100"><circle cx="50" cy="50" r="40" fill="url(#sph1)" /><polygon points="42,35 42,65 65,50" fill="#fff" opacity="0.9"/></svg>
+                    Animaciones
+                </a>
+                
                 <!-- Práctica PNE 2 -->
                 <a href="PNEPractica2.html" class="category-item" style="border-color: #3182ce; color: #2b6cb0; background-color: #ebf8ff;">
-                    <span class="category-icon">📝</span>Práctica PNE 2
+                    <svg class="icon-3d" viewBox="0 0 100 100"><polygon points="50,15 85,35 50,55 15,35" fill="url(#cubeT2)"/><polygon points="15,35 50,55 50,90 15,70" fill="url(#cubeL2)"/><polygon points="85,35 50,55 50,90 85,70" fill="url(#cubeR2)"/></svg>
+                    Práctica PNE 2
                 </a>
 
-                <!-- NUEVA PRÁCTICA PNE 3 (Estilo PISA) -->
+                <!-- Práctica PNE 3 -->
                 <a href="PNEPractica3.html" class="category-item" style="border-color: #0d9488; color: #0f766e; background-color: #f0fdfa;">
-                    <span class="category-icon">💡</span>Práctica PNE 3
+                    <svg class="icon-3d" viewBox="0 0 100 100">
+                        <defs><linearGradient id="cubeT3" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#5eead4"/><stop offset="100%" stop-color="#14b8a6"/></linearGradient><linearGradient id="cubeL3" x1="0%" y1="0%" x2="0%" y2="100%"><stop offset="0%" stop-color="#0d9488"/><stop offset="100%" stop-color="#0f766e"/></linearGradient><linearGradient id="cubeR3" x1="0%" y1="0%" x2="0%" y2="100%"><stop offset="0%" stop-color="#14b8a6"/><stop offset="100%" stop-color="#0f766e"/></linearGradient></defs>
+                        <polygon points="50,15 85,35 50,55 15,35" fill="url(#cubeT3)"/><polygon points="15,35 50,55 50,90 15,70" fill="url(#cubeL3)"/><polygon points="85,35 50,55 50,90 85,70" fill="url(#cubeR3)"/>
+                    </svg>
+                    Práctica PISA PNE 3
                 </a>
                 
-                <a href="#" class="category-item disabled"><span class="category-icon">⏱️</span>Quices</a>
-                <a href="#" class="category-item disabled"><span class="category-icon">🎓</span>Exámenes</a>
+                <!-- Evaluaciones -->
+                <a href="#" class="category-item disabled">
+                    <svg class="icon-3d" viewBox="0 0 100 100"><polygon points="50,15 15,80 50,90" fill="#9ca3af"/><polygon points="50,15 85,80 50,90" fill="#d1d5db"/></svg>
+                    Exámenes
+                </a>
             </div>
         </section>
-       
 
     </main>
 
