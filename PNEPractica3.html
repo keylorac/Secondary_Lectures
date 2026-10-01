@@ -1,0 +1,585 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Práctica PNE Física - Estilo PISA</title>
+    
+    <!-- Fuentes y KaTeX -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/katex.min.css">
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/katex.min.js"></script>
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/contrib/auto-render.min.js" onload="renderMathInElement(document.body);"></script>
+
+    <style>
+        /* NUEVA PALETA DE COLORES (Teal & Amber) */
+        :root {
+            --primary: #0f766e;       /* Teal 600 */
+            --primary-hover: #0d9488; /* Teal 500 */
+            --secondary: #d97706;     /* Amber 600 */
+            --secondary-hover: #f59e0b;/* Amber 500 */
+            --bg-body: #f8fafc;       /* Slate 50 */
+            --bg-card: #ffffff;
+            --text-main: #334155;     /* Slate 700 */
+            --text-light: #64748b;    /* Slate 500 */
+            --context-bg: #fef9c3;    /* Amarillo suave PISA */
+            --border-color: #e2e8f0;
+            --correct: #16a34a;       /* Green 600 */
+            --incorrect: #dc2626;     /* Red 600 */
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Poppins', sans-serif; }
+        
+        body {
+            background-color: var(--bg-body);
+            color: var(--text-main);
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+        }
+
+        header {
+            background: linear-gradient(135deg, var(--primary) 0%, #042f2e 100%);
+            color: white;
+            padding: 2rem 1rem;
+            text-align: center;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+        }
+
+        header h1 { font-size: 2rem; margin-bottom: 0.5rem; }
+        header p { font-size: 1rem; opacity: 0.9; }
+
+        main {
+            flex: 1;
+            max-width: 900px;
+            margin: 2rem auto;
+            width: 95%;
+            background: var(--bg-card);
+            border-radius: 12px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.05);
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .progress-bar {
+            height: 8px;
+            background: var(--border-color);
+            width: 100%;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: var(--secondary);
+            width: 0%;
+            transition: width 0.4s ease;
+        }
+
+        .question-container {
+            padding: 2.5rem;
+        }
+
+        .question-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+            border-bottom: 2px solid var(--border-color);
+            padding-bottom: 0.5rem;
+        }
+
+        .question-number { font-weight: 700; color: var(--primary); font-size: 1.2rem; }
+        .topic-tag { background: var(--border-color); padding: 0.3rem 0.8rem; border-radius: 20px; font-size: 0.85rem; font-weight: 600; color: var(--text-light); }
+
+        /* Estilo idéntico a la imagen (Fondo amarillo) */
+        .context-box {
+            background-color: var(--context-bg);
+            border: 1px solid #fde047;
+            padding: 1.5rem;
+            border-radius: 8px;
+            margin-bottom: 1.5rem;
+            color: #422006;
+            font-size: 1.05rem;
+            line-height: 1.6;
+        }
+
+        .question-text {
+            font-size: 1.15rem;
+            font-weight: 600;
+            margin-bottom: 1.5rem;
+            color: var(--text-main);
+        }
+
+        .options-list {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+
+        .option-btn {
+            background: var(--bg-body);
+            border: 2px solid var(--border-color);
+            border-radius: 8px;
+            padding: 1rem 1.5rem;
+            font-size: 1rem;
+            text-align: left;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            color: var(--text-main);
+        }
+
+        .option-btn:hover {
+            border-color: var(--primary-hover);
+            background: #f0fdfa;
+        }
+
+        .option-btn.selected {
+            border-color: var(--primary);
+            background: #ccfbf1;
+            font-weight: 600;
+        }
+
+        .option-letter {
+            font-weight: 700;
+            margin-right: 1rem;
+            color: var(--primary);
+        }
+
+        .controls {
+            display: flex;
+            justify-content: space-between;
+            padding: 1.5rem 2.5rem;
+            background: var(--bg-body);
+            border-top: 1px solid var(--border-color);
+        }
+
+        button.nav-btn {
+            padding: 0.8rem 1.5rem;
+            border: none;
+            border-radius: 6px;
+            font-weight: 600;
+            cursor: pointer;
+            font-size: 1rem;
+            transition: background 0.2s;
+        }
+
+        .btn-prev { background: var(--border-color); color: var(--text-main); }
+        .btn-prev:hover:not(:disabled) { background: #cbd5e1; }
+        .btn-next { background: var(--primary); color: white; }
+        .btn-next:hover { background: var(--primary-hover); }
+        .btn-submit { background: var(--secondary); color: white; display: none; }
+        .btn-submit:hover { background: var(--secondary-hover); }
+        
+        button:disabled { opacity: 0.5; cursor: not-allowed; }
+
+        /* Pantalla de Resultados */
+        #results-screen { display: none; padding: 3rem; text-align: center; }
+        .score-circle {
+            width: 150px; height: 150px; border-radius: 50%;
+            background: var(--primary); color: white;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 3rem; font-weight: 700; margin: 0 auto 2rem;
+            border: 8px solid #ccfbf1;
+        }
+
+        @media(max-width: 600px) {
+            .question-container { padding: 1.5rem; }
+            .controls { padding: 1rem 1.5rem; }
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <h1>Prueba Nacional Estandarizada - Física</h1>
+        <p>Formato de Análisis y Contexto (Estilo PISA)</p>
+    </header>
+
+    <main id="quiz-app">
+        <div class="progress-bar"><div class="progress-fill" id="progress"></div></div>
+        
+        <div class="question-container" id="question-screen">
+            <div class="question-header">
+                <span class="question-number">Pregunta <span id="q-num">1</span> de 20</span>
+                <span class="topic-tag" id="q-topic">Vectores</span>
+            </div>
+            
+            <!-- Caja de Contexto (Estilo amarillo de la imagen) -->
+            <div class="context-box" id="q-context">
+                <!-- Contexto se inyecta aquí -->
+            </div>
+
+            <div class="question-text" id="q-text">
+                <!-- Pregunta se inyecta aquí -->
+            </div>
+
+            <div class="options-list" id="q-options">
+                <!-- Opciones se inyectan aquí -->
+            </div>
+        </div>
+
+        <div class="controls" id="quiz-controls">
+            <button class="nav-btn btn-prev" id="btn-prev" onclick="prevQuestion()" disabled>Anterior</button>
+            <button class="nav-btn btn-next" id="btn-next" onclick="nextQuestion()">Siguiente</button>
+            <button class="nav-btn btn-submit" id="btn-submit" onclick="showResults()">Evaluar Práctica</button>
+        </div>
+
+        <!-- Pantalla de Resultados -->
+        <div id="results-screen">
+            <h2 style="font-size: 2rem; color: var(--primary); margin-bottom: 1rem;">¡Práctica Completada!</h2>
+            <div class="score-circle"><span id="final-score">0</span>/20</div>
+            <p style="font-size: 1.2rem; margin-bottom: 2rem; color: var(--text-light);" id="feedback-msg"></p>
+            <button class="nav-btn btn-next" onclick="location.reload()">Reintentar Práctica</button>
+        </div>
+    </main>
+
+    <script>
+        // BASE DE DATOS DE 20 PREGUNTAS (ESTILO PISA/PNE)
+        const questions = [
+            {
+                topic: "Vectores y Escalares",
+                context: "A Enrique le gusta construir y lanzar aviones de papel. Estos se desplazan de un punto A a un punto B, por lo general describen trayectorias curvas en el aire mostradas mediante una línea punteada imaginaria.",
+                question: "Un ejemplo de cantidad vectorial presente en la información anterior es",
+                options: [
+                    "la rapidez que alcanza el avión de papel durante el vuelo.",
+                    "el desplazamiento logrado por el avión de papel.",
+                    "el tiempo que dura el vuelo del avión de papel."
+                ],
+                correct: 1
+            },
+            {
+                topic: "Vectores y Escalares",
+                context: "A partir de la información del vuelo del avión de papel de Enrique, se derivan los siguientes datos experimentales:<br><br>I. Peso del avión de papel.<br>II. Tiempo de vuelo del avión.<br>III. Velocidad de vuelo del avión.",
+                question: "De los datos anteriores, se puede determinar conceptualmente que",
+                options: [
+                    "I es cantidad escalar, II y III son cantidades vectoriales.",
+                    "I y III son cantidades escalares y II es cantidad vectorial.",
+                    "I y III son cantidades vectoriales y II es cantidad escalar."
+                ],
+                correct: 2
+            },
+            {
+                topic: "Cinemática",
+                context: "Un estudiante viaja en autobús desde su casa hasta el colegio recorriendo 5 km. Al terminar las clases en la tarde, regresa exactamente por la misma ruta hasta la puerta de su casa.",
+                question: "Al analizar el viaje completo (ida y vuelta), es físicamente correcto afirmar que",
+                options: [
+                    "la distancia total recorrida es cero y el desplazamiento es 10 km.",
+                    "el desplazamiento total es cero y la distancia recorrida es 10 km.",
+                    "tanto la distancia como el desplazamiento son iguales a 10 km."
+                ],
+                correct: 1
+            },
+            {
+                topic: "Primera Ley de Newton",
+                context: "Durante una clase de educación física, se observa una bola de fútbol en reposo absoluto sobre el césped. Luego de unos minutos, un jugador la patea para cobrar un tiro libre.",
+                question: "Según la Primera Ley de Newton (Inercia), la bola que estaba inicialmente en reposo",
+                options: [
+                    "tiende a mantenerse en reposo hasta que la fuerza del pie actúe sobre ella.",
+                    "comienza a moverse sola debido a la fricción acumulada con el césped.",
+                    "requiere de una fuerza externa continua después del golpe para mantener su inercia."
+                ],
+                correct: 0
+            },
+            {
+                topic: "Tercera Ley de Newton",
+                context: "Una nadadora olímpica se encuentra apoyada en el borde de la piscina. Para iniciar la competencia, ella empuja fuertemente la pared con sus pies hacia atrás.",
+                question: "De acuerdo con el principio de Acción y Reacción, la nadadora se impulsa hacia adelante porque",
+                options: [
+                    "la pared ejerce una fuerza sobre ella de igual magnitud y en sentido contrario.",
+                    "la fuerza que ella aplica sobre el agua es mayor que la resistencia de la pared.",
+                    "su masa disminuye momentáneamente al entrar en contacto cinético con el agua."
+                ],
+                correct: 0
+            },
+            {
+                topic: "Energía Mecánica",
+                context: "Un carrito de montaña rusa se encuentra en el punto más alto de su recorrido metálico, momentáneamente en reposo, justo antes de descender por una rampa muy empinada.",
+                question: "Al comenzar a descender, y omitiendo la fricción con el riel, se cumple que",
+                options: [
+                    "su energía cinética se transforma gradualmente en energía potencial.",
+                    "su energía mecánica total aumenta conforme se acerca a la parte más baja.",
+                    "su energía potencial gravitatoria se transforma gradualmente en energía cinética."
+                ],
+                correct: 2
+            },
+            {
+                topic: "Trabajo Mecánico",
+                context: "Un estudiante carga su bulto de 10 kg en la espalda y camina horizontalmente a lo largo de un pasillo de 50 metros a velocidad constante para llegar a su aula.",
+                question: "El trabajo mecánico realizado por la fuerza de gravedad (peso del bulto) durante este desplazamiento es",
+                options: [
+                    "positivo, ya que el estudiante avanzó 50 metros hacia adelante.",
+                    "cero, porque la fuerza de la gravedad es perpendicular al desplazamiento horizontal.",
+                    "negativo, porque el peso siempre se opone al movimiento de los cuerpos."
+                ],
+                correct: 1
+            },
+            {
+                topic: "Caída Libre",
+                context: "En un experimento dentro de una cámara de vacío gigante (donde se ha extraído todo el aire), se dejan caer simultáneamente una bola de boliche pesada y una pluma de ave desde 10 metros de altura.",
+                question: "Al observar la caída en el vacío, el resultado físico correcto es que",
+                options: [
+                    "la bola de boliche llega primero al suelo por tener una masa mucho mayor.",
+                    "ambos objetos llegan al suelo al mismo tiempo porque caen con la misma aceleración.",
+                    "la pluma cae más rápido porque su densidad es menor que la de la bola."
+                ],
+                correct: 1
+            },
+            {
+                topic: "Cinemática",
+                context: "Un vehículo eléctrico viaja en línea recta con una velocidad constante de $20\\text{ m/s}$. De repente, un perro se cruza, el conductor aplica los frenos a fondo y el auto se detiene.",
+                question: "Durante el proceso de frenado, el vector de aceleración del vehículo",
+                options: [
+                    "tiene la misma dirección y el mismo sentido que el vector velocidad.",
+                    "es igual a cero, ya que el vehículo finalmente alcanza el reposo absoluto.",
+                    "tiene la misma dirección, pero sentido contrario al vector velocidad."
+                ],
+                correct: 2
+            },
+            {
+                topic: "Ley de Coulomb",
+                context: "Dos pequeñas esferas conductoras poseen cargas eléctricas puntuales positivas ($+q_1$ y $+q_2$) y se encuentran separadas a una distancia $r$ sobre una mesa aislante.",
+                question: "Según la Ley de Coulomb, la fuerza electrostática que experimentan ambas cargas es de",
+                options: [
+                    "atracción, y su magnitud disminuirá si se aumenta la distancia $r$ entre ellas.",
+                    "repulsión, y su magnitud disminuirá si se aumenta la distancia $r$ entre ellas.",
+                    "repulsión, y su magnitud aumentará drásticamente si se alejan las cargas."
+                ],
+                correct: 1
+            },
+            {
+                topic: "Electrostática",
+                context: "Un estudiante frota un globo de hule contra su suéter de lana. Al separarlo, nota que el globo es capaz de atraer pequeños pedacitos de papel picado que estaban en su escritorio.",
+                question: "Este fenómeno electrostático ocurre principalmente porque durante el frotamiento",
+                options: [
+                    "el suéter creó cargas eléctricas positivas nuevas que se inyectaron en el papel.",
+                    "hubo una transferencia de electrones entre los materiales, dejando al globo cargado.",
+                    "el rozamiento calentó el globo, generando una corriente de convección térmica."
+                ],
+                correct: 1
+            },
+            {
+                topic: "Potencia Mecánica",
+                context: "Una grúa en el puerto de Limón levanta un contenedor de carga a una altura de 15 metros en 20 segundos. Una segunda grúa levanta un contenedor idéntico a la misma altura, pero tarda 40 segundos.",
+                question: "Al comparar el trabajo y la potencia de ambas máquinas, es correcto afirmar que",
+                options: [
+                    "ambas realizan el mismo trabajo, pero la primera desarrolla mayor potencia.",
+                    "la primera realiza más trabajo y, por ende, desarrolla mucha más potencia.",
+                    "la segunda realiza el doble de trabajo debido a que estuvo activa el doble de tiempo."
+                ],
+                correct: 0
+            },
+            {
+                topic: "Movimiento Parabólico",
+                context: "Se patea una pelota de fútbol hacia arriba con un ángulo de inclinación de 45° respecto al césped, describiendo una parábola perfecta (despreciando la resistencia del aire).",
+                question: "En el punto más alto exacto de su trayectoria, el vector velocidad de la pelota",
+                options: [
+                    "es igual a cero en ambas componentes espaciales ($v_x = 0$ y $v_y = 0$).",
+                    "solo tiene componente horizontal ($v_x$), ya que la vertical ($v_y$) se vuelve cero.",
+                    "solo tiene componente vertical ($v_y$), ya que se detiene horizontalmente para caer."
+                ],
+                correct: 1
+            },
+            {
+                topic: "Movimiento Orbital",
+                context: "La Estación Espacial Internacional (ISS) orbita la Tierra a una altitud constante. La fuerza gravitacional terrestre tira continuamente de la estación hacia el centro del planeta.",
+                question: "El trabajo mecánico que realiza la fuerza de gravedad sobre la estación en una órbita circular es",
+                options: [
+                    "máximo, porque la fuerza de atracción planetaria es extremadamente grande.",
+                    "igual a la variación de su energía cinética orbital a lo largo del recorrido.",
+                    "cero, porque la fuerza gravitacional y el desplazamiento orbital son perpendiculares."
+                ],
+                correct: 2
+            },
+            {
+                topic: "Dinámica (Fricción)",
+                context: "Una persona intenta mover un refrigerador pesado empujándolo horizontalmente contra el piso de la cocina, pero el refrigerador no se mueve en lo absoluto.",
+                question: "En esta situación, la fuerza de fricción estática ejercida por el piso sobre el refrigerador",
+                options: [
+                    "es exactamente igual en magnitud y dirección a la fuerza de empuje de la persona.",
+                    "es igual en magnitud y opuesta a la fuerza aplicada por la persona.",
+                    "es nula, ya que el refrigerador aún no ha comenzado a desplazarse."
+                ],
+                correct: 1
+            },
+            {
+                topic: "Dinámica",
+                context: "Un paracaidista salta desde un avión en pleno vuelo. Después de unos segundos de caída libre, abre su paracaídas y alcanza una velocidad constante de descenso de 20 km/h (velocidad terminal).",
+                question: "Cuando el paracaidista desciende a esta velocidad constante, la fuerza neta sobre él es",
+                options: [
+                    "cero, porque su peso se equilibra exactamente con la resistencia del aire.",
+                    "igual a su peso, porque la gravedad terrestre no deja de actuar sobre su masa.",
+                    "mayor que su peso, porque se requiere un exceso de fuerza para frenar la caída."
+                ],
+                correct: 0
+            },
+            {
+                topic: "Calor y Energía",
+                context: "En un taller, se enfría rápidamente una herradura de hierro al rojo vivo sumergiéndola en una cubeta con agua a temperatura ambiente. El sistema está aislado.",
+                question: "Después de unos minutos se alcanza el equilibrio térmico. Esto significa físicamente que",
+                options: [
+                    "la herradura y el agua igualaron sus temperaturas finales.",
+                    "el hierro absorbió todo el frío del agua hasta congelarse superficialmente.",
+                    "el agua transfirió energía al hierro mediante ondas de calor."
+                ],
+                correct: 0
+            },
+            {
+                topic: "Conservación de la Energía",
+                context: "El motor de combustión de un automóvil transforma la energía química de la gasolina en energía mecánica (movimiento del eje) y genera una gran cantidad de calor que calienta el motor.",
+                question: "De acuerdo con el principio de conservación de la energía, la suma de la energía mecánica y el calor producido",
+                options: [
+                    "es menor que la energía química inicial debido a las pérdidas en el escape.",
+                    "es exactamente igual a la energía química contenida en la gasolina consumida.",
+                    "es mayor que la energía química si el motor fue diseñado con alta eficiencia."
+                ],
+                correct: 1
+            },
+            {
+                topic: "Movimiento Relativo",
+                context: "María viaja en un tren moderno que se mueve hacia el este a $80\\text{ km/h}$ respecto al suelo de las vías. Dentro del vagón de pasajeros, ella camina hacia el oeste a $5\\text{ km/h}$ respecto al piso del tren.",
+                question: "La velocidad de María vista por un observador que está de pie en reposo junto a las vías es",
+                options: [
+                    "$85\\text{ km/h}$ en dirección hacia el este.",
+                    "$75\\text{ km/h}$ en dirección hacia el oeste.",
+                    "$75\\text{ km/h}$ en dirección hacia el este."
+                ],
+                correct: 2
+            },
+            {
+                topic: "Trabajo y Fricción",
+                context: "Un bloque de madera que fue empujado previamente se desliza por sí solo sobre una mesa horizontal rugosa, perdiendo velocidad hasta detenerse por completo debido a la fricción.",
+                question: "El trabajo realizado por la fuerza de fricción cinética sobre el bloque de madera es",
+                options: [
+                    "positivo, porque la fricción ayudó a que el bloque se detuviera suavemente.",
+                    "cero, porque la fuerza de fricción actúa paralela a la superficie de la mesa.",
+                    "negativo, porque la fuerza de fricción actúa en sentido opuesto al desplazamiento."
+                ],
+                correct: 2
+            }
+        ];
+
+        // LÓGICA DE LA APLICACIÓN
+        let currentIndex = 0;
+        const userAnswers = new Array(questions.length).fill(null);
+
+        const letters = ["A)", "B)", "C)", "D)"];
+
+        function initQuiz() {
+            renderQuestion();
+            updateProgress();
+        }
+
+        function renderQuestion() {
+            const q = questions[currentIndex];
+            document.getElementById('q-num').innerText = currentIndex + 1;
+            document.getElementById('q-topic').innerText = q.topic;
+            
+            // Render Context
+            document.getElementById('q-context').innerHTML = q.context;
+            
+            // Render Question
+            document.getElementById('q-text').innerHTML = q.question;
+            
+            // Render Options
+            const optionsBox = document.getElementById('q-options');
+            optionsBox.innerHTML = '';
+            
+            q.options.forEach((optText, index) => {
+                const btn = document.createElement('button');
+                btn.className = `option-btn ${userAnswers[currentIndex] === index ? 'selected' : ''}`;
+                btn.onclick = () => selectOption(index);
+                
+                btn.innerHTML = `<span class="option-letter">${letters[index]}</span> <span>${optText}</span>`;
+                optionsBox.appendChild(btn);
+            });
+
+            // Control Buttons
+            document.getElementById('btn-prev').disabled = (currentIndex === 0);
+            
+            if (currentIndex === questions.length - 1) {
+                document.getElementById('btn-next').style.display = 'none';
+                document.getElementById('btn-submit').style.display = 'block';
+            } else {
+                document.getElementById('btn-next').style.display = 'block';
+                document.getElementById('btn-submit').style.display = 'none';
+            }
+
+            // Render LaTeX formulas dynamically if there are any
+            renderMathInElement(document.getElementById('question-screen'), {
+                delimiters: [
+                    {left: '$$', right: '$$', display: true},
+                    {left: '$', right: '$', display: false}
+                ]
+            });
+        }
+
+        function selectOption(index) {
+            userAnswers[currentIndex] = index;
+            renderQuestion(); // Re-render to show selected styling
+            updateProgress();
+        }
+
+        function nextQuestion() {
+            if (currentIndex < questions.length - 1) {
+                currentIndex++;
+                renderQuestion();
+            }
+        }
+
+        function prevQuestion() {
+            if (currentIndex > 0) {
+                currentIndex--;
+                renderQuestion();
+            }
+        }
+
+        function updateProgress() {
+            const answered = userAnswers.filter(ans => ans !== null).length;
+            const percent = (answered / questions.length) * 100;
+            document.getElementById('progress').style.width = percent + '%';
+        }
+
+        function showResults() {
+            // Validar si faltan preguntas
+            if(userAnswers.includes(null)) {
+                if(!confirm('Aún tienes preguntas sin responder. ¿Seguro que deseas evaluar la práctica?')) {
+                    return;
+                }
+            }
+
+            let score = 0;
+            userAnswers.forEach((ans, idx) => {
+                if (ans === questions[idx].correct) score++;
+            });
+
+            document.getElementById('question-screen').style.display = 'none';
+            document.getElementById('quiz-controls').style.display = 'none';
+            document.querySelector('.progress-bar').style.display = 'none';
+            
+            const resultsScreen = document.getElementById('results-screen');
+            resultsScreen.style.display = 'block';
+            
+            document.getElementById('final-score').innerText = score;
+            
+            const feedback = document.getElementById('feedback-msg');
+            const percent = (score / questions.length) * 100;
+            
+            if (percent >= 90) {
+                feedback.innerText = "¡Excelente trabajo! Dominas los conceptos de la prueba.";
+                feedback.style.color = "var(--primary)";
+            } else if (percent >= 70) {
+                feedback.innerText = "¡Muy bien! Estás listo, pero repasa algunos detalles.";
+            } else {
+                feedback.innerText = "Sigue practicando. Es importante repasar la teoría de estos temas.";
+                feedback.style.color = "var(--secondary)";
+            }
+        }
+
+        // Initialize App
+        window.onload = initQuiz;
+
+    </script>
+</body>
+</html>
