@@ -44,10 +44,16 @@
             100% { transform: translateY(-40px) rotate(5deg) scale(1.1); }
         }
 
-        /* Header tipo Tarjeta de Presentación */
+        /* Header tipo Tarjeta de Presentación con Fondo de Montaña */
         header {
-            background: linear-gradient(135deg, rgba(13, 35, 58, 0.95) 0%, rgba(26, 54, 93, 0.95) 100%);
-            color: white; padding: 3rem 1.5rem; text-align: center;
+            /* Se combinó un degradado oscuro transparente con tu foto para que el texto se lea bien */
+            background: linear-gradient(rgba(13, 35, 58, 0.65), rgba(13, 35, 58, 0.85)), url('IMG_20240109_093629.jpg');
+            background-size: cover;
+            background-position: center 30%; /* Centra la vista hacia las montañas */
+            background-attachment: fixed; /* Le da un efecto parallax sutil al hacer scroll */
+            color: white; 
+            padding: 4rem 1.5rem; 
+            text-align: center;
             border-bottom: 5px solid var(--accent);
             box-shadow: 0 4px 20px rgba(0,0,0,0.3);
             position: relative;
