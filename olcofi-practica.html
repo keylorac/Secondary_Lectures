@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Olimpiada Costarricense de Física (OLCOFI) - Práctica</title>
+    <!-- Integración de MathJax para renderizado de LaTeX -->
+    <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <style>
+        body {
+            font-family: 'Times New Roman', Times, serif; /* Estilo académico clásico */
+            line-height: 1.6;
+            color: #000000;
+            background-color: #ffffff;
+            max-width: 850px;
+            margin: 0 auto;
+            padding: 40px 20px;
+        }
+        .header {
+            text-align: center;
+            margin-bottom: 40px;
+            border-bottom: 2px solid #000;
+            padding-bottom: 10px;
+        }
+        h1 {
+            font-size: 24px;
+            margin: 0 0 5px 0;
+        }
+        h2 {
+            font-size: 18px;
+            font-weight: normal;
+            margin: 0;
+        }
+        .section-title {
+            font-size: 20px;
+            font-weight: bold;
+            margin-top: 30px;
+            margin-bottom: 15px;
+            text-transform: uppercase;
+        }
+        .problem {
+            margin-bottom: 30px;
+            text-align: justify;
+        }
+        .problem-number {
+            font-weight: bold;
+        }
+        .solutions-container {
+            margin-top: 60px;
+            padding-top: 20px;
+            border-top: 2px dashed #000;
+        }
+        .solution {
+            background-color: #f4f4f4; /* Fondo gris muy claro para legibilidad */
+            border-left: 4px solid #333;
+            padding: 15px 20px;
+            margin-bottom: 25px;
+            color: #000000;
+        }
+        .solution-title {
+            font-weight: bold;
+            margin-bottom: 10px;
+            display: block;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="header">
+        <h1>OLIMPIADA COSTARRICENSE DE FÍSICA</h1>
+        <h2>OLCOFI - Simulacro Prueba Eliminatoria</h2>
+    </div>
+
+    <div class="section-title">I. Problemas Propuestos</div>
+
+    <div class="problem">
+        <span class="problem-number">1. (Cinemática)</span> Un objeto se deja caer desde el reposo en caída libre desde una altura \( H \). Se observa que, durante el último segundo de su caída, el objeto recorre exactamente la mitad de la altura total \( H \). Considerando la aceleración de la gravedad como \( g = 9,80 \, \text{m/s}^2 \) y despreciando la resistencia del aire, determine el valor de la altura \( H \).
+    </div>
+
+    <div class="problem">
+        <span class="problem-number">2. (Dinámica y Movimiento Circular)</span> Una pequeña esfera de masa \( m \) está atada al extremo de una cuerda ideal de longitud \( L \). Se le imparte una rapidez horizontal \( v_0 \) en el punto más bajo de su trayectoria. ¿Cuál debe ser el valor mínimo de \( v_0 \) para que la cuerda se mantenga tensa (es decir, no pierda tensión) justo en el punto más alto de su trayectoria circular vertical?
+    </div>
+
+    <div class="problem">
+        <span class="problem-number">3. (Centro de Masa)</span> Considere un disco circular uniforme de radio \( R \) y masa total \( M \). A este disco se le recorta un agujero circular de radio \( R/2 \) centrado a una distancia \( R/2 \) del centro del disco original. ¿A qué distancia del centro del disco original se encuentra el centro de masa de la figura resultante?
+    </div>
+
+    <div class="problem">
+        <span class="problem-number">4. (Electrostática)</span> Tres partículas idénticas, cada una con carga eléctrica \( +q \), se mantienen fijas en los vértices de un triángulo equilátero de lado \( a \). Determine la magnitud del campo eléctrico neto en el centroide (centro geométrico) del triángulo.
+    </div>
+
+    <div class="solutions-container">
+        <div class="section-title">II. Soluciones Detalladas</div>
+
+        <div class="solution">
+            <span class="solution-title">Solución al Problema 1:</span>
+            <p>El tiempo total de caída es \( t \). La altura total es \( H = \frac{1}{2}gt^2 \).</p>
+            <p>La distancia recorrida en el tiempo \( (t - 1) \) es \( H/2 \). Por lo tanto: <br>
+            \( \frac{H}{2} = \frac{1}{2}g(t-1)^2 \)</p>
+            <p>Sustituyendo \( H \):<br>
+            \( \frac{1}{2}\left(\frac{1}{2}gt^2\right) = \frac{1}{2}g(t-1)^2 \Rightarrow \frac{t^2}{2} = (t-1)^2 \)</p>
+            <p>Desarrollando y resolviendo la ecuación cuadrática:<br>
+            \( t^2 = 2(t^2 - 2t + 1) \Rightarrow t^2 - 4t + 2 = 0 \)</p>
+            <p>Utilizando la fórmula general y tomando la raíz positiva con sentido físico (\( t > 1 \)):<br>
+            \( t = 2 + \sqrt{2} \approx 3,414 \, \text{s} \)</p>
+            <p>Finalmente, calculamos \( H \):<br>
+            \( H = \frac{1}{2}(9,80)(3,414)^2 \approx 57,1 \, \text{m} \)</p>
+        </div>
+
+        <div class="solution">
+            <span class="solution-title">Solución al Problema 2:</span>
+            <p>En el punto más alto, la Segunda Ley de Newton nos da: \( T + mg = \frac{mv_{\text{top}}^2}{L} \).</p>
+            <p>Para la condición de velocidad mínima, la tensión en el punto más alto tiende a cero (\( T = 0 \)):<br>
+            \( mg = \frac{mv_{\text{top}}^2}{L} \Rightarrow v_{\text{top}}^2 = gL \)</p>
+            <p>Aplicando conservación de la energía entre el punto más bajo y el más alto (cambio de altura de \( 2L \)):<br>
+            \( E_i = E_f \Rightarrow \frac{1}{2}mv_0^2 = \frac{1}{2}mv_{\text{top}}^2 + mg(2L) \)</p>
+            <p>Sustituyendo \( v_{\text{top}}^2 \):<br>
+            \( \frac{1}{2}v_0^2 = \frac{1}{2}(gL) + 2gL = \frac{5}{2}gL \)</p>
+            <p>Despejando \( v_0 \), obtenemos:<br>
+            \( v_0 = \sqrt{5gL} \)</p>
+        </div>
+
+        <div class="solution">
+            <span class="solution-title">Solución al Problema 3:</span>
+            <p>Podemos tratar el agujero como una masa negativa. La densidad superficial del disco original es \( \sigma = \frac{M}{\pi R^2} \).</p>
+            <p>La masa del disco recortado (agujero) es \( m_a = \sigma (\pi (R/2)^2) = \frac{M}{4} \).<br>
+            La posición del centro de masa del disco original es \( x_1 = 0 \).<br>
+            La posición del centro de masa del agujero (masa negativa) es \( x_2 = R/2 \).</p>
+            <p>El centro de masa del sistema resultante se calcula como:<br>
+            \( x_{\text{cm}} = \frac{M(0) - (M/4)(R/2)}{M - M/4} = \frac{-MR/8}{3M/4} \)</p>
+            <p>\( x_{\text{cm}} = -\frac{R}{6} \)</p>
+            <p>El centro de masa se ubica a una distancia de \( R/6 \) del centro, en dirección opuesta al agujero.</p>
+        </div>
+
+        <div class="solution">
+            <span class="solution-title">Solución al Problema 4:</span>
+            <p>Por simetría geométrica, el centroide de un triángulo equilátero equidista de los tres vértices. La magnitud del campo eléctrico generado por cada carga individual en el centroide es idéntica.</p>
+            <p>Los tres vectores de campo eléctrico apuntan hacia afuera (siendo cargas positivas) y están separados por un ángulo exacto de \( 120^\circ \) entre sí en el plano.</p>
+            <p>La suma vectorial de tres vectores de igual magnitud separados por \( 120^\circ \) es nula. Por lo tanto, el campo eléctrico neto en el centro es:<br>
+            \( E_{\text{neto}} = 0 \)</p>
+        </div>
+    </div>
+
+</body>
+</html>
