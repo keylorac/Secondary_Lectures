@@ -1,0 +1,885 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Física 10.° Año · Unidad 7: Hidrostática 3D</title>
+<!-- Carga de Three.js para renderizado 3D interactivo -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
+
+<!-- Carga de MathJax para renderizado de ecuaciones LaTeX -->
+<script>
+  window.MathJax = {
+    tex: {
+      inlineMath: [['$', '$'], ['\\(', '\\)']],
+      displayMath: [['$$', '$$'], ['\\[', '\\]']]
+    }
+  };
+</script>
+<script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+
+<style>
+:root{
+  --eth-blue-dark:#133565;
+  --eth-blue:#215CAF;
+  --celeste-ucr:#50AAD7;
+  --gold-ucr:#C69214;
+  --gris-texto:#3C3C3C;
+  --fondo-nota:#F5F7FA;
+  --fondo-gold:#FBF3E1;
+  --linea:#D8DEE8;
+}
+*{box-sizing:border-box;}
+html{scroll-behavior:smooth;}
+body{
+  margin:0; padding:0;
+  font-family: Georgia, 'Cambria', 'Times New Roman', serif;
+  color:var(--gris-texto);
+  background:#fff;
+  line-height:1.55;
+}
+h1,h2,h3{color:var(--eth-blue-dark); font-weight:700; margin:0 0 .5em 0;}
+p{margin:0 0 1em 0;}
+.wrap{max-width:900px; margin:0 auto; padding:0 24px;}
+.narrow{max-width:70ch;}
+
+/* ---------- Portada ---------- */
+.portada{
+  min-height:100vh;
+  display:flex; flex-direction:column; justify-content:center;
+  border-bottom:6px solid var(--gold-ucr);
+  padding:48px 24px 64px;
+  background:
+    radial-gradient(circle at 85% 12%, rgba(80,170,215,.12), transparent 45%),
+    radial-gradient(circle at 10% 85%, rgba(198,146,20,.08), transparent 45%);
+}
+.portada-header{
+  display:flex; align-items:center; justify-content:space-between;
+  max-width:900px; width:100%; margin:0 auto 56px;
+  padding-bottom:18px; border-bottom:1.5px solid rgba(33,92,175,.35);
+}
+.portada-header .badge-cole{
+  font-family: Georgia, serif; font-size:1.1rem; font-weight:700; color:var(--eth-blue-dark);
+  letter-spacing:.05em; text-transform:uppercase;
+}
+.portada-titulo{max-width:900px; width:100%; margin:0 auto; text-align:left;}
+.eyebrow{color:var(--gris-texto); font-size:1.05rem; letter-spacing:.02em;}
+.curso{color:var(--eth-blue-dark); font-size:2.6rem; font-weight:700; margin:.1em 0 .3em;}
+.gold-rule{width:110px; height:3px; background:var(--gold-ucr); margin:.4em 0 .7em;}
+.tema-titulo{font-size:1.7rem; color:var(--eth-blue); font-weight:700; margin:0 0 .15em;}
+.tema-sub{font-size:1.1rem; color:var(--gris-texto);}
+.portada-footer{max-width:900px; width:100%; margin:64px auto 0; font-size:.95rem; color:var(--gris-texto);}
+.portada-footer b{color:var(--eth-blue-dark);}
+
+/* ---------- Nav ---------- */
+nav.toc{
+  position:sticky; top:0; z-index:50;
+  background:rgba(255,255,255,.94); backdrop-filter:blur(4px);
+  border-bottom:1px solid var(--linea);
+  overflow-x:auto; white-space:nowrap;
+}
+nav.toc .wrap{display:flex; gap:4px; padding:10px 24px;}
+nav.toc a{
+  flex:0 0 auto;
+  font-family: Georgia, serif; font-size:.85rem; color:var(--eth-blue-dark);
+  text-decoration:none; padding:6px 12px; border-radius:16px;
+  border:1px solid transparent;
+}
+nav.toc a:hover{border-color:var(--eth-blue); background:var(--fondo-nota);}
+
+/* ---------- Secciones ---------- */
+section{padding:56px 0; border-bottom:1px solid var(--linea);}
+section:last-of-type{border-bottom:none;}
+.kicker{
+  display:inline-block; font-size:1.15rem; font-weight:700; color:var(--eth-blue-dark);
+  border:2px solid var(--gold-ucr); border-radius:10px;
+  padding:8px 18px; margin-bottom:24px; background:#fff;
+}
+
+/* ---------- Cajas ---------- */
+.ley{
+  background:#EAF3FB; border-left:4px solid var(--eth-blue);
+  border-radius:4px; padding:16px 20px; margin:18px 0;
+}
+.ley b{color:var(--eth-blue-dark);}
+.nota{
+  background:var(--fondo-nota); border:1px solid var(--linea); border-radius:6px;
+  padding:14px 18px; margin:18px 0; font-size:.94rem;
+}
+.leyenda{
+  border:1px solid var(--linea); border-radius:6px; padding:12px 16px; margin:14px 0 0;
+  font-size:.9rem; color:var(--gris-texto); background:#fff;
+}
+.leyenda b{color:var(--eth-blue-dark);}
+
+/* ---------- Ecuaciones ---------- */
+.eq{
+  display:block; text-align:center;
+  background:var(--fondo-nota); border-left:3px solid var(--eth-blue);
+  padding:14px 10px; margin:18px 0; border-radius:4px; overflow-x:auto;
+}
+
+/* ---------- Paneles y Simuladores 3D ---------- */
+.panel{
+  background:#fff; border:1px solid var(--linea); border-radius:10px;
+  padding:22px 24px; margin:20px 0;
+  box-shadow:0 1px 3px rgba(19,53,101,.06);
+}
+.panel h3{font-size:1.05rem; margin-bottom:14px;}
+.controls{display:flex; flex-wrap:wrap; gap:18px; align-items:center; margin-bottom:16px; font-size:.92rem;}
+.controls label{display:flex; flex-direction:column; gap:4px; font-size:.85rem; color:var(--gris-texto); margin-right:18px;}
+input[type=range]{accent-color:var(--eth-blue); width:180px;}
+select, button{
+  font-family:inherit; font-size:.9rem; padding:6px 10px; border-radius:6px;
+  border:1px solid var(--linea); background:#fff; color:var(--gris-texto);
+}
+button{
+  background:var(--eth-blue-dark); color:#fff; border:none; cursor:pointer;
+  padding:8px 16px; font-weight:600; border-radius:6px;
+}
+button.secundario {
+  background: #fff; color: var(--eth-blue-dark); border: 1px solid var(--eth-blue-dark);
+}
+button:hover{background:var(--eth-blue); color: #fff;}
+.readout{font-size:.95rem; margin-top:12px; background:var(--fondo-nota); padding:10px 14px; border-radius:6px;}
+.readout .num{font-weight:700; color:var(--eth-blue-dark);}
+
+.canvas3d-container{
+  width:100%; height:320px; background:#111827; border-radius:8px;
+  overflow:hidden; position:relative; margin:14px 0;
+}
+.canvas3d-container canvas{width:100%; height:100%; display:block;}
+.canvas-hint{
+  position:absolute; bottom:8px; right:12px; color:rgba(255,255,255,0.6);
+  font-size:0.75rem; pointer-events:none; background:rgba(0,0,0,0.4); padding:3px 8px; border-radius:4px;
+}
+
+/* ---------- Ejemplos paso a paso ---------- */
+.ejemplo{
+  border:1px solid var(--linea); border-radius:10px; margin:26px 0; overflow:hidden;
+  outline:none;
+}
+.ejemplo-header{
+  background:var(--eth-blue-dark); color:#fff; padding:12px 20px;
+  display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:8px;
+}
+.ejemplo-body{padding:20px 22px;}
+.enunciado{
+  background:var(--fondo-nota); border-left:4px solid var(--eth-blue-dark);
+  padding:14px 18px; border-radius:4px; margin-bottom:6px;
+}
+.step{
+  opacity:0; max-height:0; overflow:hidden;
+  transform:translateY(8px);
+  transition:opacity .45s ease, transform .45s ease, max-height .45s ease;
+  padding-top:0;
+}
+.step.shown{opacity:1; max-height:600px; transform:translateY(0); padding-top:14px;}
+.step .titulo-paso{font-weight:700; color:var(--eth-blue); margin-bottom:4px; font-size:.92rem;}
+.resultado-final{
+  background:var(--fondo-gold); border:1px solid var(--gold-ucr); border-radius:6px;
+  padding:12px 16px; font-weight:700; color:#7A5A0C;
+}
+.ejemplo-controles{
+  display:flex; gap:10px; align-items:center; padding:14px 22px 20px;
+  border-top:1px dashed var(--linea);
+}
+.hint-enter{font-size:.82rem; color:#8a8a8a;}
+.progreso{font-size:.82rem; color:var(--gris-texto);}
+
+.ejercicios-lista{display:flex; flex-wrap:wrap; gap:8px; margin:16px 0;}
+.ejercicios-lista .num-ej{
+  display:inline-flex; align-items:center; justify-content:center;
+  width:34px; height:34px; border-radius:50%; background:var(--fondo-nota);
+  border:1px solid var(--linea); font-size:.85rem; color:var(--eth-blue-dark); font-weight:700;
+}
+
+footer.doc-footer{padding:40px 24px 60px; text-align:center; color:#8a8a8a; font-size:.85rem;}
+</style>
+</head>
+<body>
+
+<!-- PORTADA -->
+<div class="portada">
+  <div class="portada-header">
+    <div class="badge-cole">Secundaria · Décimo Año</div>
+    <div class="badge-cole" style="color:var(--eth-blue);">Física Curricular</div>
+  </div>
+  <div class="portada-titulo">
+    <div class="eyebrow">Física 10.° Año</div>
+    <div class="curso">Unidad 7</div>
+    <div class="gold-rule"></div>
+    <div class="tema-titulo">Hidrostática Interactiva 3D</div>
+    <div class="tema-sub">Modelación tridimensional de fluidos en reposo, presión y principios físicos</div>
+  </div>
+  <div class="portada-footer">
+    <div><b>Docente:</b> Prof. Keylor Arley Castro</div>
+    <div>Departamento de Ciencias Exactas y Ciencias Naturales</div>
+  </div>
+</div>
+
+<!-- NAVEGACIÓN STICKY -->
+<nav class="toc">
+  <div class="wrap">
+    <a href="#fluidos">1. Fluidos y Densidad</a>
+    <a href="#presion">2. Presión 3D</a>
+    <a href="#pascal">3. Ley de Pascal 3D</a>
+    <a href="#boyle">4. Ley de Boyle 3D</a>
+    <a href="#gas-ideal">5. Gas Ideal</a>
+    <a href="#arquimedes">6. Arquímedes 3D</a>
+    <a href="#ejemplos">Ejemplos Resueltos</a>
+    <a href="#ejercicios">Práctica</a>
+  </div>
+</nav>
+
+<!-- 1. FLUIDOS Y DENSIDAD -->
+<section id="fluidos">
+  <div class="wrap">
+    <div class="kicker">1. Fluidos y Densidad</div>
+    <p class="narrow">Un <b>fluido</b> es toda sustancia que puede fluir y adoptar la forma del recipiente que lo contiene. Abarca tanto a los <b>líquidos</b> (incompresibles, volumen fijo) como a los <b>gases</b> (compresibles, ocupan todo el volumen disponible).</p>
+
+    <p class="narrow">La <b>densidad ($\rho$)</b> mide cuánta masa de una sustancia se encuentra contenida en un determinado volumen:</p>
+    
+    <div class="eq">$$ \rho = \frac{m}{V} $$</div>
+    <div class="leyenda">
+      <b>$\rho$</b> (rho): densidad $[\text{kg/m}^3]$ &middot; 
+      <b>$m$</b>: masa $[\text{kg}]$ &middot; 
+      <b>$V$</b>: volumen $[\text{m}^3]$<br>
+      <i>Conversión útil:</i> <b>$1\text{ g/cm}^3 = 1000\text{ kg/m}^3$</b>. El agua dulce posee una densidad estándar de <b>$1000\text{ kg/m}^3$</b>.
+    </div>
+
+    <div class="panel">
+      <h3>Comparador Dinámico de Densidad y Volumen</h3>
+      <div class="controls">
+        <label>Sustancia
+          <select id="selSustancia">
+            <option value="1000" selected>Agua Dulce (1000 kg/m³)</option>
+            <option value="1025">Agua de Mar (1025 kg/m³)</option>
+            <option value="920">Aceite de Cocina (920 kg/m³)</option>
+            <option value="13600">Mercurio (13600 kg/m³)</option>
+            <option value="2700">Aluminio (2700 kg/m³)</option>
+            <option value="7850">Acero (7850 kg/m³)</option>
+          </select>
+        </label>
+        <label>Masa (kg)
+          <input type="range" id="sliderMasa" min="1" max="50" value="10">
+        </label>
+      </div>
+      <p class="readout">Masa: <span class="num" id="readMasa">10</span> kg &nbsp;&middot;&nbsp; 
+          Volumen Ocupado: <span class="num" id="readVolumen">0.0100</span> $\text{m}^3$ (<span class="num" id="readVolLitros">10.0</span> Litros)</p>
+    </div>
+  </div>
+</section>
+
+<!-- 2. PRESIÓN E HIDROSTÁTICA 3D -->
+<section id="presion">
+  <div class="wrap">
+    <div class="kicker">2. Presión y Presión Hidrostática</div>
+    <p class="narrow">La <b>presión ($P$)</b> es la fuerza perpendicular ejercida por unidad de área:</p>
+    <div class="eq">$$ P = \frac{F}{A} $$</div>
+    <div class="leyenda"><b>$P$</b>: presión en Pascales $[\text{Pa} = \text{N/m}^2]$ &middot; <b>$F$</b>: fuerza perpendicular $[\text{N}]$ &middot; <b>$A$</b>: área $[\text{m}^2]$</div>
+
+    <p class="narrow" style="margin-top:24px;">En un fluido en reposo, el peso del líquido genera una <b>presión hidrostática</b> que aumenta proporcionalmente con la profundidad ($h$):</p>
+    <div class="eq">$$ P = P_0 + \rho \cdot g \cdot h $$</div>
+    <div class="leyenda">
+      <b>$P_0$</b>: presión en la superficie (Presión atmosférica $P_{\text{atm}} = 101\,325\text{ Pa}$) &middot; 
+      <b>$\rho$</b>: densidad del fluido &middot; 
+      <b>$g$</b>: aceleración de la gravedad ($9.8\text{ m/s}^2$) &middot; 
+      <b>$h$</b>: profundidad $[\text{m}]$
+    </div>
+
+    <div class="panel">
+      <h3>Simulación 3D: Sensor Manométrico en Tanque de Agua</h3>
+      <p class="narrow" style="font-size:0.88rem;">Usa el ratón o dedo sobre el visor 3D para rotar la cámara en 360°.</p>
+      <div class="controls">
+        <label>Profundidad $h$ (metros)
+          <input type="range" id="sliderProf" min="0" max="20" step="0.5" value="8">
+        </label>
+        <label>Líquido
+          <select id="selLiquidoPresion">
+            <option value="1000">Agua Dulce (1000 kg/m³)</option>
+            <option value="1025">Agua de Mar (1025 kg/m³)</option>
+            <option value="13600">Mercurio (13600 kg/m³)</option>
+          </select>
+        </label>
+      </div>
+      
+      <div class="canvas3d-container" id="canvas3d-presion">
+        <div class="canvas-hint">Arrastra para rotar en 3D</div>
+      </div>
+
+      <p class="readout">
+        Profundidad ($h$): <span class="num" id="readProf">8.0</span> m <br>
+        Presión Manométrica ($\rho \cdot g \cdot h$): <span class="num" id="readPMan">78.4</span> kPa <br>
+        Presión Absoluta Total: <span class="num" id="readPAbs">179.7</span> kPa
+      </p>
+    </div>
+  </div>
+</section>
+
+<!-- 3. LEY DE PASCAL 3D -->
+<section id="pascal">
+  <div class="wrap">
+    <div class="kicker">3. Ley de Pascal (Prensa Hidráulica)</div>
+    <div class="ley">
+      <b>Principio de Pascal:</b> Un cambio en la presión aplicada a un fluido incompresible y encerrado se transmite íntegramente a todos los puntos del fluido y a las paredes del recipiente.
+    </div>
+
+    <div class="eq">$$ P_1 = P_2 \implies \frac{F_1}{A_1} = \frac{F_2}{A_2} $$</div>
+
+    <div class="panel">
+      <h3>Simulación 3D: Multiplicación Mecánica de Fuerza</h3>
+      <div class="controls">
+        <label>Fuerza de Entrada $F_1$ (N)
+          <input type="range" id="sliderF1" min="20" max="500" value="100">
+        </label>
+        <label>Relación de Áreas ($A_2 / A_1$)
+          <select id="selRelacionAreas">
+            <option value="2">2x Área</option>
+            <option value="5" selected>5x Área</option>
+            <option value="10">10x Área</option>
+          </select>
+        </label>
+      </div>
+
+      <div class="canvas3d-container" id="canvas3d-pascal">
+        <div class="canvas-hint">Arrastra para rotar en 3D</div>
+      </div>
+
+      <p class="readout">
+        Fuerza Resultante $F_2$: <span class="num" id="readF2">500</span> N &nbsp;&middot;&nbsp; 
+        Factor de Amplificación: <span class="num" id="readGanancia">5</span>x
+      </p>
+    </div>
+  </div>
+</section>
+
+<!-- 4. LEY DE BOYLE 3D -->
+<section id="boyle">
+  <div class="wrap">
+    <div class="kicker">4. Ley de Boyle (Compresión de Gases)</div>
+    <div class="ley">
+      <b>Ley de Boyle (Proceso Isotérmico):</b> A temperatura constante, el volumen de una masa fija de gas es inversamente proporcional a la presión que recibe.
+    </div>
+    <div class="eq">$$ P_1 \cdot V_1 = P_2 \cdot V_2 \quad (\text{a } T \text{ constante}) $$</div>
+
+    <div class="panel">
+      <h3>Simulación 3D: Cilindro de Gas y Dinámica Molecular</h3>
+      <div class="controls">
+        <label>Presión Aplicada (atm)
+          <input type="range" id="sliderPBoyle" min="1" max="4" step="0.1" value="1">
+        </label>
+      </div>
+
+      <div class="canvas3d-container" id="canvas3d-boyle">
+        <div class="canvas-hint">Arrastra para rotar en 3D</div>
+      </div>
+
+      <p class="readout">
+        Presión: <span class="num" id="readPBoyle">1.0</span> atm &nbsp;&middot;&nbsp; 
+        Volumen Relativo del Gas: <span class="num" id="readVBoyle">100</span>%
+      </p>
+    </div>
+  </div>
+</section>
+
+<!-- 5. GAS IDEAL -->
+<section id="gas-ideal">
+  <div class="wrap">
+    <div class="kicker">5. Ecuación del Gas Ideal</div>
+    <p class="narrow">Integra el comportamiento térmico y de presión de un gas en condiciones normales:</p>
+    <div class="eq">$$ P \cdot V = n \cdot R \cdot T $$</div>
+    <div class="leyenda">
+      <b>$P$</b>: presión $[\text{atm}$ o $\text{Pa}]$ &middot; 
+      <b>$V$</b>: volumen $[\text{L}$ o $\text{m}^3]$ &middot; 
+      <b>$n$</b>: moles de gas ($n = \frac{m}{M}$) &middot; <br>
+      <b>$R$</b>: constante universal ($0.0821\text{ L}\cdot\text{atm} / (\text{mol}\cdot\text{K})$ ó $8.314\text{ J} / (\text{mol}\cdot\text{K})$) &middot; 
+      <b>$T$</b>: temperatura absoluta en Kelvin $[K = ^\circ\text{C} + 273.15]$
+    </div>
+
+    <div class="nota">
+      <b>Regla conceptual de resolución:</b> En la ecuación de gas ideal, la temperatura $T$ debe ser expresada siempre en Kelvin ($K$), nunca directamente en grados Celsius ($^\circ\text{C}$).
+    </div>
+  </div>
+</section>
+
+<!-- 6. PRINCIPIO DE ARQUÍMEDES 3D -->
+<section id="arquimedes">
+  <div class="wrap">
+    <div class="kicker">6. Principio de Arquímedes y Empuje</div>
+    <div class="ley">
+      <b>Principio de Arquímedes:</b> Todo cuerpo sumergido parcial o totalmente en un fluido experimenta una fuerza vertical hacia arriba llamada <b>Empuje ($E$)</b>, equivalente al peso del fluido desplazado.
+    </div>
+
+    <div class="eq">$$ E = \rho_{\text{fluido}} \cdot g \cdot V_{\text{sumergido}} $$</div>
+
+    <div class="panel">
+      <h3>Simulación 3D: Flotabilidad y Equilibrio de Fuerzas</h3>
+      <div class="controls">
+        <label>Material del Objeto
+          <select id="selBloqueArquimedes">
+            <option value="250">Madera Balsa (250 kg/m³)</option>
+            <option value="700">Madera Roble (700 kg/m³)</option>
+            <option value="920">Hielo (920 kg/m³)</option>
+            <option value="2700">Aluminio (2700 kg/m³ - Se Hunde)</option>
+          </select>
+        </label>
+      </div>
+
+      <div class="canvas3d-container" id="canvas3d-arquimedes">
+        <div class="canvas-hint">Arrastra para rotar en 3D</div>
+      </div>
+
+      <p class="readout" id="textArquimedes">
+        Estado: El cuerpo flota. Porcentaje sumergido: 25%
+      </p>
+    </div>
+  </div>
+</section>
+
+<!-- EJEMPLOS PASO A PASO -->
+<section id="ejemplos">
+  <div class="wrap">
+    <div class="kicker">Ejemplos Resueltos Paso a Paso</div>
+    <p class="narrow">Haz clic dentro de los recuadros y presiona <b>Enter</b> (o presiona "Siguiente ▶") para desplegar la resolución detallada.</p>
+
+    <!-- EJEMPLO 1 -->
+    <div class="ejemplo" tabindex="0" data-example="1">
+      <div class="ejemplo-header">
+        <b>Ejemplo 1 — Presión Hidrostática en una Piscina</b>
+        <span class="progreso" data-progreso>Paso 0 / 4</span>
+      </div>
+      <div class="ejemplo-body">
+        <div class="enunciado">
+          Un buzo desciende a una profundidad de $4\text{ m}$ en una piscina con agua dulce ($\rho = 1000\text{ kg/m}^3$). Calcula la presión manométrica y la presión absoluta ejercida sobre el buzo ($P_{\text{atm}} = 101\,325\text{ Pa}$, $g = 9.8\text{ m/s}^2$).
+        </div>
+        <div class="step">
+          <div class="titulo-paso">Paso 1 — Identificación de Variables</div>
+          $\rho = 1000\text{ kg/m}^3 \quad h = 4\text{ m} \quad g = 9.8\text{ m/s}^2 \quad P_{\text{atm}} = 101\,325\text{ Pa}$
+        </div>
+        <div class="step">
+          <div class="titulo-paso">Paso 2 — Cálculo de Presión Manométrica ($P_{\text{man}}$)</div>
+          $$ P_{\text{man}} = \rho \cdot g \cdot h = (1000\text{ kg/m}^3)(9.8\text{ m/s}^2)(4\text{ m}) = 39\,200\text{ Pa} = 39.2\text{ kPa} $$
+        </div>
+        <div class="step">
+          <div class="titulo-paso">Paso 3 — Cálculo de Presión Absoluta ($P_{\text{abs}}$)</div>
+          $$ P_{\text{abs}} = P_{\text{atm}} + P_{\text{man}} = 101\,325\text{ Pa} + 39\,200\text{ Pa} = 140\,525\text{ Pa} = 140.525\text{ kPa} $$
+        </div>
+        <div class="step">
+          <div class="titulo-paso">Resultado Final</div>
+          <div class="resultado-final">Presión Manométrica: $39.2\text{ kPa}$ | Presión Absoluta: $140.525\text{ kPa}$</div>
+        </div>
+      </div>
+      <div class="ejemplo-controles">
+        <button data-siguiente>Siguiente ▶</button>
+        <button class="secundario" data-reiniciar>Reiniciar</button>
+        <span class="hint-enter">o presiona Enter</span>
+      </div>
+    </div>
+
+    <!-- EJEMPLO 2 -->
+    <div class="ejemplo" tabindex="0" data-example="2">
+      <div class="ejemplo-header">
+        <b>Ejemplo 2 — Prensa Hidráulica</b>
+        <span class="progreso" data-progreso>Paso 0 / 4</span>
+      </div>
+      <div class="ejemplo-body">
+        <div class="enunciado">
+          Un auto de $1200\text{ kg}$ reposa sobre un pistón de área $A_2 = 3.0\text{ m}^2$. ¿Qué fuerza $F_1$ debe aplicarse en el pistón menor de área $A_1 = 0.05\text{ m}^2$ para elevarlo?
+        </div>
+        <div class="step">
+          <div class="titulo-paso">Paso 1 — Calcular el peso ejercido en el pistón mayor ($F_2$)</div>
+          $$ F_2 = m \cdot g = 1200\text{ kg} \cdot 9.8\text{ m/s}^2 = 11\,760\text{ N} $$
+        </div>
+        <div class="step">
+          <div class="titulo-paso">Paso 2 — Despeje con Ley de Pascal</div>
+          $$ \frac{F_1}{A_1} = \frac{F_2}{A_2} \implies F_1 = F_2 \left(\frac{A_1}{A_2}\right) $$
+        </div>
+        <div class="step">
+          <div class="titulo-paso">Paso 3 — Sustitución y Cálculo</div>
+          $$ F_1 = 11\,760\text{ N} \left(\frac{0.05\text{ m}^2}{3.0\text{ m}^2}\right) = 196\text{ N} $$
+        </div>
+        <div class="step">
+          <div class="titulo-paso">Resultado Final</div>
+          <div class="resultado-final">Fuerza necesaria de entrada: $F_1 = 196\text{ N}$ (Equivalente a sostener solo $20\text{ kg}$).</div>
+        </div>
+      </div>
+      <div class="ejemplo-controles">
+        <button data-siguiente>Siguiente ▶</button>
+        <button class="secundario" data-reiniciar>Reiniciar</button>
+        <span class="hint-enter">o presiona Enter</span>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- PRÁCTICA -->
+<section id="ejercicios">
+  <div class="wrap">
+    <div class="kicker">Práctica sugerida (10.° Año)</div>
+    <p class="narrow">Selección de problemas para evaluación formativa:</p>
+    <div class="ejercicios-lista">
+      <span class="num-ej">1</span><span class="num-ej">2</span><span class="num-ej">3</span>
+      <span class="num-ej">4</span><span class="num-ej">5</span><span class="num-ej">6</span>
+      <span class="num-ej">7</span><span class="num-ej">8</span><span class="num-ej">9</span>
+      <span class="num-ej">10</span>
+    </div>
+  </div>
+</section>
+
+<footer class="doc-footer">
+  Física 10.° Año · Unidad 7: Hidrostática · Departamento de Ciencias
+</footer>
+
+<!-- ============================================================ -->
+<!-- SCRIPTS DE INTERACTIVIDAD Y MOTOR 3D (THREE.JS) -->
+<!-- ============================================================ -->
+<script>
+// --- 1. SECCIÓN DENSIDAD ---
+(function(){
+  const sel = document.getElementById('selSustancia');
+  const sld = document.getElementById('sliderMasa');
+  const rMasa = document.getElementById('readMasa');
+  const rVol = document.getElementById('readVolumen');
+  const rLit = document.getElementById('readVolLitros');
+
+  function calc(){
+    const rho = parseFloat(sel.value);
+    const m = parseFloat(sld.value);
+    const v = m / rho;
+    rMasa.textContent = m.toFixed(1);
+    rVol.textContent = v.toFixed(4);
+    rLit.textContent = (v * 1000).toFixed(2);
+  }
+  sel.addEventListener('change', calc);
+  sld.addEventListener('input', calc);
+  calc();
+})();
+
+// --- Helper para inicializar escenas Three.js ---
+function init3DScene(containerId) {
+  const container = document.getElementById(containerId);
+  const scene = new THREE.Scene();
+  scene.background = new THREE.Color(0x111827);
+
+  const camera = new THREE.PerspectiveCamera(45, container.clientWidth / container.clientHeight, 0.1, 1000);
+  const renderer = new THREE.WebGLRenderer({ antialias: true });
+  renderer.setSize(container.clientWidth, container.clientHeight);
+  container.appendChild(renderer.domElement);
+
+  const controls = new THREE.OrbitControls(camera, renderer.domElement);
+  controls.enableDamping = true;
+  controls.dampingFactor = 0.05;
+
+  const light = new THREE.DirectionalLight(0xffffff, 1);
+  light.position.set(10, 20, 15);
+  scene.add(light);
+  scene.add(new THREE.AmbientLight(0x666666));
+
+  window.addEventListener('resize', () => {
+    camera.aspect = container.clientWidth / container.clientHeight;
+    camera.updateProjectionMatrix();
+    renderer.setSize(container.clientWidth, container.clientHeight);
+  });
+
+  return { scene, camera, renderer, controls };
+}
+
+// --- 2. SIMULACIÓN 3D PRESIÓN HIDROSTÁTICA ---
+(function(){
+  const { scene, camera, renderer, controls } = init3DScene('canvas3d-presion');
+  camera.position.set(0, 5, 22);
+
+  // Tanque de agua transparente
+  const tankGeo = new THREE.BoxGeometry(10, 12, 10);
+  const tankMat = new THREE.MeshPhongMaterial({ color: 0x50AAD7, transparent: true, opacity: 0.35, side: THREE.DoubleSide });
+  const tank = new THREE.Mesh(tankGeo, tankMat);
+  scene.add(tank);
+
+  // Malla estructural del tanque
+  const edges = new THREE.EdgesGeometry(tankGeo);
+  const line = new THREE.LineSegments(edges, new THREE.LineBasicMaterial({ color: 0x215CAF }));
+  scene.add(line);
+
+  // Sensor Manométrico 3D
+  const sensorGroup = new THREE.Group();
+  const probeGeo = new THREE.SphereGeometry(0.8, 16, 16);
+  const probeMat = new THREE.MeshPhongMaterial({ color: 0xC69214 });
+  const probe = new THREE.Mesh(probeGeo, probeMat);
+  sensorGroup.add(probe);
+
+  // Cable
+  const cableGeo = new THREE.CylinderGeometry(0.08, 0.08, 15);
+  const cableMat = new THREE.MeshBasicMaterial({ color: 0x133565 });
+  const cable = new THREE.Mesh(cableGeo, cableMat);
+  cable.position.y = 7.5;
+  sensorGroup.add(cable);
+
+  scene.add(sensorGroup);
+
+  const sldProf = document.getElementById('sliderProf');
+  const selLiq = document.getElementById('selLiquidoPresion');
+
+  function update(){
+    const h = parseFloat(sldProf.value); // 0 a 20 m
+    const rho = parseFloat(selLiq.value);
+    const g = 9.8;
+
+    const pMan = (rho * g * h) / 1000;
+    const pAbs = 101.325 + pMan;
+
+    document.getElementById('readProf').textContent = h.toFixed(1);
+    document.getElementById('readPMan').textContent = pMan.toFixed(1);
+    document.getElementById('readPAbs').textContent = pAbs.toFixed(1);
+
+    // Mover sensor verticalmente (Top = 6, Bottom = -5)
+    const yPos = 5 - (h / 20) * 10;
+    sensorGroup.position.y = yPos;
+
+    // Cambiar color del agua según densidad
+    if(rho > 5000) tankMat.color.setHex(0x888899); // Mercurio
+    else if(rho > 1010) tankMat.color.setHex(0x215CAF); // Salada
+    else tankMat.color.setHex(0x50AAD7); // Dulce
+  }
+
+  sldProf.addEventListener('input', update);
+  selLiq.addEventListener('change', update);
+  update();
+
+  function animate(){
+    requestAnimationFrame(animate);
+    controls.update();
+    renderer.render(scene, camera);
+  }
+  animate();
+})();
+
+// --- 3. SIMULACIÓN 3D LEY DE PASCAL ---
+(function(){
+  const { scene, camera, renderer, controls } = init3DScene('canvas3d-pascal');
+  camera.position.set(0, 4, 18);
+
+  // Pistón Entrada (Pequeño)
+  const p1Geo = new THREE.CylinderGeometry(1, 1, 6, 32);
+  const glassMat = new THREE.MeshPhongMaterial({ color: 0xffffff, transparent: true, opacity: 0.3 });
+  const cyl1 = new THREE.Mesh(p1Geo, glassMat);
+  cyl1.position.set(-4, 0, 0);
+  scene.add(cyl1);
+
+  const piston1Geo = new THREE.CylinderGeometry(0.95, 0.95, 0.5, 32);
+  const pistonMat = new THREE.MeshPhongMaterial({ color: 0xC69214 });
+  const piston1 = new THREE.Mesh(piston1Geo, pistonMat);
+  piston1.position.set(-4, 1, 0);
+  scene.add(piston1);
+
+  // Pistón Salida (Grande)
+  const p2Geo = new THREE.CylinderGeometry(2.2, 2.2, 6, 32);
+  const cyl2 = new THREE.Mesh(p2Geo, glassMat);
+  cyl2.position.set(3, 0, 0);
+  scene.add(cyl2);
+
+  const piston2Geo = new THREE.CylinderGeometry(2.15, 2.15, 0.5, 32);
+  const piston2 = new THREE.Mesh(piston2Geo, pistonMat);
+  piston2.position.set(3, 1, 0);
+  scene.add(piston2);
+
+  // Tubo conector
+  const pipeGeo = new THREE.CylinderGeometry(0.5, 0.5, 7, 16);
+  const pipe = new THREE.Mesh(pipeGeo, glassMat);
+  pipe.rotation.z = Math.PI / 2;
+  pipe.position.set(-0.5, -2.5, 0);
+  scene.add(pipe);
+
+  const sldF1 = document.getElementById('sliderF1');
+  const selRel = document.getElementById('selRelacionAreas');
+
+  function update(){
+    const f1 = parseFloat(sldF1.value);
+    const rel = parseFloat(selRel.value);
+    const f2 = f1 * rel;
+
+    document.getElementById('readF2').textContent = f2.toFixed(0);
+    document.getElementById('readGanancia').textContent = rel;
+
+    // Desplazamiento dinámico en 3D
+    const offset = (f1 / 500) * 1.5;
+    piston1.position.y = 1 - offset;
+    piston2.position.y = 1 + (offset / rel);
+  }
+
+  sldF1.addEventListener('input', update);
+  selRel.addEventListener('change', update);
+  update();
+
+  function animate(){
+    requestAnimationFrame(animate);
+    controls.update();
+    renderer.render(scene, camera);
+  }
+  animate();
+})();
+
+// --- 4. SIMULACIÓN 3D LEY DE BOYLE ---
+(function(){
+  const { scene, camera, renderer, controls } = init3DScene('canvas3d-boyle');
+  camera.position.set(0, 2, 14);
+
+  // Cilindro
+  const cylGeo = new THREE.CylinderGeometry(2.5, 2.5, 8, 32, 1, true);
+  const cylMat = new THREE.MeshPhongMaterial({ color: 0x50AAD7, transparent: true, opacity: 0.25, side: THREE.DoubleSide });
+  const cylinder = new THREE.Mesh(cylGeo, cylMat);
+  scene.add(cylinder);
+
+  // Pistón
+  const pistGeo = new THREE.CylinderGeometry(2.45, 2.45, 0.4, 32);
+  const pistMat = new THREE.MeshPhongMaterial({ color: 0xC69214 });
+  const piston = new THREE.Mesh(pistGeo, pistMat);
+  piston.position.y = 3.5;
+  scene.add(piston);
+
+  // Partículas de gas
+  const particleCount = 60;
+  const particlesGeo = new THREE.BufferGeometry();
+  const positions = new Float32Array(particleCount * 3);
+  const velocities = [];
+
+  for(let i=0; i<particleCount; i++){
+    positions[i*3] = (Math.random() - 0.5) * 4;
+    positions[i*3+1] = (Math.random() - 0.5) * 6;
+    positions[i*3+2] = (Math.random() - 0.5) * 4;
+    velocities.push(new THREE.Vector3((Math.random()-0.5)*0.08, (Math.random()-0.5)*0.08, (Math.random()-0.5)*0.08));
+  }
+  particlesGeo.setAttribute('position', new THREE.BufferAttribute(positions, 3));
+  const particleMat = new THREE.PointsMaterial({ color: 0x50AAD7, size: 0.3 });
+  const particleSystem = new THREE.Points(particlesGeo, particleMat);
+  scene.add(particleSystem);
+
+  const sldP = document.getElementById('sliderPBoyle');
+  let currentMaxY = 3.5;
+  let speedFactor = 1;
+
+  function update(){
+    const p = parseFloat(sldP.value);
+    const vPct = 100 / p;
+
+    document.getElementById('readPBoyle').textContent = p.toFixed(1);
+    document.getElementById('readVBoyle').textContent = vPct.toFixed(0);
+
+    currentMaxY = -3.8 + (7.3 * (vPct / 100));
+    piston.position.y = currentMaxY;
+    speedFactor = p; // Mayor presión = mayor velocidad de choque
+  }
+
+  sldP.addEventListener('input', update);
+  update();
+
+  function animate(){
+    requestAnimationFrame(animate);
+
+    // Mover partículas de gas confinadas
+    const pos = particleSystem.geometry.attributes.position.array;
+    for(let i=0; i<particleCount; i++){
+      pos[i*3] += velocities[i].x * speedFactor;
+      pos[i*3+1] += velocities[i].y * speedFactor;
+      pos[i*3+2] += velocities[i].z * speedFactor;
+
+      // Rebotes en paredes 3D
+      if(Math.abs(pos[i*3]) > 2) velocities[i].x *= -1;
+      if(pos[i*3+1] > currentMaxY - 0.3 || pos[i*3+1] < -3.8) velocities[i].y *= -1;
+      if(Math.abs(pos[i*3+2]) > 2) velocities[i].z *= -1;
+    }
+    particleSystem.geometry.attributes.position.needsUpdate = true;
+
+    controls.update();
+    renderer.render(scene, camera);
+  }
+  animate();
+})();
+
+// --- 6. SIMULACIÓN 3D ARQUÍMEDES (Completada) ---
+(function(){
+  const { scene, camera, renderer, controls } = init3DScene('canvas3d-arquimedes');
+  camera.position.set(0, 4, 16);
+
+  // Tanque con Agua 3D
+  const waterGeo = new THREE.BoxGeometry(8, 6, 8);
+  const waterMat = new THREE.MeshPhongMaterial({ color: 0x50AAD7, transparent: true, opacity: 0.5 });
+  const water = new THREE.Mesh(waterGeo, waterMat);
+  water.position.y = -1;
+  scene.add(water);
+
+  // Bloque Sumergible
+  const blockGeo = new THREE.BoxGeometry(3, 3, 3);
+  const blockMat = new THREE.MeshPhongMaterial({ color: 0xC69214 });
+  const block = new THREE.Mesh(blockGeo, blockMat);
+  scene.add(block);
+
+  const selMaterial = document.getElementById('selBloqueArquimedes');
+  const txtReadout = document.getElementById('textArquimedes');
+
+  function update(){
+    const rhoB = parseFloat(selMaterial.value);
+    const rhoL = 1000;
+
+    if(rhoB >= rhoL){
+      // Se hunde al fondo
+      block.position.y = -2.5;
+      txtReadout.innerHTML = '<b>Estado:</b> El cuerpo se hunde completamente. Porcentaje sumergido: 100%';
+    } else {
+      // Flota
+      const pctSumergido = rhoB / rhoL;
+      block.position.y = -1 + (1 - pctSumergido) * 1.5;
+      txtReadout.innerHTML = `<b>Estado:</b> El cuerpo flota. Porcentaje sumergido: ${(pctSumergido * 100).toFixed(0)}%`;
+    }
+  }
+
+  selMaterial.addEventListener('change', update);
+  update();
+
+  function animate(){
+    requestAnimationFrame(animate);
+    controls.update();
+    renderer.render(scene, camera);
+  }
+  animate();
+})();
+
+// --- Lógica Interfaz: Ejemplos Paso a Paso ---
+document.querySelectorAll('.ejemplo').forEach(ejemplo => {
+  let stepCounter = 0;
+  const steps = ejemplo.querySelectorAll('.step');
+  const btnSiguiente = ejemplo.querySelector('[data-siguiente]');
+  const btnReiniciar = ejemplo.querySelector('[data-reiniciar]');
+  const progText = ejemplo.querySelector('[data-progreso]');
+
+  function updateUI() {
+    if(progText) progText.textContent = `Paso ${stepCounter} / ${steps.length}`;
+  }
+
+  function advanceStep() {
+    if(stepCounter < steps.length) {
+      steps[stepCounter].classList.add('shown');
+      stepCounter++;
+      updateUI();
+    }
+  }
+
+  function resetSteps() {
+    steps.forEach(step => step.classList.remove('shown'));
+    stepCounter = 0;
+    updateUI();
+  }
+
+  if(btnSiguiente) btnSiguiente.addEventListener('click', advanceStep);
+  if(btnReiniciar) btnReiniciar.addEventListener('click', resetSteps);
+  ejemplo.addEventListener('keydown', (e) => {
+    if(e.key === 'Enter') advanceStep();
+  });
+
+  updateUI();
+});
+</script>
+</body>
+</html>
