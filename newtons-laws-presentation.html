@@ -1,0 +1,881 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>9th Grade Physics · Unit 4: Newton's 3D Laws</title>
+<!-- Three.js loading for interactive 3D rendering -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
+
+<!-- MathJax loading for LaTeX equations rendering -->
+<script>
+  window.MathJax = {
+    tex: {
+      inlineMath: [['$', '$'], ['\\(', '\\)']],
+      displayMath: [['$$', '$$'], ['\\[', '\\]']]
+    }
+  };
+</script>
+<script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+
+<style>
+/* Styles based on provided template */
+:root{
+  --eth-blue-dark:#133565;
+  --eth-blue:#215CAF;
+  --celeste-ucr:#50AAD7;
+  --gold-ucr:#C69214;
+  --gris-texto:#3C3C3C;
+  --fondo-nota:#F5F7FA;
+  --fondo-gold:#FBF3E1;
+  --linea:#D8DEE8;
+}
+*{box-sizing:border-box;}
+html{scroll-behavior:smooth;}
+body{
+  margin:0; padding:0;
+  font-family: Georgia, 'Cambria', 'Times New Roman', serif;
+  color:var(--gris-texto);
+  background:#fff;
+  line-height:1.55;
+}
+h1,h2,h3{color:var(--eth-blue-dark); font-weight:700; margin:0 0 .5em 0;}
+p{margin:0 0 1em 0;}
+.wrap{max-width:900px; margin:0 auto; padding:0 24px;}
+.narrow{max-width:70ch;}
+
+/* ---------- Hero / Cover ---------- */
+.portada{
+  min-height:100vh;
+  display:flex; flex-direction:column; justify-content:center;
+  border-bottom:6px solid var(--gold-ucr);
+  padding:48px 24px 64px;
+  background:
+    radial-gradient(circle at 85% 12%, rgba(80,170,215,.12), transparent 45%),
+    radial-gradient(circle at 10% 85%, rgba(198,146,20,.08), transparent 45%);
+}
+.portada-header{
+  display:flex; align-items:center; justify-content:space-between;
+  max-width:900px; width:100%; margin:0 auto 56px;
+  padding-bottom:18px; border-bottom:1.5px solid rgba(33,92,175,.35);
+}
+.portada-header .badge-cole{
+  font-family: Georgia, serif; font-size:1.1rem; font-weight:700; color:var(--eth-blue-dark);
+  letter-spacing:.05em; text-transform:uppercase;
+}
+.portada-titulo{max-width:900px; width:100%; margin:0 auto; text-align:left;}
+.eyebrow{color:var(--gris-texto); font-size:1.05rem; letter-spacing:.02em;}
+.curso{color:var(--eth-blue-dark); font-size:2.6rem; font-weight:700; margin:.1em 0 .3em;}
+.gold-rule{width:110px; height:3px; background:var(--gold-ucr); margin:.4em 0 .7em;}
+.tema-titulo{font-size:1.7rem; color:var(--eth-blue); font-weight:700; margin:0 0 .15em;}
+.tema-sub{font-size:1.1rem; color:var(--gris-texto);}
+.portada-footer{max-width:900px; width:100%; margin:64px auto 0; font-size:.95rem; color:var(--gris-texto);}
+.portada-footer b{color:var(--eth-blue-dark);}
+
+/* ---------- Nav ---------- */
+nav.toc{
+  position:sticky; top:0; z-index:50;
+  background:rgba(255,255,255,.94); backdrop-filter:blur(4px);
+  border-bottom:1px solid var(--linea);
+  overflow-x:auto; white-space:nowrap;
+}
+nav.toc .wrap{display:flex; gap:4px; padding:10px 24px;}
+nav.toc a{
+  flex:0 0 auto;
+  font-family: Georgia, serif; font-size:.85rem; color:var(--eth-blue-dark);
+  text-decoration:none; padding:6px 12px; border-radius:16px;
+  border:1px solid transparent;
+}
+nav.toc a:hover{border-color:var(--eth-blue); background:var(--fondo-nota);}
+
+/* ---------- Sections ---------- */
+section{padding:56px 0; border-bottom:1px solid var(--linea);}
+section:last-of-type{border-bottom:none;}
+.kicker{
+  display:inline-block; font-size:1.15rem; font-weight:700; color:var(--eth-blue-dark);
+  border:2px solid var(--gold-ucr); border-radius:10px;
+  padding:8px 18px; margin-bottom:24px; background:#fff;
+}
+
+/* ---------- Cards & Callouts ---------- */
+.ley{
+  background:#EAF3FB; border-left:4px solid var(--eth-blue);
+  border-radius:4px; padding:16px 20px; margin:18px 0;
+}
+.ley b{color:var(--eth-blue-dark);}
+.nota{
+  background:var(--fondo-nota); border:1px solid var(--linea); border-radius:6px;
+  padding:14px 18px; margin:18px 0; font-size:.94rem;
+}
+.leyenda{
+  border:1px solid var(--linea); border-radius:6px; padding:12px 16px; margin:14px 0 0;
+  font-size:.9rem; color:var(--gris-texto); background:#fff;
+}
+.leyenda b{color:var(--eth-blue-dark);}
+
+/* ---------- Equations ---------- */
+.eq{
+  display:block; text-align:center;
+  background:var(--fondo-nota); border-left:3px solid var(--eth-blue);
+  padding:14px 10px; margin:18px 0; border-radius:4px; overflow-x:auto;
+}
+
+/* ---------- Panels and 3D Simulators ---------- */
+.panel{
+  background:#fff; border:1px solid var(--linea); border-radius:10px;
+  padding:22px 24px; margin:20px 0;
+  box-shadow:0 1px 3px rgba(19,53,101,.06);
+}
+.panel h3{font-size:1.05rem; margin-bottom:14px;}
+.controls{display:flex; flex-wrap:wrap; gap:18px; align-items:center; margin-bottom:16px; font-size:.92rem;}
+.controls label{display:flex; flex-direction:column; gap:4px; font-size:.85rem; color:var(--gris-texto); margin-right:18px;}
+input[type=range]{accent-color:var(--eth-blue); width:180px;}
+select, button{
+  font-family:inherit; font-size:.9rem; padding:6px 10px; border-radius:6px;
+  border:1px solid var(--linea); background:#fff; color:var(--gris-texto);
+}
+button{
+  background:var(--eth-blue-dark); color:#fff; border:none; cursor:pointer;
+  padding:8px 16px; font-weight:600; border-radius:6px;
+}
+button.secundario {
+  background: #fff; color: var(--eth-blue-dark); border: 1px solid var(--eth-blue-dark);
+}
+button:hover{background:var(--eth-blue); color: #fff;}
+.readout{font-size:.95rem; margin-top:12px; background:var(--fondo-nota); padding:10px 14px; border-radius:6px;}
+.readout .num{font-weight:700; color:var(--eth-blue-dark);}
+
+.canvas3d-container{
+  width:100%; height:380px; background:#111827; border-radius:8px;
+  overflow:hidden; position:relative; margin:14px 0;
+}
+.canvas3d-container canvas{width:100%; height:100%; display:block;}
+.canvas-hint{
+  position:absolute; bottom:8px; right:12px; color:rgba(255,255,255,0.6);
+  font-size:0.75rem; pointer-events:none; background:rgba(0,0,0,0.4); padding:3px 8px; border-radius:4px;
+}
+
+/* ---------- Step-by-Step Examples ---------- */
+.ejemplo{
+  border:1px solid var(--linea); border-radius:10px; margin:26px 0; overflow:hidden;
+  outline:none; background:#fff;
+}
+.ejemplo-header{
+  background:var(--eth-blue-dark); color:#fff; padding:12px 20px;
+  display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:8px;
+}
+.ejemplo-body{padding:20px 22px;}
+.enunciado{
+  background:var(--fondo-nota); border-left:4px solid var(--eth-blue-dark);
+  padding:14px 18px; border-radius:4px; margin-bottom:14px;
+}
+.diagrama-svg{
+  display:flex; justify-content:center; align-items:center; margin:16px 0;
+}
+.step{
+  opacity:0; max-height:0; overflow:hidden;
+  transform:translateY(8px);
+  transition:opacity .45s ease, transform .45s ease, max-height .45s ease;
+  padding-top:0;
+}
+.step.shown{opacity:1; max-height:600px; transform:translateY(0); padding-top:14px;}
+.step .titulo-paso{font-weight:700; color:var(--eth-blue); margin-bottom:4px; font-size:.92rem;}
+.resultado-final{
+  background:var(--fondo-gold); border:1px solid var(--gold-ucr); border-radius:6px;
+  padding:12px 16px; font-weight:700; color:#7A5A0C;
+}
+.ejemplo-controles{
+  display:flex; gap:10px; align-items:center; padding:14px 22px 20px;
+  border-top:1px dashed var(--linea);
+}
+.hint-enter{font-size:.82rem; color:#8a8a8a;}
+.progreso{font-size:.82rem; color:var(--gris-texto);}
+
+footer.doc-footer{padding:40px 24px 60px; text-align:center; color:#8a8a8a; font-size:.85rem;}
+</style>
+</head>
+<body>
+
+<!-- SVG Vector Arrow Markers Definition -->
+<svg style="display:none;">
+  <defs>
+    <marker id="arrow-blue" viewBox="0 0 10 10" refX="6" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#215CAF"/>
+    </marker>
+    <marker id="arrow-red" viewBox="0 0 10 10" refX="6" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#E63946"/>
+    </marker>
+    <marker id="arrow-gold" viewBox="0 0 10 10" refX="6" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#C69214"/>
+    </marker>
+    <marker id="arrow-green" viewBox="0 0 10 10" refX="6" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#2A9D8F"/>
+    </marker>
+  </defs>
+</svg>
+
+<!-- COVER PAGE -->
+<div class="portada">
+  <div class="portada-header">
+    <div class="badge-cole">High School · 9th Grade</div>
+    <div class="badge-cole" style="color:var(--eth-blue);">Physics Curriculum</div>
+  </div>
+  <div class="portada-titulo">
+    <div class="eyebrow">9th Grade Physics</div>
+    <div class="curso">Unit 4</div>
+    <div class="gold-rule"></div>
+    <div class="tema-titulo">Newton's Laws and 3D Dynamics</div>
+    <div class="tema-sub">Three-dimensional modeling of forces, inclined planes, and acceleration</div>
+  </div>
+  <div class="portada-footer">
+    <div><b>Teacher:</b> Prof. Keylor Arley Castro</div>
+    <div>Department of Exact and Natural Sciences</div>
+  </div>
+</div>
+
+<!-- STICKY NAVIGATION -->
+<nav class="toc">
+  <div class="wrap">
+    <a href="#fuerzas">1. Forces</a>
+    <a href="#ley1">2. First Law</a>
+    <a href="#ley2">3. Second Law 3D</a>
+    <a href="#plano">4. Inclined Plane 3D</a>
+    <a href="#ley3">5. Third Law</a>
+  </div>
+</nav>
+
+<!-- 1. FORCES -->
+<section id="fuerzas">
+  <div class="wrap">
+    <div class="kicker">1. Concept of Force and Net Force</div>
+    <p class="narrow">A <b>force</b> ($\vec{F}$) is a vector quantity representing an interaction capable of altering the state of motion or shape of a body.</p>
+    
+    <div class="eq">$$\vec{F}_{\text{net}} = \sum \vec{F}$$</div>
+    <div class="leyenda">
+      <b>$\vec{F}_{\text{net}}$</b>: resultant or net force $[\text{N}]$ &middot; 
+      The <b>Newton (N)</b> is the standard unit of force: $1\text{ N} = 1\text{ kg}\cdot\text{m/s}^2$.
+    </div>
+
+    <!-- EXAMPLE TOPIC 1 -->
+    <div class="ejemplo" tabindex="0" data-example="1">
+      <div class="ejemplo-header">
+        <b>Topic 1 Example — Net Force Calculation</b>
+        <span class="progreso" data-progreso>Step 0 / 4</span>
+      </div>
+      <div class="ejemplo-body">
+        <div class="enunciado">
+          A crate is pushed to the right with a force $F_1 = 45\text{ N}$ and pulled to the left by a friction force $F_2 = 15\text{ N}$. Determine the magnitude and direction of the net force ($\vec{F}_{\text{net}}$).
+        </div>
+
+        <!-- SVG Diagram Topic 1 -->
+        <div class="diagrama-svg">
+          <svg viewBox="0 0 500 160" style="width:100%; max-width:480px; height:auto; background:#F5F7FA; border-radius:8px; border:1px solid #D8DEE8;">
+            <line x1="20" y1="130" x2="480" y2="130" stroke="#133565" stroke-width="3" stroke-dasharray="6,4"/>
+            <rect x="200" y="60" width="100" height="70" rx="6" fill="#215CAF" stroke="#133565" stroke-width="2"/>
+            <text x="250" y="102" font-family="Georgia, serif" font-size="14" font-weight="bold" fill="#ffffff" text-anchor="middle">m = 10 kg</text>
+            
+            <line x1="300" y1="95" x2="430" y2="95" stroke="#215CAF" stroke-width="4" marker-end="url(#arrow-blue)"/>
+            <text x="365" y="85" font-family="Georgia, serif" font-size="13" font-weight="bold" fill="#215CAF">F₁ = 45 N</text>
+
+            <line x1="200" y1="95" x2="110" y2="95" stroke="#E63946" stroke-width="4" marker-end="url(#arrow-red)"/>
+            <text x="115" y="85" font-family="Georgia, serif" font-size="13" font-weight="bold" fill="#E63946">F₂ = 15 N</text>
+
+            <line x1="250" y1="35" x2="340" y2="35" stroke="#C69214" stroke-width="4" stroke-dasharray="4,2" marker-end="url(#arrow-gold)"/>
+            <text x="295" y="25" font-family="Georgia, serif" font-size="13" font-weight="bold" fill="#C69214">F_net = 30 N</text>
+          </svg>
+        </div>
+
+        <div class="step">
+          <div class="titulo-paso">Step 1 — Define Vector Directions</div>
+          Assign horizontal signs: right is positive ($+$), left is negative ($-$). <br>
+          $F_1 = +45\text{ N} \quad \text{and} \quad F_2 = -15\text{ N}$
+        </div>
+        <div class="step">
+          <div class="titulo-paso">Step 2 — Apply the Vector Sum Formula</div>
+          $$\vec{F}_{\text{net}} = \sum F = F_1 + F_2 = (+45\text{ N}) + (-15\text{ N})$$
+        </div>
+        <div class="step">
+          <div class="titulo-paso">Step 3 — Compute Resultant</div>
+          $$\vec{F}_{\text{net}} = 30\text{ N}$$
+        </div>
+        <div class="step">
+          <div class="titulo-paso">Final Result</div>
+          <div class="resultado-final">The net force is $30\text{ N}$ pointing to the right.</div>
+        </div>
+      </div>
+      <div class="ejemplo-controles">
+        <button data-siguiente>Next ▶</button>
+        <button class="secundario" data-reiniciar>Reset</button>
+        <span class="hint-enter">or press Enter</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 2. FIRST LAW -->
+<section id="ley1">
+  <div class="wrap">
+    <div class="kicker">2. Newton's First Law (Inertia)</div>
+    <div class="ley">
+      <b>Law of Inertia:</b> Every body continues in its state of rest, or of uniform motion in a straight line, unless acted upon by net external forces.
+    </div>
+    <p class="narrow">If the sum of all forces is zero, acceleration is zero (translational equilibrium):</p>
+    <div class="eq">$$\sum \vec{F} = 0 \iff \vec{a} = 0$$</div>
+
+    <!-- EXAMPLE TOPIC 2 -->
+    <div class="ejemplo" tabindex="0" data-example="2">
+      <div class="ejemplo-header">
+        <b>Topic 2 Example — Tension in Translational Equilibrium</b>
+        <span class="progreso" data-progreso>Step 0 / 4</span>
+      </div>
+      <div class="ejemplo-body">
+        <div class="enunciado">
+          A traffic light weighing $200\text{ N}$ hangs in equilibrium from two symmetrical cables attached to a ceiling. Each cable makes an angle of $60^\circ$ with the horizontal. Calculate the tension $T$ in each cable.
+        </div>
+
+        <!-- SVG Diagram Topic 2 -->
+        <div class="diagrama-svg">
+          <svg viewBox="0 0 500 200" style="width:100%; max-width:480px; height:auto; background:#F5F7FA; border-radius:8px; border:1px solid #D8DEE8;">
+            <line x1="100" y1="25" x2="400" y2="25" stroke="#133565" stroke-width="4"/>
+            <line x1="250" y1="110" x2="160" y2="25" stroke="#215CAF" stroke-width="3" marker-end="url(#arrow-blue)"/>
+            <line x1="250" y1="110" x2="340" y2="25" stroke="#215CAF" stroke-width="3" marker-end="url(#arrow-blue)"/>
+            
+            <rect x="225" y="110" width="50" height="55" rx="6" fill="#133565"/>
+            <circle cx="250" cy="123" r="5" fill="#E63946"/>
+            <circle cx="250" cy="137" r="5" fill="#C69214"/>
+            <circle cx="250" cy="151" r="5" fill="#2A9D8F"/>
+
+            <line x1="250" y1="165" x2="250" y2="195" stroke="#E63946" stroke-width="3" marker-end="url(#arrow-red)"/>
+            <text x="260" y="188" font-family="Georgia, serif" font-size="12" font-weight="bold" fill="#E63946">W = 200 N</text>
+            <text x="180" y="75" font-family="Georgia, serif" font-size="12" font-weight="bold" fill="#215CAF">T₁</text>
+            <text x="310" y="75" font-family="Georgia, serif" font-size="12" font-weight="bold" fill="#215CAF">T₂</text>
+          </svg>
+        </div>
+
+        <div class="step">
+          <div class="titulo-paso">Step 1 — Equilibrium Conditions</div>
+          Since the object is motionless, $\sum F_x = 0$ and $\sum F_y = 0$. By symmetry, both cable tensions are equal ($T_1 = T_2 = T$).
+        </div>
+        <div class="step">
+          <div class="titulo-paso">Step 2 — Vertical Forces Equilibrium Equation</div>
+          $$\sum F_y = T \sin(60^\circ) + T \sin(60^\circ) - W = 0$$
+          $$2T \sin(60^\circ) = 200\text{ N}$$
+        </div>
+        <div class="step">
+          <div class="titulo-paso">Step 3 — Solve for Cable Tension ($T$)</div>
+          $$T = \frac{200\text{ N}}{2 \cdot \sin(60^\circ)} = \frac{200}{2 \cdot 0.866} = 115.47\text{ N}$$
+        </div>
+        <div class="step">
+          <div class="titulo-paso">Final Result</div>
+          <div class="resultado-final">The tension in each cable is $115.47\text{ N}$.</div>
+        </div>
+      </div>
+      <div class="ejemplo-controles">
+        <button data-siguiente>Next ▶</button>
+        <button class="secundario" data-reiniciar>Reset</button>
+        <span class="hint-enter">or press Enter</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 3. SECOND LAW 3D -->
+<section id="ley2">
+  <div class="wrap">
+    <div class="kicker">3. Newton's Second Law (Dynamics)</div>
+    <div class="ley">
+      <b>Fundamental Law of Dynamics:</b> The acceleration of an object is directly proportional to the net force acting on it, and inversely proportional to its mass.
+    </div>
+
+    <div class="eq">$$\vec{F}_{\text{net}} = m \cdot \vec{a} \implies \vec{a} = \frac{\vec{F}_{\text{net}}}{m}$$</div>
+
+    <div class="panel">
+      <h3>3D Simulation: Block Acceleration</h3>
+      <p class="narrow" style="font-size:0.88rem;">Adjust the applied force and mass to observe the change in acceleration.</p>
+      
+      <div class="controls">
+        <label>Net Force ($F$) in Newtons
+          <input type="range" id="sliderFuerza" min="10" max="200" step="10" value="100">
+        </label>
+        <label>Mass ($m$) in kg
+          <select id="selMasa">
+            <option value="5">Small Box (5 kg)</option>
+            <option value="10" selected>Medium Box (10 kg)</option>
+            <option value="50">Large Box (50 kg)</option>
+          </select>
+        </label>
+      </div>
+
+      <div class="canvas3d-container" id="canvas3d-newton2">
+        <div class="canvas-hint">Drag to rotate in 3D</div>
+      </div>
+
+      <p class="readout">
+        Applied Force: <span class="num" id="readF">100</span> N &nbsp;&middot;&nbsp; 
+        Mass: <span class="num" id="readM">10</span> kg &nbsp;&middot;&nbsp; 
+        Acceleration ($\vec{a}$): <span class="num" id="readA">10.00</span> $\text{m/s}^2$
+      </p>
+    </div>
+
+    <!-- EXAMPLE TOPIC 3 -->
+    <div class="ejemplo" tabindex="0" data-example="3">
+      <div class="ejemplo-header">
+        <b>Topic 3 Example — Acceleration of a Shopping Cart</b>
+        <span class="progreso" data-progreso>Step 0 / 4</span>
+      </div>
+      <div class="ejemplo-body">
+        <div class="enunciado">
+          A student exerts a horizontal net force of $80\text{ N}$ on a $25\text{ kg}$ cart. Calculate the cart's acceleration and the velocity reached after $4\text{ s}$ starting from rest.
+        </div>
+
+        <!-- SVG Diagram Topic 3 -->
+        <div class="diagrama-svg">
+          <svg viewBox="0 0 500 160" style="width:100%; max-width:480px; height:auto; background:#F5F7FA; border-radius:8px; border:1px solid #D8DEE8;">
+            <line x1="30" y1="130" x2="470" y2="130" stroke="#133565" stroke-width="3"/>
+            <rect x="180" y="70" width="110" height="45" rx="4" fill="#215CAF" stroke="#133565" stroke-width="2"/>
+            <circle cx="200" cy="130" r="8" fill="#333"/>
+            <circle cx="270" cy="130" r="8" fill="#333"/>
+            <text x="235" y="97" font-family="Georgia, serif" font-size="13" font-weight="bold" fill="#ffffff" text-anchor="middle">m = 25 kg</text>
+
+            <line x1="290" y1="92" x2="410" y2="92" stroke="#C69214" stroke-width="4" marker-end="url(#arrow-gold)"/>
+            <text x="350" y="82" font-family="Georgia, serif" font-size="13" font-weight="bold" fill="#C69214">F = 80 N</text>
+
+            <line x1="235" y1="40" x2="320" y2="40" stroke="#2A9D8F" stroke-width="3" stroke-dasharray="4,2" marker-end="url(#arrow-green)"/>
+            <text x="275" y="30" font-family="Georgia, serif" font-size="12" font-weight="bold" fill="#2A9D8F">a = 3.20 m/s²</text>
+          </svg>
+        </div>
+
+        <div class="step">
+          <div class="titulo-paso">Step 1 — Identify Given Variables</div>
+          $F_{\text{net}} = 80\text{ N} \quad m = 25\text{ kg} \quad v_0 = 0\text{ m/s} \quad t = 4\text{ s}$
+        </div>
+        <div class="step">
+          <div class="titulo-paso">Step 2 — Calculate Acceleration ($a$)</div>
+          $$a = \frac{F_{\text{net}}}{m} = \frac{80\text{ N}}{25\text{ kg}} = 3.20\text{ m/s}^2$$
+        </div>
+        <div class="step">
+          <div class="titulo-paso">Step 3 — Calculate Final Velocity ($v$)</div>
+          $$v = v_0 + a \cdot t = 0 + (3.20\text{ m/s}^2)(4\text{ s}) = 12.80\text{ m/s}$$
+        </div>
+        <div class="step">
+          <div class="titulo-paso">Final Result</div>
+          <div class="resultado-final">Acceleration is $3.20\text{ m/s}^2$ and final velocity is $12.80\text{ m/s}$.</div>
+        </div>
+      </div>
+      <div class="ejemplo-controles">
+        <button data-siguiente>Next ▶</button>
+        <button class="secundario" data-reiniciar>Reset</button>
+        <span class="hint-enter">or press Enter</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 4. INCLINED PLANE 3D -->
+<section id="plano">
+  <div class="wrap">
+    <div class="kicker">4. Inclined Plane and Vector Decomposition</div>
+    <p class="narrow">When an object rests or moves on an inclined surface, its weight ($\vec{w}$) must be resolved into two components relative to the surface axes:</p>
+    
+    <div class="eq">
+      $$w_x = m \cdot g \cdot \sin(\theta)$$
+      $$w_y = m \cdot g \cdot \cos(\theta)$$
+    </div>
+
+    <div class="panel">
+      <h3>3D Simulation: Vectors on an Inclined Plane</h3>
+      <div class="controls">
+        <label>Incline Angle ($\theta$)
+          <input type="range" id="sliderAngulo" min="0" max="60" value="30">
+        </label>
+        <label>Object Mass (kg)
+          <input type="range" id="sliderMasaPlano" min="1" max="20" value="10">
+        </label>
+      </div>
+
+      <div class="canvas3d-container" id="canvas3d-plano">
+        <div class="canvas-hint">Drag to rotate in 3D</div>
+      </div>
+
+      <p class="readout" style="line-height:1.8;">
+        Angle ($\theta$): <span class="num" id="readAngulo">30</span>° &nbsp;&middot;&nbsp;
+        Total Weight ($w$): <span class="num" id="readW">98.0</span> N <br>
+        <span style="color:#C69214; font-weight:bold;">Normal Force ($N = w_y$): <span id="readWy">84.9</span> N</span> &nbsp;&middot;&nbsp;
+        <span style="color:#215CAF; font-weight:bold;">Parallel Force ($w_x$): <span id="readWx">49.0</span> N</span>
+      </p>
+    </div>
+
+    <!-- EXAMPLE TOPIC 4 -->
+    <div class="ejemplo" tabindex="0" data-example="4">
+      <div class="ejemplo-header">
+        <b>Topic 4 Example — Acceleration on an Inclined Ramp</b>
+        <span class="progreso" data-progreso>Step 0 / 4</span>
+      </div>
+      <div class="ejemplo-body">
+        <div class="enunciado">
+          A $15\text{ kg}$ block slides down a frictionless ramp inclined at $40^\circ$ above the horizontal. Calculate the weight components ($w_x, w_y$), the normal force $N$, and the magnitude of acceleration ($g = 9.8\text{ m/s}^2$).
+        </div>
+
+        <!-- SVG Diagram Topic 4 -->
+        <div class="diagrama-svg">
+          <svg viewBox="0 0 500 200" style="width:100%; max-width:480px; height:auto; background:#F5F7FA; border-radius:8px; border:1px solid #D8DEE8;">
+            <polygon points="60,170 420,170 420,50" fill="#EAF3FB" stroke="#133565" stroke-width="2"/>
+            <path d="M 120,170 A 60,60 0 0,0 105,150" fill="none" stroke="#C69214" stroke-width="2"/>
+            <text x="130" y="160" font-family="Georgia, serif" font-size="12" font-weight="bold" fill="#C69214">θ = 40°</text>
+
+            <g transform="translate(240, 110) rotate(-18)">
+              <rect x="-30" y="-20" width="60" height="40" rx="4" fill="#C69214" stroke="#133565" stroke-width="2"/>
+              <text x="0" y="5" font-family="Georgia, serif" font-size="12" font-weight="bold" fill="#ffffff" text-anchor="middle">15 kg</text>
+
+              <line x1="0" y1="-20" x2="0" y2="-65" stroke="#C69214" stroke-width="3" marker-end="url(#arrow-gold)"/>
+              <text x="8" y="-50" font-family="Georgia, serif" font-size="11" font-weight="bold" fill="#C69214">N = 112.6 N</text>
+
+              <line x1="-30" y1="0" x2="-80" y2="0" stroke="#215CAF" stroke-width="3" marker-end="url(#arrow-blue)"/>
+              <text x="-80" y="-10" font-family="Georgia, serif" font-size="11" font-weight="bold" fill="#215CAF">w_x = 94.5 N</text>
+            </g>
+
+            <line x1="240" y1="110" x2="240" y2="185" stroke="#E63946" stroke-width="3" marker-end="url(#arrow-red)"/>
+            <text x="248" y="165" font-family="Georgia, serif" font-size="11" font-weight="bold" fill="#E63946">w = 147 N</text>
+          </svg>
+        </div>
+
+        <div class="step">
+          <div class="titulo-paso">Step 1 — Calculate Total Weight ($w$)</div>
+          $$w = m \cdot g = (15\text{ kg})(9.8\text{ m/s}^2) = 147\text{ N}$$
+        </div>
+        <div class="step">
+          <div class="titulo-paso">Step 2 — Decompose Weight Components</div>
+          $$w_x = w \cdot \sin(40^\circ) = 147 \cdot 0.6428 = 94.49\text{ N} \quad (\text{parallel to ramp})$$
+          $$w_y = w \cdot \cos(40^\circ) = 147 \cdot 0.7660 = 112.61\text{ N} \quad (\text{perpendicular to ramp})$$
+        </div>
+        <div class="step">
+          <div class="titulo-paso">Step 3 — Determine Normal Force & Acceleration</div>
+          Since there is no vertical movement off the ramp, $N = w_y = 112.61\text{ N}$. <br>
+          Applying Newton's 2nd Law down the ramp:
+          $$a = \frac{w_x}{m} = \frac{94.49\text{ N}}{15\text{ kg}} = 6.30\text{ m/s}^2$$
+        </div>
+        <div class="step">
+          <div class="titulo-paso">Final Result</div>
+          <div class="resultado-final">Normal force is $112.61\text{ N}$ and downhill acceleration is $6.30\text{ m/s}^2$.</div>
+        </div>
+      </div>
+      <div class="ejemplo-controles">
+        <button data-siguiente>Next ▶</button>
+        <button class="secundario" data-reiniciar>Reset</button>
+        <span class="hint-enter">or press Enter</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 5. THIRD LAW -->
+<section id="ley3">
+  <div class="wrap">
+    <div class="kicker">5. Newton's Third Law (Action-Reaction)</div>
+    <div class="ley">
+      <b>Law of Action and Reaction:</b> For every action, there is always an equal and opposite reaction; the mutual actions of two bodies upon each other are always equal and directed to contrary parts.
+    </div>
+    <div class="eq">$$\vec{F}_{A \to B} = -\vec{F}_{B \to A}$$</div>
+    <div class="nota">
+      Remember that action and reaction forces act on <b>different objects</b>, so they do not cancel each other out in the free-body diagram of a single object.
+    </div>
+
+    <!-- EXAMPLE TOPIC 5 -->
+    <div class="ejemplo" tabindex="0" data-example="5">
+      <div class="ejemplo-header">
+        <b>Topic 5 Example — Model Rocket Propulsion</b>
+        <span class="progreso" data-progreso>Step 0 / 4</span>
+      </div>
+      <div class="ejemplo-body">
+        <div class="enunciado">
+          A model rocket engine pushes exhaust gases downward with a force of $120\text{ N}$. Determine the thrust force exerted on the $2\text{ kg}$ rocket. Calculate the initial upward acceleration ($g = 9.8\text{ m/s}^2$).
+        </div>
+
+        <!-- SVG Diagram Topic 5 -->
+        <div class="diagrama-svg">
+          <svg viewBox="0 0 500 210" style="width:100%; max-width:480px; height:auto; background:#F5F7FA; border-radius:8px; border:1px solid #D8DEE8;">
+            <g transform="translate(250, 95)">
+              <path d="M -15,30 Q 0,70 15,30 Q 0,90 -15,30" fill="#E63946" opacity="0.85"/>
+              <path d="M -8,30 Q 0,55 8,30 Q 0,70 -8,30" fill="#C69214"/>
+              
+              <path d="M -18,30 L -18,-25 Q -18,-55 0,-70 Q 18,-55 18,-25 L 18,30 Z" fill="#215CAF" stroke="#133565" stroke-width="2"/>
+              <path d="M -18,10 L -30,30 L -18,30 Z" fill="#133565"/>
+              <path d="M 18,10 L 30,30 L 18,30 Z" fill="#133565"/>
+              <circle cx="0" cy="-25" r="8" fill="#50AAD7" stroke="#fff" stroke-width="2"/>
+
+              <line x1="0" y1="-70" x2="0" y2="-120" stroke="#2A9D8F" stroke-width="4" marker-end="url(#arrow-green)"/>
+              <text x="12" y="-95" font-family="Georgia, serif" font-size="12" font-weight="bold" fill="#2A9D8F">F_thrust = 120 N (Up)</text>
+
+              <line x1="0" y1="35" x2="0" y2="85" stroke="#E63946" stroke-width="4" marker-end="url(#arrow-red)"/>
+              <text x="12" y="65" font-family="Georgia, serif" font-size="12" font-weight="bold" fill="#E63946">F_gas = 120 N (Down)</text>
+            </g>
+          </svg>
+        </div>
+
+        <div class="step">
+          <div class="titulo-paso">Step 1 — Identify the Action-Reaction Pair</div>
+          By Newton's Third Law, if the rocket pushes gases downward with $120\text{ N}$, the gases exert an equal reaction thrust of $120\text{ N}$ upward on the rocket.
+        </div>
+        <div class="step">
+          <div class="titulo-paso">Step 2 — Calculate Gravity/Weight Force ($w$)</div>
+          $$w = m \cdot g = (2\text{ kg})(9.8\text{ m/s}^2) = 19.6\text{ N} \quad (\text{downward})$$
+        </div>
+        <div class="step">
+          <div class="titulo-paso">Step 3 — Compute Net Force & Upward Acceleration</div>
+          $$F_{\text{net}} = F_{\text{thrust}} - w = 120\text{ N} - 19.6\text{ N} = 100.4\text{ N}$$
+          $$a = \frac{F_{\text{net}}}{m} = \frac{100.4\text{ N}}{2\text{ kg}} = 50.20\text{ m/s}^2$$
+        </div>
+        <div class="step">
+          <div class="titulo-paso">Final Result</div>
+          <div class="resultado-final">Upward thrust is $120\text{ N}$, giving an initial acceleration of $50.20\text{ m/s}^2$.</div>
+        </div>
+      </div>
+      <div class="ejemplo-controles">
+        <button data-siguiente>Next ▶</button>
+        <button class="secundario" data-reiniciar>Reset</button>
+        <span class="hint-enter">or press Enter</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<footer class="doc-footer">
+  9th Grade Physics · Unit 4: Newton's Laws · Department of Exact and Natural Sciences
+</footer>
+
+<!-- ============================================================ -->
+<!-- INTERACTIVITY SCRIPTS AND 3D ENGINE (THREE.JS) -->
+<!-- ============================================================ -->
+<script>
+// --- Helper to initialize Three.js scenes ---
+function init3DScene(containerId) {
+  const container = document.getElementById(containerId);
+  const scene = new THREE.Scene();
+  scene.background = new THREE.Color(0x111827);
+
+  const camera = new THREE.PerspectiveCamera(45, container.clientWidth / container.clientHeight, 0.1, 1000);
+  const renderer = new THREE.WebGLRenderer({ antialias: true });
+  renderer.setSize(container.clientWidth, container.clientHeight);
+  container.appendChild(renderer.domElement);
+
+  const controls = new THREE.OrbitControls(camera, renderer.domElement);
+  controls.enableDamping = true;
+  controls.dampingFactor = 0.05;
+
+  const light = new THREE.DirectionalLight(0xffffff, 1);
+  light.position.set(10, 20, 15);
+  scene.add(light);
+  scene.add(new THREE.AmbientLight(0x666666));
+
+  window.addEventListener('resize', () => {
+    camera.aspect = container.clientWidth / container.clientHeight;
+    camera.updateProjectionMatrix();
+    renderer.setSize(container.clientWidth, container.clientHeight);
+  });
+
+  return { scene, camera, renderer, controls };
+}
+
+// --- 3D SIMULATION SECOND LAW ---
+(function(){
+  const { scene, camera, renderer, controls } = init3DScene('canvas3d-newton2');
+  camera.position.set(0, 5, 12);
+
+  // Floor
+  const gridHelper = new THREE.GridHelper(20, 20, 0x50AAD7, 0x215CAF);
+  scene.add(gridHelper);
+
+  // Box
+  const boxGeo = new THREE.BoxGeometry(2, 2, 2);
+  const boxMat = new THREE.MeshPhongMaterial({ color: 0xC69214 });
+  const box = new THREE.Mesh(boxGeo, boxMat);
+  box.position.y = 1;
+  scene.add(box);
+
+  // Force Arrow
+  const arrowHelper = new THREE.ArrowHelper(
+    new THREE.Vector3(1, 0, 0), 
+    new THREE.Vector3(-1, 1, 0), 
+    3, 
+    0x50AAD7, 
+    0.5, 0.3
+  );
+  scene.add(arrowHelper);
+
+  const sldF = document.getElementById('sliderFuerza');
+  const selM = document.getElementById('selMasa');
+
+  function update(){
+    const F = parseFloat(sldF.value);
+    const m = parseFloat(selM.value);
+    const a = F / m;
+
+    document.getElementById('readF').textContent = F.toFixed(0);
+    document.getElementById('readM').textContent = m.toFixed(0);
+    document.getElementById('readA').textContent = a.toFixed(2);
+
+    // Update visuals
+    const scaleMap = { "5": 0.8, "10": 1.2, "50": 1.8 };
+    box.scale.setScalar(scaleMap[m]);
+    box.position.y = scaleMap[m];
+
+    arrowHelper.setLength(1 + (F/50), 0.5, 0.3);
+    arrowHelper.position.set(-scaleMap[m], scaleMap[m], 0);
+  }
+
+  sldF.addEventListener('input', update);
+  selM.addEventListener('change', update);
+  update();
+
+  function animate(){
+    requestAnimationFrame(animate);
+    controls.update();
+    renderer.render(scene, camera);
+  }
+  animate();
+})();
+
+// --- 3D SIMULATION INCLINED PLANE ---
+(function(){
+  const { scene, camera, renderer, controls } = init3DScene('canvas3d-plano');
+  camera.position.set(0, 5, 15);
+
+  const rampGroup = new THREE.Group();
+  scene.add(rampGroup);
+
+  // Dynamic wedge geometry
+  let wedgeMesh;
+  const wedgeMat = new THREE.MeshPhongMaterial({ color: 0x133565, transparent: true, opacity: 0.8, side: THREE.DoubleSide });
+  
+  // Box
+  const blockGeo = new THREE.BoxGeometry(1.5, 1.5, 1.5);
+  const blockMat = new THREE.MeshPhongMaterial({ color: 0xC69214 });
+  const block = new THREE.Mesh(blockGeo, blockMat);
+  rampGroup.add(block);
+
+  // Arrows
+  const arrW = new THREE.ArrowHelper(new THREE.Vector3(0, -1, 0), new THREE.Vector3(0,0,0), 2, 0xffffff, 0.4, 0.2); // Weight
+  const arrN = new THREE.ArrowHelper(new THREE.Vector3(0, 1, 0), new THREE.Vector3(0,0,0), 2, 0xC69214, 0.4, 0.2); // Normal
+  const arrWx = new THREE.ArrowHelper(new THREE.Vector3(1, 0, 0), new THREE.Vector3(0,0,0), 2, 0x50AAD7, 0.4, 0.2); // Wx
+  
+  rampGroup.add(arrW);
+  rampGroup.add(arrN);
+  rampGroup.add(arrWx);
+
+  const sldAngulo = document.getElementById('sliderAngulo');
+  const sldMasa = document.getElementById('sliderMasaPlano');
+
+  function updateGeom(anguloDeg) {
+    if(wedgeMesh) rampGroup.remove(wedgeMesh);
+    
+    const rad = THREE.MathUtils.degToRad(anguloDeg);
+    const length = 8;
+    const height = Math.tan(rad) * length;
+
+    const shape = new THREE.Shape();
+    shape.moveTo(0, 0);
+    shape.lineTo(length, 0);
+    shape.lineTo(0, height);
+    shape.closePath();
+
+    const extrudeSettings = { depth: 4, bevelEnabled: false };
+    const geometry = new THREE.ExtrudeGeometry(shape, extrudeSettings);
+    
+    wedgeMesh = new THREE.Mesh(geometry, wedgeMat);
+    wedgeMesh.position.set(-length/2, -3, -2);
+    rampGroup.add(wedgeMesh);
+
+    // Position Block
+    const midX = length/2;
+    const yOnRamp = -3 + height - (Math.tan(rad) * midX);
+    
+    block.position.set(0, yOnRamp + 0.75, 0);
+    block.rotation.z = -rad;
+
+    // Update Vectors
+    arrW.position.copy(block.position);
+    
+    arrN.position.copy(block.position);
+    arrN.setDirection(new THREE.Vector3(Math.sin(rad), Math.cos(rad), 0).normalize());
+    
+    arrWx.position.copy(block.position);
+    arrWx.setDirection(new THREE.Vector3(Math.cos(rad), -Math.sin(rad), 0).normalize());
+  }
+
+  function update(){
+    const theta = parseFloat(sldAngulo.value);
+    const m = parseFloat(sldMasa.value);
+    const g = 9.8;
+    
+    const W = m * g;
+    const Wx = W * Math.sin(THREE.MathUtils.degToRad(theta));
+    const Wy = W * Math.cos(THREE.MathUtils.degToRad(theta));
+
+    document.getElementById('readAngulo').textContent = theta;
+    document.getElementById('readW').textContent = W.toFixed(1);
+    document.getElementById('readWx').textContent = Wx.toFixed(1);
+    document.getElementById('readWy').textContent = Wy.toFixed(1);
+
+    updateGeom(theta);
+
+    // Scale vectors (Visually)
+    arrW.setLength(1.5 + (W/100), 0.4, 0.2);
+    arrN.setLength(1 + (Wy/100), 0.4, 0.2);
+    if(Wx > 0.1) {
+        arrWx.setLength(0.5 + (Wx/100), 0.4, 0.2);
+        arrWx.visible = true;
+    } else {
+        arrWx.visible = false;
+    }
+  }
+
+  sldAngulo.addEventListener('input', update);
+  sldMasa.addEventListener('input', update);
+  update();
+
+  function animate(){
+    requestAnimationFrame(animate);
+    controls.update();
+    renderer.render(scene, camera);
+  }
+  animate();
+})();
+
+// --- UI Logic: Step-by-Step Examples ---
+document.querySelectorAll('.ejemplo').forEach(ejemplo => {
+  let stepCounter = 0;
+  const steps = ejemplo.querySelectorAll('.step');
+  const btnSiguiente = ejemplo.querySelector('[data-siguiente]');
+  const btnReiniciar = ejemplo.querySelector('[data-reiniciar]');
+  const progText = ejemplo.querySelector('[data-progreso]');
+
+  function updateUI() {
+    if(progText) progText.textContent = `Step ${stepCounter} / ${steps.length}`;
+  }
+
+  function advanceStep() {
+    if(stepCounter < steps.length) {
+      steps[stepCounter].classList.add('shown');
+      stepCounter++;
+      updateUI();
+    }
+  }
+
+  function resetSteps() {
+    steps.forEach(step => step.classList.remove('shown'));
+    stepCounter = 0;
+    updateUI();
+  }
+
+  if(btnSiguiente) btnSiguiente.addEventListener('click', advanceStep);
+  if(btnReiniciar) btnReiniciar.addEventListener('click', resetSteps);
+  ejemplo.addEventListener('keydown', (e) => {
+    if(e.key === 'Enter') advanceStep();
+  });
+
+  updateUI();
+});
+</script>
+</body>
+</html>
