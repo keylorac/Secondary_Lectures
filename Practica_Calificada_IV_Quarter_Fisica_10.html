@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Práctica Calificada IV Quarter - Física 10.°</title>
+<style>
+:root{--nd:#133565;--nb:#215CAF;--cl:#50AAD7;--go:#C69214;--tx:#3C3C3C;--bg:#F5F7FA;--ln:#D8DEE8}
+*{box-sizing:border-box}
+body{font-family:Georgia,'Times New Roman',serif;line-height:1.55;max-width:880px;margin:0 auto;padding:20px;background:var(--bg);color:var(--tx);}
+input,select{user-select:text;-webkit-user-select:text}
+h1,h2{text-align:center;color:var(--nd)}
+#start-container{text-align:center;background:#fff;padding:40px;border-radius:12px;border-top:6px solid var(--go);box-shadow:0 2px 8px rgba(19,53,101,.12);margin-top:4%}
+.student-info{text-align:left;background:var(--bg);padding:20px;border-radius:8px;margin:20px 0;border:1px solid var(--ln)}
+.student-info label{font-weight:bold;color:var(--nd);display:block;margin-bottom:5px}
+.student-info input,.student-info select{width:100%;padding:10px;margin-bottom:15px;border:1px solid var(--ln);border-radius:5px;font:inherit}
+#quiz-layout{display:none}
+.sec{background:var(--nd);color:#fff;padding:10px 18px;border-radius:8px;margin:28px 0 12px;font-weight:bold;border-bottom:4px solid var(--go)}
+.question{margin-bottom:20px;padding:18px;background:#fff;border-radius:8px;border-left:5px solid var(--nb);box-shadow:0 1px 4px rgba(19,53,101,.08)}
+.question .hd{display:flex;justify-content:space-between;gap:10px;color:var(--nd);margin-bottom:6px}
+.pts{color:var(--go);font-weight:bold;white-space:nowrap}
+.correct{background:#d9f2e0!important;border-left-color:#2f855a!important}
+.partial{background:#FBF3E1!important;border-left-color:var(--go)!important}
+.incorrect{background:#fde0e0!important;border-left-color:#c53030!important}
+label.option{display:block;margin:6px 0;padding:6px 8px;border-radius:4px;cursor:pointer}
+label.option:hover{background:#edf2f7}
+canvas{width:100%;max-width:600px;height:auto;background:#fff;border:1px solid var(--ln);border-radius:8px;display:block;margin:8px 0}
+.ctl{display:flex;flex-wrap:wrap;gap:10px 16px;align-items:center;margin:6px 0;font-size:.92rem}
+.ctl input[type=range]{accent-color:var(--nb);width:170px}
+.ans{width:110px;padding:6px;border:1px solid var(--nb);border-radius:6px;font:inherit}
+.mut{color:#6b7a90;font-size:.9rem}
+.act{padding:8px 16px;font-size:1rem;margin:0;width:auto;background:var(--nb);color:#fff;border:none;border-radius:6px;cursor:pointer;font-weight:bold;touch-action:none}
+.act.alt{background:#fff;color:var(--nd);border:1px solid var(--nd)}
+.act:disabled{opacity:.5;cursor:default}
+.chip{display:inline-block;padding:4px 12px;margin:3px;background:var(--nd);color:#fff;border-radius:6px;cursor:grab}
+.chip.sel{outline:3px solid var(--go)}
+.blank{display:inline-block;min-width:68px;min-height:32px;border:2px dashed var(--nb);border-radius:6px;vertical-align:middle;padding:0 2px;background:#fff}
+.pool{padding:8px;border:1px dashed var(--ln);border-radius:8px;min-height:46px;margin-bottom:10px}
+.stm{margin:8px 0;font-size:1.05rem}
+button.big{padding:15px;font-size:1.15rem;cursor:pointer;border-radius:6px;border:none;font-weight:bold;width:100%;margin-top:15px;color:#fff}
+.btn-start{background:var(--nb)}#submitBtn{background:var(--nd)}#pdfBtn{background:#2b8a8a;display:none}
+#report-card{display:none;background:#EAF3FB;border:2px solid var(--nb);border-radius:10px;padding:25px;margin:20px 0;text-align:center}
+.rm{font-size:1.2rem;margin:8px 0;color:var(--nd)}
+#sync-status{font-weight:bold;margin-top:15px;padding:10px;border-radius:5px}
+@media print{body{background:#fff}#submitBtn,#pdfBtn,.instructions,#start-container{display:none!important}.question{box-shadow:none;border:1px solid #ccc;page-break-inside:avoid}#report-card{display:block!important;border:2px solid #000;background:none}}
+</style>
+</head>
+<body>
+<div id="start-container">
+  <h2>Práctica Calificada · IV Quarter — Física 10.°</h2>
+  <p>Hidrostática y Movimiento Parabólico · <b>30 puntos</b></p>
+  <div class="student-info">
+    <label for="studentName">Nombre Completo del Estudiante:</label>
+    <input type="text" id="studentName" placeholder="Ej. Juan Pérez">
+    <label for="studentGrade">Sección / Grado:</label>
+    <select id="studentGrade"><option value="">Seleccione su sección...</option><option value="10-A">10-A</option><option value="10-B">10-B</option><option value="10-C">10-C</option></select>
+  </div>
+  <p class="instructions">Usa g = 9.8 m/s², P<sub>atm</sub> = 101 325 Pa y ρ<sub>agua</sub> = 1000 kg/m³.</p>
+  <p class="instructions">Puedes consultar tus apuntes, las presentaciones de clase y otros recursos. Cada ejercicio con simulación tiene <b>un solo intento</b>: calcula antes de aplicar.</p>
+  <button class="big btn-start" onclick="startExam()">Comenzar Práctica</button>
+</div>
+<div id="quiz-layout">
+  <h1>Práctica Calificada · IV Quarter — Física</h1>
+  <div id="student-header" style="font-weight:bold;color:var(--nb)"></div>
+  <div style="text-align:right;font-weight:bold;color:var(--nd);margin-bottom:10px">Tiempo transcurrido: <span id="time-display">00:00</span></div>
+  <form id="quiz-form" onsubmit="return false"><div id="quiz-container"></div>
+    <button type="button" class="big" id="submitBtn" style="background:var(--nd)" onclick="evaluateExam()">Enviar y Calificar</button></form>
+  <div id="report-card"><h2>Resultados</h2><div class="rm" id="rep-student"></div><div class="rm" id="rep-score"></div><div class="rm" id="rep-sec"></div><div class="rm" id="rep-grade"></div><div class="rm" id="rep-time"></div>
+    <div id="sync-status" style="background:#fefcbf;color:#b7791f">⏳ Enviando nota al profesor...</div>
+    <p style="margin-top:15px;font-size:.9em">Guarde este reporte como comprobante o envíe el PDF al docente si ocurre un error de conexión.</p></div>
+  <button class="big" id="pdfBtn" style="background:#2b8a8a" onclick="window.print()">Guardar Reporte en PDF</button>
+</div>
+<script>
+const SCRIPT_URL='https://script.google.com/macros/s/AKfycbxdTiX_oWAwoSkdg9EXozwHeXlQlPa1UkZaJU5xtARiEAdfbGeECjlBvUKjRKII8w2E7g/exec';
+const KEY='pc4_';
+let sName='',sGrade='';
+const $=id=>document.getElementById(id),C=$('quiz-container'),items=[],loops=[];
+let n=0,cn=0,startTime,timerInterval,focusLossCount=0,isExamActive=false;
+const num=v=>parseFloat(String(v).replace(',','.'));
+const near=(v,a,t)=>!isNaN(v)&&Math.abs(v-a)<=t;
+const sec=t=>C.insertAdjacentHTML('beforeend',`<div class="sec">${t}</div>`);
+function card(s,title,max,html,grade){const d=document.createElement('div');d.className='question';d.innerHTML=`<div class="hd"><b>${++n}. ${title}</b><span class="pts">${max} pts</span></div>${html}`;C.appendChild(d);items.push({el:d,sec:s,max,grade});return d}
+const numBox=(id,u)=>`<input type="text" class="ans" id="${id}" inputmode="decimal" autocomplete="off"> ${u}`;
+(function loop(){loops.forEach(f=>f());requestAnimationFrame(loop)})();
+
+sec('Parte I · Hidrostática (15 pts)');
+{const L=[['agua dulce',1000],['agua de mar',1025],['aceite',920]][Math.random()*3|0],hs=3+Math.floor(Math.random()*27)/2;
+card('H','Sensor manométrico',5,`<p>Un sensor desciende en un tanque con <b>${L[0]}</b> (ρ = ${L[1]} kg/m³). <b>Calcula</b> la profundidad a la que la <b>presión manométrica es ${(L[1]*9.8*hs/1000).toFixed(1)} kPa</b> y lleva el sensor hasta ahí.</p>
+<canvas id="sc" width="520" height="260"></canvas>
+<div class="ctl">Profundidad h: <input type="range" id="sh" min="0" max="20" step="0.5" value="0"> <b id="sho">0.0</b> m</div>`,()=>{const h=+$('sh').value;return near(h,hs,.25)?5:near(h,hs,1)?2:0});
+const x=$('sc').getContext('2d'),s=$('sh');
+const d=()=>{x.clearRect(0,0,520,260);x.fillStyle='rgba(80,170,215,.4)';x.fillRect(40,30,200,210);x.strokeStyle='#215CAF';x.strokeRect(40,30,200,210);
+ x.fillStyle='#133565';x.font='13px Georgia';for(let m=0;m<=20;m+=5){const y=30+m*10;x.fillRect(240,y,8,1);x.fillText(m+' m',252,y+4)}
+ const y=30+s.value*10;x.strokeStyle='#133565';x.beginPath();x.moveTo(140,10);x.lineTo(140,y);x.stroke();x.fillStyle='#C69214';x.beginPath();x.arc(140,y,10,0,7);x.fill();
+ x.fillStyle='#133565';x.fillText(L[0][0].toUpperCase()+L[0].slice(1)+': ρ = '+L[1]+' kg/m³',300,60);$('sho').textContent=(+s.value).toFixed(1)};s.oninput=d;d()}
+
+{const M=[800,1000,1200,1500][Math.random()*4|0],A1=[0.01,0.02,0.04][Math.random()*3|0],A2=[0.4,0.5,0.8][Math.random()*3|0],Fm=M*9.8*A1/A2;let ok=0,used=0,F=0;
+card('H','Prensa hidráulica',5,`<p>Un auto de ${M} kg descansa sobre el pistón grande, A₂ = ${A2.toFixed(2)} m². El pistón pequeño tiene A₁ = ${A1.toFixed(3)} m². <b>Calcula</b> la fuerza mínima F₁ que levanta el auto, escríbela y presiona <b>Aplicar</b>. Solo hay <b>un intento</b>: una fuerza excesiva no obtiene todos los puntos.</p>
+<canvas id="pc" width="520" height="260"></canvas>
+<div class="ctl">F₁ = ${numBox('pi','N')} <button type="button" class="act" id="pb">Aplicar fuerza (1 intento)</button></div>`,()=>!used?0:ok&&F<=Fm*1.1?5:ok&&F<=Fm*1.5?2:0);
+const x=$('pc').getContext('2d'),d=()=>{x.clearRect(0,0,520,260);const L=ok?30:0,a=used?28:0;
+ x.fillStyle='rgba(80,170,215,.45)';x.fillRect(70,150,30,90);x.fillRect(70,230,350,10);x.fillRect(320,150-L,100,90+L);
+ x.fillStyle='#C69214';x.fillRect(70,138+a,30,12);x.fillRect(320,138-L,100,12);
+ x.fillStyle='#133565';x.fillRect(335,98-L,70,40);x.fillStyle='#fff';x.font='13px Georgia';x.fillText('Auto',356,123-L);
+ x.fillStyle='#133565';x.fillText('A₁',78,200);x.fillText('A₂',360,200);x.fillText(!used?'Listo para aplicar la fuerza':ok?'¡El auto se levanta!':'La fuerza no alcanza para levantarlo',150,30)};
+$('pb').onclick=()=>{if(used)return;const v=num($('pi').value);if(!(v>0)){alert('Escribe el valor de F₁ en newtons.');return}used=1;F=v;ok=F>=Fm*.99;$('pb').disabled=true;d()};d()}
+
+
+{const F=[['agua dulce',1000],['agua de mar',1025],['aceite',920]][Math.random()*3|0],ro=100*(3+Math.floor(Math.random()*5)),pc=ro/F[1]*100;
+card('H','Principio de Arquímedes',5,`<p>Un bloque cúbico de densidad <b>${ro} kg/m³</b> se coloca en un tanque con <b>${F[0]}</b> (ρ = ${F[1]} kg/m³) y flota en equilibrio. <b>Calcula</b> qué porcentaje de su volumen queda sumergido y ajústalo con el control.</p>
+<canvas id="ac" width="520" height="220"></canvas>
+<div class="ctl">Volumen sumergido: <input type="range" id="as" min="0" max="100" step="1" value="0"> <b id="aso">0</b> %</div>`,()=>{const v=+$('as').value;return near(v,pc,3)?5:near(v,pc,8)?2:0});
+const x=$('ac').getContext('2d'),s=$('as');
+const d=()=>{const v=+s.value,k=80*v/100;x.clearRect(0,0,520,220);x.fillStyle='#C69214';x.fillRect(210,110+k-80,80,80);
+ x.fillStyle='rgba(80,170,215,.45)';x.fillRect(100,110,320,100);x.strokeStyle='#215CAF';x.strokeRect(100,50,320,160);
+ x.fillStyle='#133565';x.font='13px Georgia';x.fillText(F[0][0].toUpperCase()+F[0].slice(1)+' (ρ = '+F[1]+' kg/m³)',110,200);x.fillText('Bloque: ρ = '+ro+' kg/m³',300,40);$('aso').textContent=v};s.oninput=d;d()}
+
+sec('Parte II · Movimiento Parabólico (15 pts)');
+{const tx=40+Math.floor(Math.random()*19);
+cannon('Cañón: lanzamiento con ángulo',`El cañón dispara con <b>v₀ = 25 m/s</b>. <b>Calcula</b> el ángulo con el que debe disparar para impactar el blanco ubicado a <b>${tx} m</b>. Solo tienes <b>un disparo</b>.`,{ask:'a',v:25,y0:0,tx,tol:2,mx:65,my:30})}
+{const h=[20,30,45][Math.random()*3|0],tx=25+Math.floor(Math.random()*16);
+cannon('Cañón: lanzamiento horizontal',`Desde un acantilado de <b>${h} m</b>, el cañón dispara <b>horizontalmente</b>. <b>Calcula</b> la rapidez v₀ para impactar el bote ubicado a <b>${tx} m</b> de la base. Solo tienes <b>un disparo</b>.`,{ask:'v',y0:h,tx,tol:2,mx:50,my:h+2,boat:1})}
+card('P','Completa las ecuaciones',5,`<p>Arrastra cada cuadro hasta su espacio (o toca el cuadro y luego el espacio). Sobran opciones.</p>
+<div id="dd"><div class="pool" id="pool">${['sen','0','vx','tan','cos','g','2g'].sort(()=>Math.random()-.5).map(k=>`<span class="chip" draggable="true" data-v="${k}">${k==='vx'?'vₓ':k}</span>`).join('')}</div>
+<div class="stm">v<sub>x0</sub> = v<sub>0</sub> · <span class="blank" data-a="cos"></span> θ</div>
+<div class="stm">v<sub>y0</sub> = v<sub>0</sub> · <span class="blank" data-a="sen"></span> θ</div>
+<div class="stm">a<sub>x</sub> = <span class="blank" data-a="0"></span> (sin resistencia del aire)</div>
+<div class="stm">a<sub>y</sub> = −<span class="blank" data-a="g"></span></div>
+<div class="stm">x(t) = <span class="blank" data-a="vx"></span> · t</div></div>`,()=>[...document.querySelectorAll('#dd .blank')].filter(b=>b.firstChild&&b.firstChild.dataset.v===b.dataset.a).length);
+(function(){const dd=$('dd'),pool=$('pool');let sel=null;
+ const pick=c=>{if(sel)sel.classList.remove('sel');sel=c;c.classList.add('sel')};
+ const put=b=>{if(!sel)return;if(b.firstChild)pool.appendChild(b.firstChild);b.appendChild(sel);sel.classList.remove('sel');sel=null};
+ dd.addEventListener('click',e=>{const c=e.target.closest('.chip'),b=e.target.closest('.blank');
+  if(c)pick(c);else if(b)put(b);else if(sel&&e.target.closest('#pool')){pool.appendChild(sel);sel.classList.remove('sel');sel=null}});
+ dd.addEventListener('dragstart',e=>{pick(e.target);e.dataTransfer.setData('text','x')});
+ dd.addEventListener('dragover',e=>e.preventDefault());
+ dd.addEventListener('drop',e=>{e.preventDefault();const b=e.target.closest('.blank');if(b)put(b);else if(sel){pool.appendChild(sel);sel.classList.remove('sel');sel=null}})})();
+
+
+function cannon(title,intro,o){const id='cn'+(++cn);let used=0,res=null,run=null,tt=0,last=0,tr=[];
+ card('P',title,5,`<p>${intro}</p><canvas id="${id}" width="600" height="320"></canvas><div class="ctl">${o.ask==='a'?'Ángulo θ =':'Rapidez v₀ ='} ${numBox(id+'i',o.ask==='a'?'°':'m/s')} <button type="button" class="act" id="${id}f">Disparar (1 intento)</button> <span id="${id}m" class="mut"></span></div>`,()=>res===null?0:res<=o.tol?5:res<=o.tol+2?2:0);
+ const x=$(id).getContext('2d'),s=Math.min(560/o.mx,280/o.my),X=m=>20+m*s,Y=m=>300-m*s,val=()=>num($(id+'i').value);
+ const ang=()=>o.ask==='a'?(val()>0&&val()<90?val():45)*Math.PI/180:0;
+ function draw(){const a=ang();x.clearRect(0,0,600,320);x.fillStyle='#133565';x.fillRect(0,300,600,20);
+  if(o.y0){x.fillStyle='#8a97ab';x.fillRect(0,Y(o.y0),20,o.y0*s)}
+  x.fillStyle=o.boat?'#8a5a2b':'#c0392b';x.fillRect(X(o.tx-o.tol),292,2*o.tol*s,8);x.fillStyle='#133565';x.font='13px Georgia';x.fillText((o.boat?'Bote':'Blanco')+' a '+o.tx+' m',X(o.tx-o.tol)-20,284);
+  if(o.y0)x.fillText('Altura: '+o.y0+' m',26,Y(o.y0)+14);
+  x.strokeStyle='#133565';x.lineWidth=6;x.beginPath();x.moveTo(X(0),Y(o.y0||0));x.lineTo(X(0)+30*Math.cos(a),Y(o.y0||0)-30*Math.sin(a));x.stroke();x.lineWidth=1;
+  x.fillStyle='#C69214';tr.forEach(q=>{x.beginPath();x.arc(q[0],q[1],2.5,0,7);x.fill()});
+  if(run){x.fillStyle='#215CAF';x.beginPath();x.arc(run.cx,run.cy,6,0,7);x.fill()}}
+ function step(){if(!run)return;const now=performance.now();tt+=(now-last)/1000*1.5;last=now;const r=run,t=Math.min(tt,r.tl);
+  r.cx=X(r.vx*t);r.cy=Y((o.y0||0)+r.vy*t-4.9*t*t);tr.push([r.cx,r.cy]);
+  if(tt>=r.tl){res=Math.abs(r.xl-o.tx);run=null;$(id+'m').innerHTML=`Cayó a ${r.xl.toFixed(1)} m. `+(res<=o.tol?'<b style="color:#2f855a">¡Impacto!</b>':'Falló.')}
+  draw();if(run)requestAnimationFrame(step)}
+ $(id+'f').onclick=()=>{if(run||used)return;const v=val();if(!(v>0)||(o.ask==='a'?v>=90:v>60)){alert(o.ask==='a'?'Escribe un ángulo entre 0 y 90.':'Escribe una rapidez entre 0 y 60 m/s.');return}
+  used=1;$(id+'f').disabled=true;const a=ang(),sp=o.ask==='a'?o.v:v,vx=sp*Math.cos(a),vy=sp*Math.sin(a),tl=(vy+Math.sqrt(vy*vy+19.6*(o.y0||0)))/9.8;
+  run={vx,vy,tl,xl:vx*tl,cx:X(0),cy:Y(o.y0||0)};tt=0;last=performance.now();requestAnimationFrame(step)};
+ $(id+'i').oninput=()=>{if(!run&&!used)draw()};draw()}
+
+
+function startExam(){const nm=$('studentName').value.trim(),gr=$('studentGrade').value;
+ if(!nm||!gr){alert('Por favor, ingresa tu nombre completo y selecciona tu sección antes de comenzar.');return}
+ sName=nm;sGrade=gr;$('student-header').innerText=`Estudiante: ${nm} | Sección: ${gr}`;
+ $('start-container').style.display='none';$('quiz-layout').style.display='block';startTime=Date.now();timerInterval=setInterval(updateTimer,1000)}
+function updateTimer(){const e=Math.floor((Date.now()-startTime)/1000);$('time-display').innerText=String(Math.floor(e/60)).padStart(2,'0')+':'+String(e%60).padStart(2,'0')}
+function evaluateExam(){
+ if(!confirm('¿Estás seguro de que deseas finalizar? Ya no podrás realizar modificaciones.'))return;
+ clearInterval(timerInterval);const total=30,scs={H:0,P:0};let score=0;
+ items.forEach(it=>{const p=it.grade();score+=p;scs[it.sec]+=p;it.el.className='question '+(p>=it.max?'correct':p>0?'partial':'incorrect');it.el.querySelector('.pts').textContent=`${p} / ${it.max} pts`});
+ const grade=(score/total*100).toFixed(2),ts=Math.floor((Date.now()-startTime)/1000),timeStr=`${Math.floor(ts/60)}m ${ts%60}s`;
+ $('rep-student').innerText=`Estudiante: ${sName} (${sGrade})`;$('rep-score').innerText=`Puntaje: ${score} / ${total}`;
+ $('rep-sec').innerText=`Hidrostática: ${scs.H} / 15 · Parabólico: ${scs.P} / 15`;$('rep-grade').innerText=`Calificación: ${grade}%`;$('rep-time').innerText=`Tiempo empleado: ${timeStr}`;
+ $('report-card').style.display='block';try{localStorage.setItem(KEY+'submitted','true')}catch(e){}lockExam();
+ const payload={estudiante:sName,grado:sGrade,prueba:'Práctica Calificada IV Quarter - Física 10',nota:grade,puntos:score,hidrostatica:scs.H,parabolico:scs.P,tiempo:timeStr,seguridad:'Recursos permitidos'};
+ fetch(SCRIPT_URL,{method:'POST',mode:'no-cors',headers:{'Content-Type':'text/plain;charset=utf-8'},body:JSON.stringify(payload)})
+ .then(()=>{const s=$('sync-status');s.style.background='#c6f6d5';s.style.color='#2f855a';s.innerText=' ¡Tu nota ha sido guardada y enviada al profesor correctamente!'})
+ .catch(()=>{const s=$('sync-status');s.style.background='#fed7d7';s.style.color='#c53030';s.innerText=' Error de conexión: guarda el PDF y envíalo a tu profesor.'})}
+function lockExam(){document.querySelectorAll('#quiz-layout input,#quiz-layout select,#quiz-layout .act').forEach(i=>i.disabled=true);
+ $('submitBtn').style.display='none';$('pdfBtn').style.display='block';window.scrollTo(0,0)}
+window.onload=()=>{try{if(localStorage.getItem(KEY+'submitted')==='true'){$('start-container').style.display='none';$('quiz-layout').style.display='block';$('submitBtn').style.display='none';
+ $('report-card').style.display='block';$('report-card').innerHTML='<h3>Práctica previamente completada. Los resultados ya se registraron en este dispositivo.</h3>'}}catch(e){}};
+</script>
+</body>
+</html>
