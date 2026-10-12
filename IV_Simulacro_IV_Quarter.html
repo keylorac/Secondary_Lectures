@@ -1,0 +1,376 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>IV Simulacro PNE Ciencias 2026 - 11mo</title>
+<style>
+:root{--nd:#133565;--nb:#215CAF;--cl:#50AAD7;--go:#C69214;--tx:#3C3C3C;--bg:#F5F7FA;--ln:#D8DEE8}
+*{box-sizing:border-box}
+body{font-family:Georgia,'Times New Roman',serif;line-height:1.55;max-width:880px;margin:0 auto;padding:20px;background:var(--bg);color:var(--tx);}
+input,select{user-select:text;-webkit-user-select:text}
+h1,h2{text-align:center;color:var(--nd)}
+#start-container{text-align:center;background:#fff;padding:40px;border-radius:12px;border-top:6px solid var(--go);box-shadow:0 2px 8px rgba(19,53,101,.12);margin-top:4%}
+.student-info{text-align:left;background:var(--bg);padding:20px;border-radius:8px;margin:20px 0;border:1px solid var(--ln)}
+.student-info label{font-weight:bold;color:var(--nd);display:block;margin-bottom:5px}
+.student-info input,.student-info select{width:100%;padding:10px;margin-bottom:15px;border:1px solid var(--ln);border-radius:5px;font:inherit}
+#quiz-layout{display:none}
+.sec{background:var(--nd);color:#fff;padding:10px 18px;border-radius:8px;margin:28px 0 12px;font-weight:bold;border-bottom:4px solid var(--go)}
+.question{margin-bottom:20px;padding:18px;background:#fff;border-radius:8px;border-left:5px solid var(--nb);box-shadow:0 1px 4px rgba(19,53,101,.08)}
+.question .hd{display:flex;justify-content:space-between;gap:10px;color:var(--nd);margin-bottom:6px}
+.pts{color:var(--go);font-weight:bold;white-space:nowrap}
+.correct{background:#d9f2e0!important;border-left-color:#2f855a!important}
+.partial{background:#FBF3E1!important;border-left-color:var(--go)!important}
+.incorrect{background:#fde0e0!important;border-left-color:#c53030!important}
+label.option{display:block;margin:6px 0;padding:6px 8px;border-radius:4px;cursor:pointer}
+label.option:hover{background:#edf2f7}
+.sub{color:var(--go);font-weight:bold;font-size:.88rem;white-space:nowrap}
+.inst{background:#EAF3FB;border-left:4px solid var(--nb);padding:8px 14px;border-radius:4px;margin:0 0 14px;font-size:.93rem}
+table.tb{width:100%;border-collapse:collapse;margin:10px 0;font-size:.92rem;text-align:left}
+table.tb th{background:var(--nd);color:#fff;padding:6px 8px}table.tb td{border:1px solid var(--ln);padding:5px 8px;background:#fff}
+.rules{text-align:left;font-size:.94rem;background:var(--bg);border:1px solid var(--ln);border-radius:8px;padding:10px 18px;margin:12px 0}
+.rules ol,.rules ul{margin:4px 0;padding-left:20px}.rules h3{margin:8px 0 2px;color:var(--nd);font-size:1rem}
+.valor{display:inline-block;background:var(--nd);color:#fff;border-radius:8px;padding:6px 16px;border-bottom:4px solid var(--go);font-weight:bold}
+button.big{padding:15px;font-size:1.15rem;cursor:pointer;border-radius:6px;border:none;font-weight:bold;width:100%;margin-top:15px;color:#fff}
+.btn-start{background:var(--nb)}#submitBtn{background:var(--nd)}#pdfBtn{background:#2b8a8a;display:none}
+#report-card{display:none;background:#EAF3FB;border:2px solid var(--nb);border-radius:10px;padding:25px;margin:20px 0;text-align:center}
+.rm{font-size:1.2rem;margin:8px 0;color:var(--nd)}
+#sync-status{font-weight:bold;margin-top:15px;padding:10px;border-radius:5px}
+.svg-diagram{display:block;margin:15px auto;background:#ffffff;border:1px solid #d8dee8;border-radius:8px;padding:10px;max-width:100%;height:auto}
+@media print{body{background:#fff}#submitBtn,#pdfBtn,.instructions,#start-container{display:none!important}.question{box-shadow:none;border:1px solid #ccc;page-break-inside:avoid}#report-card{display:block!important;border:2px solid #000;background:none}}
+</style>
+</head>
+<body oncontextmenu="return false;">
+
+<div id="start-container">
+  <h2>IV Simulacro PNE Ciencias 2026</h2>
+  <p>Biología, Física y Química · Nivel: Undécimo</p>
+  <p><span class="valor">Puntos totales: 60 puntos</span></p>
+  
+  <div class="student-info">
+    <label for="studentName">Nombre Completo del Estudiante:</label>
+    <input type="text" id="studentName" placeholder="Ej. Juan Pérez" required>
+    
+    <label for="studentGrade">Sección:</label>
+    <select id="studentGrade" required>
+      <option value="">Seleccione su sección...</option>
+      <option value="11-1">11-1</option>
+      <option value="11-2">11-2</option>
+      <option value="11-3">11-3</option>
+      <option value="11-4">11-4</option>
+    </select>
+  </div>
+  
+  <div class="rules">
+    <h3>Instrucciones Generales</h3>
+    <ol>
+      <li>El examen se compone de 60 preguntas de selección única (1 punto cada una).</li>
+      <li>Tiempo sugerido: 3 horas (180 minutos).</li>
+      <li>El examen se califica automáticamente al enviarlo.</li>
+    </ol>
+    <h3 style="color:#c53030">Normas de Seguridad Estricta ⚠️</h3>
+    <ul>
+      <li>Este examen cuenta con un sistema de seguridad activa.</li>
+      <li>Si cambia de pestaña, minimiza el navegador o sale de pantalla completa, recibirá una advertencia. <b>La segunda infracción bloqueará y enviará el examen automáticamente.</b></li>
+    </ul>
+  </div>
+  <button class="big btn-start" onclick="startExam()">Comenzar Examen</button>
+</div>
+
+<div id="quiz-layout">
+  <h1>IV Simulacro PNE Ciencias 2026</h1>
+  <div id="student-header" style="font-weight:bold;color:var(--nb);margin-bottom:5px;"></div>
+  <div style="text-align:right;font-weight:bold;color:#c53030;margin-bottom:15px"><span id="tlabel">Tiempo restante: </span><span id="time-display">03:00:00</span></div>
+  
+  <form id="quiz-form" onsubmit="return false">
+    <div id="quiz-container"></div>
+    <button type="button" class="big" id="submitBtn" onclick="evaluateExam(false)">Enviar Examen y Calificar</button>
+  </form>
+  
+  <div id="report-card">
+    <h2>Resultados del Examen</h2>
+    <div class="rm" id="rep-student"></div>
+    <div class="rm" id="rep-score"></div>
+    <div class="rm" id="rep-grade"></div>
+    <div class="rm" id="rep-time"></div>
+    <div class="rm" id="rep-status"></div>
+    
+    <div id="sync-status" style="background-color:#fefcbf;color:#b7791f">⏳ Enviando nota al profesor...</div>
+    
+    <p style="margin-top:15px;font-size:0.9em">Guarde este reporte como comprobante físico o envíe el PDF al docente si ocurre un error de conexión.</p>
+  </div>
+  <button class="big" id="pdfBtn" onclick="window.print()">Guardar Reporte en PDF</button>
+</div>
+
+<script>
+// ==========================================
+// CONFIGURACIÓN DE APPS SCRIPT EXACTA A TU EJEMPLO
+// ==========================================
+const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxdTiX_oWAwoSkdg9EXozwHeXlQlPa1UkZaJU5xtARiEAdfbGeECjlBvUKjRKII8w2E7g/exec';
+
+const $=id=>document.getElementById(id),C=$('quiz-container'),items=[];
+let CP='',n=0,startTime,timerInterval,focusLossCount=0,isExamActive=false;
+const DURACION_MIN = 180;
+const totalQuestions = 60;
+
+function card(s,title,max,html,grade){
+  const d=document.createElement('div');d.className='question';d.id='q'+n;
+  d.innerHTML=`<div class="hd"><b>${++n}. ${title}</b><span class="pts">${max} pt</span></div>${html}`;
+  C.appendChild(d);items.push({el:d,sec:s,max,grade,part:CP});return d;
+}
+function part(L,t,i){CP=L;C.insertAdjacentHTML('beforeend',`<div class="sec">${t}</div><p class="inst">${i}</p>`)}
+
+function mc(s,q,name){
+  const o=[...q[2]].sort(()=>Math.random()-.5);
+  card(s,'Selección única',1,`<p>${q[0]}</p>`+o.map((t,idx)=>`<label class="option"><input type="radio" name="${name}" value="${t}" onchange="autoSave()"> ${t}</label>`).join('')+`<p class="sub">Criterio: respuesta correcta 1 pt · incorrecta o sin responder 0 pts</p>`,
+  ()=>{const c=document.querySelector(`input[name=${name}]:checked`);return c&&c.value===q[1]?1:0})
+}
+
+part('A','I. PARTE. Selección de Respuesta (Total 60 puntos)','MARQUE CON UNA EQUIS (X) SOBRE LA LETRA DE LA ÚNICA RESPUESTA CORRECTA. 1 punto cada respuesta correcta.');
+
+// Diagramas vectoriales en SVG directamente incrustados
+const svgSO2 = `<div style="text-align:center"><svg width="250" height="90" viewBox="0 0 250 90" class="svg-diagram">
+  <text x="35" y="55" font-family="Arial, sans-serif" font-size="30" font-weight="bold">O</text>
+  <circle cx="35" cy="22" r="3"/><circle cx="43" cy="22" r="3"/>
+  <circle cx="15" cy="45" r="3"/><circle cx="15" cy="55" r="3"/>
+  <circle cx="35" cy="76" r="3"/><circle cx="43" cy="76" r="3"/>
+  <line x1="58" y1="48" x2="105" y2="48" stroke="#000" stroke-width="3"/>
+  <text x="120" y="55" font-family="Arial, sans-serif" font-size="30" font-weight="bold">S</text>
+  <circle cx="115" cy="22" r="3"/><circle cx="125" cy="22" r="3"/>
+  <line x1="140" y1="42" x2="188" y2="42" stroke="#000" stroke-width="3"/>
+  <line x1="140" y1="54" x2="188" y2="54" stroke="#000" stroke-width="3"/>
+  <text x="210" y="55" font-family="Arial, sans-serif" font-size="30" font-weight="bold">O</text>
+  <circle cx="205" cy="22" r="3"/><circle cx="215" cy="22" r="3"/>
+  <circle cx="205" cy="76" r="3"/><circle cx="215" cy="76" r="3"/>
+</svg></div>`;
+
+const svgAlkane = `<div style="text-align:center"><svg width="360" height="170" viewBox="0 0 360 170" class="svg-diagram">
+  <polyline points="20,40 60,15 100,40 140,15 180,40 220,15 260,40 300,15 340,40" fill="none" stroke="#222" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+  <line x1="100" y1="40" x2="100" y2="85" stroke="#222" stroke-width="3" stroke-linecap="round"/>
+  <polyline points="100,85 60,110" fill="none" stroke="#222" stroke-width="3" stroke-linecap="round"/>
+  <polyline points="100,85 140,110 140,155" fill="none" stroke="#222" stroke-width="3" stroke-linecap="round"/>
+  <line x1="220" y1="15" x2="220" y2="60" stroke="#222" stroke-width="3" stroke-linecap="round"/>
+</svg></div>`;
+
+const svgKetone = `<div style="text-align:center"><svg width="240" height="130" viewBox="0 0 240 130" class="svg-diagram">
+  <polyline points="20,95 65,60 110,95 155,60 200,95" fill="none" stroke="#222" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"/>
+  <line x1="61" y1="60" x2="61" y2="22" stroke="#222" stroke-width="3"/>
+  <line x1="69" y1="60" x2="69" y2="22" stroke="#222" stroke-width="3"/>
+  <text x="65" y="18" font-family="Arial, sans-serif" font-size="24" font-weight="bold" text-anchor="middle">O</text>
+</svg></div>`;
+
+const svgPunnett = `<div style="text-align:center"><svg width="220" height="200" viewBox="0 0 220 200" class="svg-diagram">
+  <text x="100" y="32" font-family="Arial, sans-serif" font-size="24" font-weight="bold" text-anchor="middle">R</text>
+  <text x="170" y="32" font-family="Arial, sans-serif" font-size="24" font-style="italic" text-anchor="middle">r</text>
+  <text x="30" y="90" font-family="Arial, sans-serif" font-size="24" font-weight="bold" text-anchor="middle">R</text>
+  <text x="30" y="160" font-family="Arial, sans-serif" font-size="24" font-weight="bold" text-anchor="middle">R</text>
+  <rect x="65" y="45" width="140" height="140" fill="none" stroke="#000" stroke-width="2"/>
+  <line x1="135" y1="45" x2="135" y2="185" stroke="#000" stroke-width="2"/>
+  <line x1="65" y1="115" x2="205" y2="115" stroke="#000" stroke-width="2"/>
+  <text x="100" y="90" font-family="Arial, sans-serif" font-size="22" font-weight="bold" text-anchor="middle">RR</text>
+  <text x="170" y="90" font-family="Arial, sans-serif" font-size="22" font-weight="bold" text-anchor="middle">Rr</text>
+  <text x="100" y="160" font-family="Arial, sans-serif" font-size="22" font-weight="bold" text-anchor="middle">RR</text>
+  <text x="170" y="160" font-family="Arial, sans-serif" font-size="22" font-weight="bold" text-anchor="middle">Rr</text>
+</svg></div>`;
+
+const questions = [
+  ["Un ingeniero civil está analizando la estabilidad de un puente colgante sujeto a ráfagas de viento laterales. Durante el estudio, determina que debe calcular la fuerza del viento (vectorial), el área transversal expuesta del pilar (escalar), la aceleración del aire (vectorial) y la masa total de la estructura (escalar). ¿Cuál de las siguientes magnitudes físicas mencionadas se clasifica de forma exclusiva como una magnitud escalar?", "La masa total de la estructura.", ["La fuerza del viento.", "La aceleración del aire.", "La masa total de la estructura.", "El desplazamiento del pilar bajo tensión."]],
+  ["Un buque de carga navega en el océano Atlántico siguiendo una trayectoria sinuosa para esquivar una tormenta. Recorre 120 km hacia el este, luego gira y avanza 50 km hacia el norte hasta llegar a su puerto de destino. Al evaluar el reporte de navegación, el capitán distingue entre la distancia total recorrida sobre la ruta marítima y el vector que une directamente el puerto de origen con el de llegada. ¿Cuál de las siguientes magnitudes corresponde a una cantidad vectorial?", "El desplazamiento del buque desde el origen hasta el destino.", ["El tiempo gastado en la travesía.", "La masa del buque junto con su carga.", "La distancia total recorrida sobre la ruta.", "El desplazamiento del buque desde el origen hasta el destino."]],
+  ["En una prueba de seguridad automotriz, un vehículo de pruebas parte del reposo y se desplaza en línea recta sobre una pista horizontal. Un sistema de telemetría registra que el vehículo acelera a una tasa constante de 3,5 m/s² durante un intervalo de tiempo de 6,0 s. ¿Cuál es la rapidez final que alcanza el vehículo al concluir dicho intervalo? (Ecuación: v = v₀ + a·t)", "21,0 m/s", ["12,5 m/s", "18,0 m/s", "21,0 m/s", "24,5 m/s"]],
+  ["Durante una práctica en una torre de lanzamiento para estudios geofísicos, se deja caer libremente una cápsula con instrumentos desde una plataforma situada a 125 m de altura sobre el suelo. Si se desprecia la resistencia del aire y se utiliza una aceleración de la gravedad g = 10 m/s², ¿cuánto tiempo tarda la cápsula en impactar el suelo? (Ecuación: d = ½·g·t²)", "5,0 s", ["2,5 s", "5,0 s", "12,5 s", "25,0 s"]],
+  ["Un tren de alta velocidad realiza un recorrido de prueba registrado por sensores en las vías. La gráfica velocidad-tiempo muestra que el tren parte del reposo (0 m/s) en t = 0 s, aumenta uniformemente su velocidad hasta alcanzar 20 m/s a los t = 6 s, y posteriormente mantiene dicha velocidad constante de 20 m/s hasta t = 14 s. ¿Cuál es la distancia total recorrida por el tren en el intervalo de t = 0 s a t = 14 s?", "220 m", ["160 m", "200 m", "220 m", "280 m"]],
+  ["Un astronauta en la Estación Espacial Internacional realiza un experimento en condiciones de microgravedad. Al golpear suavemente una esfera metálica en reposo, esta comienza a moverse en línea recta a velocidad constante a través del módulo sin detenerse ni cambiar de dirección mientras no actúen fuerzas externas sobre ella. Este comportamiento ejemplifica directamente la", "Primera Ley de Newton (Ley de Inercia).", ["Primera Ley de Newton (Ley de Inercia).", "Segunda Ley de Newton (Ley de Fuerza y Aceleración).", "Tercera Ley de Newton (Ley de Acción y Reacción).", "Ley de Gravitación Universal."]],
+  ["En un centro logístico, una caja de repuestos de 15 kg es empujada sobre un pasillo horizontal mediante una fuerza horizontal constante de 90 N. El coeficiente de fricción cinética entre la caja y el piso es de 0,20. Considerando g = 10 m/s², ¿cuál es el valor de la aceleración neta que adquiere la caja? (Ecuaciones: fₖ = μₖ·m·g, Fₙₑₜ = F - fₖ = m·a)", "4,0 m/s²", ["2,0 m/s²", "4,0 m/s²", "6,0 m/s²", "8,0 m/s²"]],
+  ["Dos satélites de comunicaciones idénticos orbitan alrededor de la Tierra a una distancia radial r. Debido a una maniobra de corrección orbital, la distancia entre ambos satélites se reduce a la mitad (r/2) sin alterar sus masas. Según la Ley de Gravitación Universal (F = G·m₁·m₂/r²), la fuerza de atracción gravitacional entre los dos satélites", "se cuadruplica.", ["se reduce a la cuarta parte.", "se reduce a la mitad.", "se duplica.", "se cuadruplica."]],
+  ["Un equipo de astrofísicos descubre un exoplaneta hipotético nombrado Alpha-1, el cual posee cuatro veces la masa de la Tierra (4M) y el doble del radio terrestre (2R). Si la aceleración de la gravedad en la superficie terrestre es g, ¿cuál es el valor de la gravedad en la superficie de Alpha-1? (Ecuación: gₚ = G·Mₚ/Rₚ²)", "g", ["g / 2", "g", "2g", "4g"]],
+  ["Un trineo robótico de 8,0 kg se desplaza sobre una pista helada con una rapidez inicial de 2,0 m/s. Los motores aplicados sobre el trineo realizan un trabajo neto de 96 J a lo largo de un tramo recto. Aplicando el teorema del trabajo y la energía cinética (Wₙₑₜ = ½·m·v_f² - ½·m·v_i²), ¿cuál es la rapidez final alcanzada por el trineo?", "5,3 m/s", ["4,2 m/s", "5,3 m/s", "6,4 m/s", "8,6 m/s"]],
+  ["Un elevador de carga en una edificación industrial levanta verticalmente una plataforma de 600 kg a una altura constante de 15 m en un intervalo de 10 s. Considerando g = 10 m/s², ¿cuál es la potencia mecánica media entregada por el motor del elevador durante este proceso? (Ecuaciones: W = m·g·h, P = W/t)", "9000 W", ["900 W", "3000 W", "9000 W", "90 000 W"]],
+  ["En el taller de mantenimiento de una empresa automotriz se utiliza un elevador hidráulico para levantar vehículos. El técnico aplica una fuerza de 150 N sobre un pistón pequeño que tiene un área transversal de 0,03 m². Si el pistón grande sobre el cual descansa el vehículo posee un área de 0,90 m², ¿qué fuerza ejercida hacia arriba se produce en el pistón grande según el Principio de Pascal? (Ecuación: F₁/A₁ = F₂/A₂)", "4500 N", ["450 N", "1500 N", "4500 N", "13 500 N"]],
+  ["Un objeto metálico compacto de masa 8,0 kg y volumen 0,0020 m³ se sumerge completamente en un tanque que contiene un fluido industrial de densidad ρ = 1200 kg/m³. Utilizando g = 10 m/s², se requiere comparar la fuerza de empuje sobre el objeto con su peso real. ¿Cuál de las siguientes afirmaciones es correcta? (Ecuaciones: Peso = m·g, Empuje = ρ·V·g)", "El empuje es de 24 N y el peso es de 80 N, por lo que el objeto se hunde hasta el fondo.", ["El empuje es de 24 N y el peso es de 80 N, por lo que el objeto se hunde hasta el fondo.", "El empuje es de 80 N y el peso es de 80 N, permaneciendo en equilibrio dentro del fluido.", "El empuje es de 96 N y el peso es de 80 N, provocando que el objeto ascienda hacia la superficie.", "El empuje es de 240 N y el peso es de 80 N, haciendo que el objeto flote rápidamente."]],
+  ["En una experiencia de laboratorio sobre electrostática, dos pequeñas esferas conductoras cargadas con q₁ = 4,0 × 10⁻⁶ C y q₂ = 6,0 × 10⁻⁶ C se sostienen fijas a una distancia de separación de 0,02 m en el vacío. Sabiendo que la constante de Coulomb es k = 9,0 × 10⁹ N·m²/C², ¿cuál es la magnitud de la fuerza de repulsión eléctrica entre ambas cargas? (Ecuación: F = k·|q₁·q₂|/r²)", "540 N", ["5,4 N", "54 N", "540 N", "5400 N"]],
+  ["Un técnico electricista diseña un circuito calefactor conectando dos resistores de 15 Ω y 25 Ω en serie a una batería de corriente continua de 120 V. ¿Cuál es el valor de la corriente eléctrica total que circula por la fuente de alimentación? (Ecuaciones: Rₑ = R₁ + R₂, I = V/Rₑ)", "3,0 A", ["1,5 A", "3,0 A", "4,8 A", "8,0 A"]],
+  ["Durante un proyecto escolar sobre electromagnetismo, un estudiante coloca una brújula sobre la mesa directamente debajo de un cable conductor horizontal. Al activar un interruptor y hacer circular una corriente eléctrica continua constante por el cable, la aguja magnética se desvía inmediatamente alineándose de forma perpendicular al alambre. Este experimento histórico demuestra que", "una corriente eléctrica genera un campo magnético a su alrededor.", ["una corriente eléctrica genera un campo magnético a su alrededor.", "los polos magnéticos opuestos se repelen mutuamente.", "el campo magnético destruye las cargas eléctricas del circuito.", "el cable conductor pierde completamente sus propiedades eléctricas."]],
+  ["Un oscilador mecánico genera una onda transversal en una cuerda tensa de hule. Un sensor láser determina que la distancia entre dos crestas consecutivas (longitud de onda λ) es de 0,80 m y que la fuente oscila a una frecuencia f = 15 Hz. ¿Cuál es la velocidad de propagación de la onda a lo largo de la cuerda? (Ecuación: v = λ·f)", "12,0 m/s", ["12,0 m/s", "15,8 m/s", "18,75 m/s", "120,0 m/s"]],
+  ["Un artículo de divulgación ambiental explica cómo ciertos gases presentes en la atmósfera terrestre (como el dióxido de carbono y el vapor de agua) absorben la radiación infrarroja emitida por la superficie del planeta tras calentarse con el Sol, reemitiendo parte de esta energía de vuelta hacia la corteza. Respecto al efecto invernadero natural, es correcto señalar que", "es un fenómeno natural clave para mantener una temperatura promedio propicia para la vida.", ["es un fenómeno natural clave para mantener una temperatura promedio propicia para la vida.", "constituye un mecanismo sintético creado recientemente por la actividad industrial.", "destruye por completo las capas superiores de la atmósfera impidiendo el paso de luz visible.", "evita que cualquier tipo de radiación solar ingrese al ecosistema terrestre."]],
+  ["En un experimento hipotético de física moderna, un reloj atómico A se instala en una nave espacial que viaja a una velocidad equivalente al 80% de la velocidad de la luz (0,80 c) con respecto a la Tierra, mientras que un reloj atómico idéntico B permanece en la base terrestre. Los científicos observan que el tiempo medido por el reloj A transcurre más lentamente en comparación con el reloj B. Este efecto predicho por la Teoría de la Relatividad Especial se conoce como", "dilatación del tiempo.", ["contracción de la longitud.", "dilatación del tiempo.", "efecto Doppler electromagnético.", "aberración estelar relativista."]],
+  ["Un equipo de investigación física plantea un modelo teórico mediante simulaciones numéricas para predecir la trayectoria de una partícula subatómica dentro de un acelerador. Luego, realizan el experimento empírico registrando los impactos reales con detectores para contrastar sus predicciones matemáticas. Este procedimiento demuestra que la física es una ciencia", "teórica y experimental, basada en la interacción entre modelos y verificación empírica.", ["puramente especulativa y basada en supuestos teóricos sin comprobación.", "teórica y experimental, basada en la interacción entre modelos y verificación empírica.", "exclusivamente empírica, descartando la utilidad del cálculo matemático.", "estrictamente tecnológica, dedicada únicamente a crear instrumental de laboratorio."]],
+  ["Un equipo de laboratorio necesita recuperar por separado cuatro componentes de una mezcla heterogénea formada por: dióxido de titanio (TiO2, sólido insoluble), aceite vegetal (líquido inmiscible en agua de menor densidad), etanol (líquido miscible en agua con punto de ebullición de 78 °C) y cloruro de sodio (NaCl, sal iónica disuelta en la fase acuosa). ¿Cuál secuencia ordenada de métodos físicos de separación permite aislar los cuatro componentes en estado puro?", "Filtración, Decantación, Destilación, Evaporación.", ["Destilación, Imantación, Decantación, Tamización.", "Evaporación, Filtración, Centrifugación, Sublimación.", "Filtración, Decantación, Destilación, Evaporación.", "Decantación, Tamización, Evaporación, Imantación."]],
+  ["Un laboratorio de análisis ambiental examina cuatro efluentes líquidos (P, Q, R y S) recolectados en una planta industrial:<br>Muestra P: Sistema fluido de aspecto completamente transparente y de una sola fase; al someterlo a ebullición, su temperatura oscila continuamente en un rango de 78 °C a 92 °C.<br>Muestra Q: Sustancia pura cristalina de composición fija que, al calentarse fuertemente, se descompone liberando un gas y dejando un residuo metálico en proporción de masa definida.<br>Muestra R: Gas incoloro purificado que no se puede descomponer en sustancias más sencillas mediante ningún método químico ordinario.<br>Muestra S: Fluido de apariencia uniforme a simple vista que no deja residuo al filtrarse, pero que dispersa un haz de luz láser sin presentar sedimentación tras varias semanas.<br>¿Cuál opción clasifica correctamente las cuatro muestras?", "P: Mezcla homogénea, Q: Compuesto, R: Elemento, S: Coloide.", ["P: Mezcla homogénea, Q: Compuesto, R: Elemento, S: Coloide.", "P: Compuesto, Q: Mezcla homogénea, R: Coloide, S: Elemento.", "P: Mezcla heterogénea, Q: Elemento, R: Compuesto, S: Suspensión.", "P: Mezcla homogénea, Q: Mezcla homogénea, R: Compuesto, S: Coloide."]],
+  ["Se realizan pruebas fisicoquímicas a cuatro sustancias puras simples (W, X, Y y Z) correspondientes a elementos químicos:<br>Elemento W: Material con elevada conductividad eléctrica y térmica, tiende a formar cationes para ganar estabilidad.<br>Elemento X: Sólido quebradizo de aspecto metalizado cuya conductividad eléctrica es moderada a temperatura ambiente y aumenta sensiblemente al elevar la temperatura.<br>Elemento Y: Gas diatómico altamente reactivo con metales alcalinos, de elevada electronegatividad.<br>Elemento Z: Gas monoatómico inerte que presenta su capa de valencia completamente llena.<br>¿Cuál opción relaciona correctamente la clasificación de los elementos W, X, Y y Z?", "W: Metal, X: Metaloide, Y: No metal, Z: Gas noble.", ["W: Metaloide, X: Metal, Y: No metal, Z: Gas noble.", "W: Metal, X: Metaloide, Y: No metal, Z: Gas noble.", "W: Metal, X: No metal, Y: Metaloide, Z: Gas noble.", "W: No metal, X: Metaloide, Y: Metal, Z: Gas noble."]],
+  ["Un ion monoatómico de un elemento no metálico tiene la representación parcial M⁻². Se determina que posee 18 electrones y un número másico A = 34. Un estudiante compara esta especie con el átomo neutro N que posee Z = 16 y A = 32. ¿Cuál deducción respecto al ion M⁻² y su relación con el átomo neutro N es científicamente correcta?", "El ion M⁻² contiene 16 protones, 18 neutrones y 18 electrones; además, M y N son isótopos del mismo elemento.", ["El ion M⁻² contiene 18 protones, 16 neutrones y 18 electrones; además, M y N son isóbaros (tienen el mismo número másico).", "El ion M⁻² contiene 16 protones, 34 neutrones y 16 electrones; además, M y N son especies isoelectrónicas (tienen el mismo número de electrones).", "El ion M⁻² contiene 20 protones, 14 neutrones y 18 electrones; además, M y N son isótonos (tienen el mismo número de neutrones).", "El ion M⁻² contiene 16 protones, 18 neutrones y 18 electrones; además, M y N son isótopos del mismo elemento."]],
+  ["Un elemento sintético denominado Astrofio (Af) posee dos isótopos estables reportados:<br>¹²⁰Af con masa atómica de 119,90 uma y abundancia del 40,0 %.<br>¹²²Af con masa atómica de 121,90 uma y abundancia del 60,0 %.<br>Un técnico afirma: \"Como el isótopo ¹²²Af es el más abundante, la masa atómica promedio del elemento debe situarse por encima del punto medio numérico (120,90 uma), aproximándose a 121,10 uma\". ¿Cuál valoración es correcta sobre la afirmación del técnico?", "Es correcta, porque la masa atómica promedio es un promedio ponderado donde el isótopo de mayor abundancia (60,0 %) ejerce mayor peso, desplazando el valor hacia 121,10 uma.", ["Es incorrecta, porque la masa atómica promedio siempre corresponde al promedio aritmético simple entre las masas de los dos isótopos (120,90 uma).", "Es correcta, porque la masa atómica promedio es un promedio ponderado donde el isótopo de mayor abundancia (60,0 %) ejerce mayor peso, desplazando el valor hacia 121,10 uma.", "Es incorrecta, porque la masa atómica promedio de un elemento químico siempre debe coincidir exactamente con la masa del isótopo menos abundante.", "Es correcta, pero únicamente porque las masas de todos los elementos sintéticos aumentan proporcionalmente con su abundancia."]],
+  ["La configuración electrónica en estado fundamental de un átomo neutro corresponde a: 1s² 2s² 2p⁶ 3s² 3p⁶ 4s² 3d¹⁰ 4p⁴. Con base únicamente en esta estructura electrónica, ¿cuál conjunto de características periódicas y cuánticas se infiere correctamente?", "Pertenece al período 4, posee 6 electrones de valencia, se ubica en el bloque p y presenta 2 electrones desapareados.", ["Pertenece al período 4, posee 6 electrones de valencia, se ubica en el bloque p y presenta 2 electrones desapareados.", "Pertenece al período 3, posee 4 electrones de valencia, se ubica en el bloque d y presenta 4 electrones desapareados.", "Pertenece al período 4, posee 16 electrones de valencia, se ubica en el bloque d y no presenta electrones desapareados.", "Pertenece al período 3, posee 2 electrones de valencia, se ubica en el bloque p y presenta 1 electrón desapareado."]],
+  ["Tres elementos representativos X, Y y Z se encuentran ubicados en el mismo grupo de la tabla periódica, organizados en orden creciente de sus números atómicos (ZX < ZY < ZZ). ¿Cuál opción compara correctamente las tendencias periódicas entre estos tres elementos?", "El elemento X posee mayor energía de ionización y menor radio atómico que el elemento Z.", ["El elemento Z posee mayor energía de ionización y menor radio atómico que el elemento X.", "El elemento X posee menor energía de ionización y mayor radio atómico que el elemento Z.", "El elemento X posee mayor energía de ionización y menor radio atómico que el elemento Z.", "El elemento Y presenta menor radio atómico que X pero mayor electronegatividad que X."]],
+  ["Considerando la información de la estructura de la molécula de SO₂:<br>" + svgSO2 + "<br>¿cuál es la geometría molecular predicha por la TRPECV y la polaridad resultante?", "Geometría molecular angular y molécula polar.", ["Geometría molecular lineal y molécula no polar.", "Geometría molecular trigonal plana y molécula no polar.", "Geometría molecular tetraédrica y molécula polar.", "Geometría molecular angular y molécula polar."]],
+  ["En un laboratorio de reactivos químicos se requiere clasificar e identificar tres frascos que contienen los siguientes compuestos inorgánicos: I. Mn₂O₇, II. Fe(OH)₃, III. Na₂CO₃. ¿Cuál opción presenta la nomenclatura correcta para los compuestos I, II y III según las reglas del sistema IUPAC?", "I. Óxido de manganeso(VII), II. Hidróxido de hierro(III) y III. Carbonato de sodio.", ["I. Óxido de manganeso(VII), II. Hidróxido de hierro(III) y III. Carbonato de sodio.", "I. Óxido de manganeso(II), II. Hidróxido de hierro(II) y III. Carbonato de sodio.", "I. Heptóxido de manganeso, II. Hidróxido férrico(III) y III. Carbonato sódico.", "I. Óxido de magnesio(VII), II. Hidróxido de hierro(III) y III. Carbonato de sodio."]],
+  ["Un informe agronómico recomienda aplicar tres fertilizantes inorgánicos específicos a un cultivo de hortalizas: nitrato de calcio, fosfato de potasio y óxido de cinc. ¿Cuál opción presenta las fórmulas químicas correctas y en el mismo orden para las tres sustancias mencionadas?", "Ca(NO₃)₂, K₃PO₄ y ZnO", ["CaNO₃, KPO₄ y Zn₂O", "Ca(NO₃)₂, K₃PO₄ y ZnO", "Ca₂NO₃, K(PO₄)₃ y ZnO₂", "Ca(NO₂)₂, K₂PO₃ y Zn₂O₃"]],
+  ["El proceso Haber-Bosch produce amoníaco (NH₃) gaseoso a escala industrial combinando nitrógeno e hidrógeno según la siguiente ecuación química balanceada: N₂(g) + 3H₂(g) → 2NH₃(g). (Masas molares: N₂ = 28,0 g/mol, H₂ = 2,0 g/mol, NH₃ = 17,0 g/mol). Si se hacen reaccionar 56,0 g de N₂ con suficiente cantidad de H₂ en exceso, ¿cuál es la masa teórica de amoníaco que se produce?", "68,0 g", ["17,0 g", "34,0 g", "56,0 g", "68,0 g"]],
+  ["Se realiza un experimento comparativo sobre la disolución de cloruro de sodio (NaCl) en agua evaluando diferentes factores experimentales:<br>Ensayo I: Cristales grandes de NaCl a 20 °C sin agitación.<br>Ensayo II: Cristales grandes de NaCl a 20 °C con agitación constante.<br>Ensayo III: Polvo fino de NaCl a 20 °C con agitación constante.<br>Ensayo IV: Polvo fino de NaCl a 80 °C con agitación constante.<br>El ensayo IV disuelve la muestra en 5 segundos, mientras que el ensayo I tarda 10 minutos. No obstante, al medir la masa máxima de sal disuelta por cada 100 g de agua a 20 °C en los ensayos I, II y III, los tres alcanzan exactamente el mismo valor límite de 36,0 g. A partir de estos resultados, ¿cuál conclusión está científicamente respaldada?", "La pulverización del sólido y la agitación incrementan la velocidad de disolución, pero no modifican la solubilidad máxima a una temperatura constante.", ["La agitación y la pulverización aumentan la solubilidad máxima de la sal a 20 °C.", "La temperatura es el único factor que afecta la velocidad de disolución de las sales en agua.", "La pulverización del sólido y la agitación incrementan la velocidad de disolución, pero no modifican la solubilidad máxima a una temperatura constante.", "Todos los factores evaluados modifican exactamente en la misma proporción la solubilidad máxima de la sal."]],
+  ["Un estudio de monitoreo ambiental analiza la concentración de oxígeno disuelto (O₂) en un cuerpo de agua dulce. Se registra que en un sector de aguas frías a 15 °C la concentración de O₂ es de 10,1 mg/L, mientras que cerca de una descarga de agua tibia a 32 °C la concentración desciende a 7,3 mg/L. Asimismo, cuando la presión atmosférica disminuye en zonas de alta montaña, la solubilidad del oxígeno en el agua también disminuye. ¿Cuál afirmación explica de forma científicamente correcta ambos comportamientos?", "La solubilidad de un gas en un líquido disminuye al aumentar la temperatura y disminuye al reducir la presión del gas sobre el líquido.", ["La solubilidad de un gas en un líquido aumenta al elevar la temperatura y disminuye al reducir la presión.", "La solubilidad de un gas en un líquido disminuye al aumentar la temperatura y disminuye al reducir la presión del gas sobre el líquido.", "La solubilidad de los gases depende exclusivamente de la presión barométrica y es independiente de la temperatura.", "El aumento de temperatura modifica únicamente la velocidad de disolución del oxígeno sin alterar su concentración de equilibrio."]],
+  ["Se preparan tres disoluciones acuosas etiquetadas como I, II y III:<br>Matraz I: Disolución acuosa de sacarosa (C₁₂H₂₂O₁₁) de concentración 0,40 mol/L, con i = 1.<br>Matraz II: Disolución acuosa de cloruro de potasio (KCl) de concentración 0,20 mol/L, con i = 2.<br>Matraz III: Disolución acuosa de nitrato de magnesio (Mg(NO₃)₂) de concentración 0,10 mol/L, con i = 3.<br>A partir del análisis de las propiedades coligativas y de la concentración efectiva de partículas en las tres disoluciones, ¿cuál conclusión es correcta?", "Las disoluciones I y II presentan el mismo descenso del punto de congelación y el mismo aumento del punto de ebullición porque generan igual concentración de partículas disueltas.", ["Las disoluciones I y II presentan el mismo descenso del punto de congelación y el mismo aumento del punto de ebullición porque generan igual concentración de partículas disueltas.", "La disolución III presenta un mayor descenso del punto de congelación que I y II debido a que posee el mayor valor del factor de van 't Hoff (i = 3).", "La disolución I presenta el mayor aumento del punto de ebullición debido al tamaño molecular del soluto.", "La disolución II presenta menor presión de vapor que la disolución I debido a la disociación parcial de la sal."]],
+  ["En los sistemas de enfriamiento de motores de vehículos se utiliza una mezcla acuosa con etilenglicol (C₂H₆O₂, un soluto no volátil y no electrolito). Este aditivo evita que el líquido refrigerante se congele a temperaturas inferiores a 0 °C en invierno y previene que hierva a 100 °C durante el verano. ¿Cuál principio fisicoquímico explica el comportamiento de esta disolución refrigerante?", "La presencia del soluto no volátil disminuye la presión de vapor del agua, provocando simultáneamente un descenso crioscópico y un aumento ebulloscópico.", ["El etilenglicol eleva el punto de congelación y reduce el punto de ebullición del disolvente.", "El etilenglicol reacciona exotérmicamente con el agua y las paredes del motor cuando la temperatura exterior del vehículo es baja y endotérmicamente cuando la temperatura exterior del vehículo es alta.", "La presencia del soluto no volátil disminuye la presión de vapor del agua, provocando simultáneamente un descenso crioscópico y un aumento ebulloscópico.", "El soluto actúa como un catalizador heterogéneo acelerando las transiciones de fase del agua pura."]],
+  ["Un químico necesita preparar 500 mL de una solución diluida de ácido clorhídrico (HCl) de concentración 0,10 mol/L a partir de una solución concentrada en frasco patrón de 2,0 mol/L. ¿Qué volumen de la solución concentrada de HCl se debe medir con una pipeta para preparar la disolución requerida mediante dilución?", "25 mL", ["25 mL", "50 mL", "100 mL", "250 mL"]],
+  ["El carbono existe en la naturaleza en formas elementales tan contrastantes como el diamante (material de extrema dureza, aislante eléctrico con red tridimensional de enlaces covalentes) y el grafito (material blando, conductor eléctrico formado por láminas hexagonales superpuestas). ¿Qué propiedad atómica del carbono explica la existencia de estas formas estructurales distintas del mismo elemento puro?", "Alotropía", ["Tetravalencia", "Homocombinación", "Anfoterismo", "Alotropía"]],
+  ["De acuerdo con las normas de la IUPAC, ¿cuál es el nombre correcto del hidrocarburo representado?<br>" + svgAlkane + "<br>", "4-etil-3,6-dimetilnonano", ["6-etil-4,7-dimetilnonano", "4-etil-3,6-dimetilnonano", "3-secbutil-5-metiloctano", "4-propil-3,6-dimetiloctano"]],
+  ["A partir de la estructura descrita:<br>" + svgKetone + "<br>¿a qué familia orgánica pertenece dicho compuesto?", "Una cetona.", ["Un aldehido.", "Un ácido carboxílico.", "Una cetona.", "Un éster."]],
+  ["Las enzimas, la hemoglobina y los anticuerpos son macromoléculas biológicas constituidas por cadenas poliméricas de aminoácidos unidos covalentemente mediante enlaces peptídicos. ¿A qué grupo de biomoléculas corresponden estas estructuras?", "Proteínas", ["Carbohidratos", "Lípidos", "Proteínas", "Ácidos nucleicos"]],
+  ["Considere la siguiente información:<br>Las luciérnagas durante los meses fríos se mantienen bajo las piedras, la corteza de los árboles y la hojarasca. La producción de luz, conocida como bioluminiscencia, se debe a un tipo de reacción química que ocurre en órganos emisores de luz especializados, ubicados generalmente en la parte inferior del abdomen. Esta reacción, llamada quimioluminiscencia, convierte la energía química en luz sin generar calor. Las luciérnagas regulan la emisión de esta luz al controlar la cantidad de oxígeno que llega a sus órganos.<br>Según la información anterior, la reacción química que permite la bioluminiscencia en las luciérnagas corresponde a una adaptación de tipo", "fisiológica.", ["etológica.", "fisiológica.", "reproductiva.", "morfológica."]],
+  ["Considere la siguiente información:<br>Los jabalíes son animales gregarios que forman grupos organizados de entre 6 y 20 individuos, aunque en ocasiones pueden alcanzar hasta 30. Las hembras y sus crías constituyen núcleos familiares estables, mientras que los machos adultos suelen vivir solos o en agrupaciones pequeñas. Los individuos de estos grupos pertenecen a la misma especie, habitan una misma zona geográfica y pueden reproducirse entre sí, lo que garantiza el intercambio de material genético.<br>Según la información anterior, el grupo de jabalíes corresponde a la estructura denominada", "población.", ["bioma.", "población.", "comunidad.", "ecosistema."]],
+  ["En diversos ecosistemas se observan los siguientes organismos:<br>Cultivo de maíz: 7 especies de aves.<br>Cafetal: 2 especies de ranas y 5 especies de aves.<br>Páramo: 1 especie de mamífero y 4 especies de arbustos.<br>Bosque lluvioso: 6 especies de mamíferos y 3 especies de reptiles.<br>Según la información anterior, ¿cuál ecosistema presenta la menor riqueza de especies?", "Páramo.", ["Cafetal.", "Páramo.", "Cultivo de maíz.", "Bosque lluvioso."]],
+  ["Considere la siguiente información:<br>Las áreas protegidas conservan los bosques, los cuales regulan el ciclo hidrológico mediante procesos como la infiltración, la retención del agua y la mitigación de fenómenos climáticos extremos. Además, estos ecosistemas albergan una alta biodiversidad. La fauna aporta productos de gran importancia para el ser humano, como el suero antiofídico extraído de las serpientes venenosas y la flora provee materiales para la construcción y la industria textil.<br>¿Cuál opción hace referencia a la importancia de las áreas protegidas con relación al mantenimiento del equilibrio de los ecosistemas?", "Contribuyen con la regulación del ciclo hidrológico.", ["Contribuyen con la regulación del ciclo hidrológico.", "Permiten la extracción controlada de especies silvestres.", "Proveen materiales para construcción y la industria textil.", "Aportan productos medicinales de gran importancia para ser humano."]],
+  ["Lea el siguiente texto:<br>El hábitat de las ranitas rojas en la vertiente Caribe de Costa Rica abarca el suelo del bosque donde se encuentran las hojarascas y las charcas de agua que son utilizadas para la reproducción, así como rocas y troncos de árboles caídos donde los individuos encuentran refugio y alimento. Entre los alimentos que consume esta especie se encuentran los insectos, por lo cual la ranita roja contribuye a mantener las poblaciones de insectos dentro de ciertos límites.<br>Según el texto anterior, el hábitat de la ranita roja está determinado", "por el conjunto de características físicas y biológicas del área donde vive.", ["por el conjunto de características físicas y biológicas del área donde vive.", "solo por las charcas de agua donde se reproduce.", "solo por la función dentro del ecosistema.", "por los insectos que consume."]],
+  ["Lea el siguiente texto:<br>Con la llegada del otoño en América del Norte, durante el mes de setiembre, diversas especies de aves se desplazan hacia regiones más cálidas para evitar el invierno y encontrar alimento suficiente para sobrevivir.<br>Con base en el texto anterior, se puede afirmar que la emigración ocurre cuando las aves", "salen del lugar donde viven y se desplazan hacia otro territorio.", ["cambian su plumaje para soportar el frío.", "se establecen en sus sitios de anidación para reproducirse.", "salen del lugar donde viven y se desplazan hacia otro territorio.", "llegan a un nuevo territorio y a una nueva población, lo que incrementa la densidad."]],
+  ["Considere la siguiente información:<br>En la distribución al azar o aleatoria cada individuo se ubica en el espacio independientemente de la distribución de los demás individuos de la población.<br>Según la información anterior, en una distribución aleatoria", "el esparcimiento entre los individuos es irregular.", ["el esparcimiento entre los individuos es irregular.", "los organismos forman grupos definidos en el espacio.", "los individuos se separan entre sí por la misma distancia.", "los individuos se organizan siguiendo un patrón predecible en el espacio."]],
+  ["Lea el siguiente texto:<br>En los bosques, los jaguares deben competir con otros depredadores, como los pumas y los ocelotes, por las mismas presas, como venados o pecaríes. Cuando la disponibilidad de alimento disminuye, la competencia entre estos depredadores se intensifica, lo que provoca desplazamientos a nuevas zonas o cambios en los hábitos de caza.<br>El tipo de interacción que ocurre entre distintos depredadores se denomina", "competencia interespecífica.", ["depredador-presa.", "competencia interespecífica.", "competencia intraespecífica.", "simbiótica."]],
+  ["Considere el siguiente texto:<br>Los peces pequeños se alimentan de plancton, los peces medianos de peces pequeños, y los tiburones de peces medianos. Sin embargo, los tiburones también pueden alimentarse de tortugas marinas y focas.<br>Desde el punto de vista trófico, ¿cuál opción describe la relación que se da en el texto anterior?", "Red alimentaria, debido a que hay más de una secuencia de alimentación.", ["Red alimentaria, debido a que hay más de una secuencia de alimentación.", "Red alimentaria, porque se presenta una secuencia lineal de comer y ser comido.", "Cadena alimentaria, porque sigue un flujo de materia y energía en una sola dirección.", "Cadena alimentaria, ya que todos los organismos se alimentan del mismo tipo de plancton."]],
+  ["Considere la siguiente información:<br>En un ecosistema de pastizal, las plantas capturan energía solar y constituyen el primer nivel trófico. Cuando los herbívoros consumen las plantas y los depredadores consumen a los herbívoros, solo una parte de la energía pasa de un nivel trófico al siguiente; el resto se utiliza en los procesos vitales o se libera al ambiente en forma de calor.<br>Según la información anterior, ¿cuál característica corresponde exclusivamente a una pirámide de energía?", "Indica la cantidad de energía disponible en cada nivel trófico y su disminución durante la transferencia.", ["Representa la masa total de los organismos presentes en cada nivel trófico.", "Muestra la cantidad de individuos que conforman cada nivel trófico.", "Indica la cantidad de energía disponible en cada nivel trófico y su disminución durante la transferencia.", "Presenta la distribución de los productores sin incluir a los consumidores."]],
+  ["Considere las siguientes descripciones:<br>• La principal fuente de reserva de este elemento utilizable para los seres vivos se encuentra en la atmósfera.<br>• Este elemento regresa a la atmósfera por medio de la fotosíntesis e ingresa a los seres vivos por medio de la respiración y la alimentación.<br>• Se convierte en ozono, una de sus formas más importantes para la vida, por su capacidad de absorber la radiación ultravioleta.<br>Las descripciones anteriores corresponden al ciclo del", "oxígeno.", ["agua.", "fósforo.", "oxígeno.", "carbono."]],
+  ["Considere la siguiente información:<br>La fotosíntesis es el proceso mediante el cual las plantas, las algas y algunos microorganismos utilizan la energía de la luz solar para transform el dióxido de carbono y el agua en glucosa. Durante este proceso, la energía luminosa queda almacenada como energía química en las moléculas de glucosa y se libera oxígeno al ambiente.<br>Según la información anterior, la fotosíntesis", "transforma la energía luminosa en energía química almacenada en la glucosa.", ["transforma la energía luminosa en energía química almacenada en la glucosa.", "degrada la glucosa mediante el consumo de oxígeno para producir ATP.", "libera dióxido de carbono al descomponer moléculas orgánicas.", "obtiene energía utilizable exclusivamente a partir de sustancias orgánicas."]],
+  ["Considere el siguiente cruce:<br>El siguiente cuadro de Punnett muestra el cruce entre una planta masculina homocigota dominante (RR) y una planta femenina heterocigota (Rr) para el color de sus flores, donde R es el color rojo y domina sobre el blanco (r):<br>" + svgPunnett + "<br>Según el cuadro anterior, los porcentajes fenotípicos en la descendencia serán", "100% flores rojas.", ["50% flores rojas y 50% flores blancas.", "75% flores rojas y 25% flores blancas.", "50% de flores rojas y 50% de flores rosadas.", "100% flores rojas."]],
+  ["Considere la siguiente información:<br>El material genético de los seres vivos está formado por una molécula muy larga y compleja que contiene la información necesaria para el funcionamiento y herencia de las células. Su estructura se asemeja a una escalera muy extendida y retorcida, compuesta por dos cadenas complementarias de nucleótidos unidas por pares de compuestos químicos específicos.<br>Según la información anterior, la estructura del ADN consiste en", "una doble hélice de nucleótidos.", ["una doble hélice de nucleótidos.", "una cadena de grupo fosfato, azúcar y base nitrogenada.", "dos cadenas de nucleótidos unidos por enlaces peptídicos.", "una cadena lineal de nucleótidos, azúcares y bases nitrogenadas."]],
+  ["Considere la siguiente información:<br>Es el conjunto específico de genes que un organismo hereda de sus progenitores, es decir, la información genética que lleva en su ADN, lo que contribuye a determinar su fenotipo junto con la influencia del ambiente; por ejemplo, el color de ojos, el tipo de cabello y la estatura, entre otros rasgos.<br>¿Cuál es el término usado en genética al que se refiere la parte subrayada del texto anterior?", "Genotipo", ["Variabilidad genética", "Heterocigoto", "Homocigoto", "Genotipo"]],
+  ["Considere la siguiente información:<br>Los genotipos para el grupo sanguíneo A pueden ser IᴬIᴬ o Iᴬi, para el grupo B pueden ser IᵇIᵇ o Iᵇi, y para el grupo O (ii); los alelos Iᴬ y Iᵇ son codominantes entre sí. Por otro lado, el alelo i es recesivo con respecto a Iᴬ y a Iᵇ. Estas combinaciones alélicas dan lugar a los cuatro fenotipos (grupos sanguíneos) A, B, AB y O.<br>Según la información anterior, si una pareja tiene un hijo con grupo sanguíneo AB y otro hijo con grupo sanguíneo O, ¿cuál debe ser el genotipo de la madre y el padre para que ambos resultados sean posibles?", "Madre Iᴬi y Padre Iᵇi", ["Madre Iᴬi y Padre Iᵇi", "Madre IᴬIᴬ y Padre Iᵇi", "Madre IᴬIᵇ y Padre Iᵇi", "Madre IᵇIᵇ y Padre Iᴬi"]],
+  ["Considere la siguiente información:<br>Una forma de estudiar las relaciones evolutivas entre especies consiste en analizar las proteínas presentes en el suero sanguíneo, codificadas por genes específicos. La similitud entre estas proteínas puede evaluarse mediante reacciones antígeno-anticuerpo, las cuales permiten establecer vínculos evolutivos basados en la afinidad inmunológica. Al comparar las proteínas séricas de distintas especies de vertebrados, es posible identificar aquellas con mayor cercanía evolutiva.<br>La información anterior describe una evidencia evolutiva de tipo", "bioquímica.", ["anatómica.", "bioquímica.", "embriológica.", "proteinológica."]],
+  ["Considere la siguiente información:<br>El mutacionismo, propuesto inicialmente por Hugo de Vries, sostiene que las mutaciones son cambios bruscos en el material genético y constituyen el principal motor de la evolución. Según esta perspectiva, dichas mutaciones podían producir, por sí solas, la aparición súbita de nuevas especies, sin requerir la acumulación gradual de pequeñas variaciones. En contraste, la teoría de la selección natural de Darwin explica el cambio evolutivo como un proceso lento y progresivo, basado en la selección de variaciones hereditarias favorables.<br>¿Cuál es la diferencia principal entre la explicación del cambio evolutivo propuesta por el mutacionismo y la explicada por la teoría de la selección natural de Darwin?", "El Mutacionismo postula un cambio evolutivo súbito por grandes alteraciones genéticas, mientras que el Darwinismo lo propone gradual por selección de pequeñas variaciones.", ["El Mutacionismo requiere de una lucha por la existencia, mientras que el Darwinismo se refiere a cambios aleatorios.", "El Mutacionismo considera que los cambios adquiridos por el uso son la causa de la nueva especie y sustituye el papel de la selección natural.", "El Mutacionismo niega la existencia de la variación, mientras que el Darwinismo la acepta como gradual.", "El Mutacionismo postula un cambio evolutivo súbito por grandes alteraciones genéticas, mientras que el Darwinismo lo propone gradual por selección de pequeñas variaciones."]],
+  ["Considere la siguiente información:<br>Una zona costera emergió tras el retiro del mar. El sustrato está conformado por minerales recién expuestos y no presenta capas de suelo. La colonización inicial incluye bacterias y algas que facilitan la acumulación de sedimentos.<br>La información anterior se relaciona con", "una sucesión primaria que inicia sobre un sustrato nuevo.", ["una sucesión primaria que inicia sobre un sustrato nuevo.", "un ecosistema maduro que mantiene su estructura estable.", "un proceso de recuperación basado en restos biológicos previos.", "una sucesión secundaria dependiente de la presencia de suelo fértil."]],
+  ["Considere la siguiente información:<br>En diversas comunidades se ejecutan programas que reducen la cantidad de desechos mediante la separación adecuada de los residuos y su posterior uso como materia prima en nuevos procesos productivos. Estas acciones permiten disminuir la presión sobre los ecosistemas y optimizar recursos esenciales.<br>Según la información anterior, ¿cuál acción fortalece el desarrollo sostenible?", "Clasificar los residuos sólidos para facilitar su reciclaje.", ["Acumular los desechos domésticos en un solo contenedor.", "Quemar materiales plásticos para disminuir su volumen.", "Depositar restos orgánicos con materiales electrónicos.", "Clasificar los residuos sólidos para facilitar su reciclaje."]]
+];
+
+// Generar el DOM de las preguntas de forma optimizada
+questions.forEach((q, k) => mc('C', q, 'c' + k));
+
+const mmss = s => String(Math.floor(s/60)).padStart(2,'0')+':'+String(s%60).padStart(2,'0');
+
+function startExam(){
+  const nm=$('studentName').value.trim(), gr=$('studentGrade').value;
+  if(!nm||!gr){alert('Por favor, ingresa tu nombre completo y selecciona tu sección antes de comenzar.');return}
+  
+  // Guardar datos en local
+  localStorage.setItem('scExamName', nm);
+  localStorage.setItem('scExamGrade', gr);
+  
+  $('student-header').innerText=`Estudiante: ${nm} | Sección: ${gr}`;
+  
+  const d=document.documentElement; 
+  if(d.requestFullscreen) d.requestFullscreen().catch(()=>{});
+  else if(d.webkitRequestFullscreen) d.webkitRequestFullscreen().catch(()=>{});
+  
+  $('start-container').style.display='none';$('quiz-layout').style.display='block';
+  
+  isExamActive=true; 
+  startTime=Date.now(); 
+  timerInterval=setInterval(updateTimer,1000); 
+  updateTimer(); 
+  setupSecurityListeners();
+}
+
+function updateTimer(){
+  const e=Math.floor((Date.now()-startTime)/1000);
+  const r=DURACION_MIN*60-e;
+  $('time-display').innerText=mmss(Math.max(r,0));
+  if(r<=0 && isExamActive){ alert('⏰ Se agotó el tiempo. Tu examen será enviado.'); evaluateExam(true,'time'); }
+}
+
+function setupSecurityListeners(){
+  window.addEventListener('blur', triggerSecurityWarning);
+  document.addEventListener('visibilitychange', ()=>{ if(document.visibilityState==='hidden') triggerSecurityWarning(); });
+  document.addEventListener('fullscreenchange', ()=>{ if(isExamActive && !document.fullscreenElement) triggerSecurityWarning(); });
+  document.addEventListener('keydown', e=>{ if(e.ctrlKey && ['c','v','u','p'].includes(e.key)){ e.preventDefault(); alert('Función deshabilitada por seguridad.'); } });
+}
+
+function triggerSecurityWarning(){
+  if(!isExamActive) return;
+  focusLossCount++;
+  if(focusLossCount===1) alert('⚠️ ADVERTENCIA:\nHas salido de la pantalla del examen. Si vuelves a hacerlo, tu prueba será enviada automáticamente con la nota acumulada.');
+  else if(focusLossCount>=2) { alert('🚨 EXAMEN BLOQUEADO:\nHas infringido las normas saliendo de la pestaña por segunda vez. Tu prueba ha sido enviada.'); evaluateExam(true,'focus'); }
+}
+
+function autoSave() {
+  if (!isExamActive) return;
+  const data = {};
+  questions.forEach((_, i) => {
+    const s = document.querySelector(`input[name="c${i}"]:checked`);
+    if(s) data[i] = s.value;
+  });
+  localStorage.setItem('scExamData', JSON.stringify(data));
+}
+
+function evaluateExam(forced=false, why=''){
+  if(!forced && !confirm('¿Estás seguro de que deseas finalizar tu examen? Ya no podrás realizar modificaciones.')) return;
+  if(!isExamActive) return;
+  
+  isExamActive=false; clearInterval(timerInterval); window.removeEventListener('blur', triggerSecurityWarning);
+  
+  let score=0;
+  items.forEach(it=>{
+    const p=it.grade(); score+=p;
+    it.el.className='question '+(p>=it.max?'correct':'incorrect');
+    it.el.querySelector('.pts').textContent=`${p} / ${it.max} pt`;
+  });
+  
+  const grade=(score/totalQuestions*100).toFixed(2), ts=Math.floor((Date.now()-startTime)/1000), timeStr=`${Math.floor(ts/60)}m ${ts%60}s`;
+  
+  const studentName = localStorage.getItem('scExamName');
+  const studentGrade = localStorage.getItem('scExamGrade');
+  
+  let st='Completado Seguro'; 
+  if(why==='time') st='Tiempo agotado'; 
+  else if(forced) st='Bloqueado (Salida de pestaña)';
+  else if(focusLossCount>0) st=`Advertencias: ${focusLossCount}`;
+  
+  $('rep-student').innerText=`Estudiante: ${studentName} (${studentGrade})`;
+  $('rep-score').innerText=`Aciertos: ${score} / ${totalQuestions}`;
+  $('rep-grade').innerText=`Calificación del examen: ${grade}%`;
+  $('rep-time').innerText=`Tiempo empleado: ${timeStr}`;
+  $('rep-status').innerText=`Seguridad: ${st}`;
+  
+  $('report-card').style.display='block'; 
+  localStorage.setItem('scExamSubmitted', 'true');
+  lockExam();
+  
+  // ENVÍO AL APPS SCRIPT
+  const payload = {
+    estudiante: studentName,
+    grado: studentGrade,
+    prueba: "IV Simulacro PNE Ciencias 2026 - 11mo",
+    nota: grade,
+    puntos: score,
+    tiempo: timeStr,
+    seguridad: st
+  };
+
+  fetch(SCRIPT_URL, {
+    method: 'POST',
+    mode: 'no-cors', // Fundamental para evitar bloqueos
+    headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+    body: JSON.stringify(payload)
+  })
+  .then(() => {
+    $('sync-status').style.backgroundColor = "#c6f6d5";
+    $('sync-status').style.color = "#2f855a";
+    $('sync-status').innerText = "✅ ¡Tu nota ha sido guardada y enviada al profesor correctamente!";
+  })
+  .catch(error => {
+    $('sync-status').style.backgroundColor = "#fed7d7";
+    $('sync-status').style.color = "#c53030";
+    $('sync-status').innerText = "❌ Error de conexión: No se pudo enviar la nota automáticamente. Por favor, guarda el PDF y envíalo a tu profesor.";
+  });
+  
+  if (document.exitFullscreen) { document.exitFullscreen().catch(err => console.log(err)); }
+}
+
+function lockExam(){
+  document.querySelectorAll('input, select').forEach(i=>i.disabled=true);
+  $('submitBtn').style.display='none';$('pdfBtn').style.display='block'; window.scrollTo(0,0);
+}
+
+window.onload = () => {
+  if(localStorage.getItem('scExamSubmitted') === 'true') {
+    $('start-container').style.display = 'none';$('quiz-layout').style.display = 'block';
+    lockExam();
+    $('report-card').style.display = 'block';$('report-card').innerHTML = "<h3>Examen previamente completado. Los resultados ya se han registrado en este dispositivo.</h3>";
+  }
+};
+</script>
+</body>
+</html>
