@@ -1,0 +1,992 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Repaso PNE Física MEP - Temas 10, 11 y 12</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- KaTeX for rendering math formulas -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/katex.min.css">
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/katex.min.js"></script>
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/contrib/auto-render.min.js"></script>
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        brand: {
+                            50: '#f0fdf4',
+                            100: '#dcfce7',
+                            500: '#22c55e',
+                            600: '#16a34a',
+                            700: '#15803d',
+                            800: '#166534',
+                            900: '#14532d'
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f8fafc;
+            color: #1e293b;
+        }
+        .katex-display {
+            margin: 0.4em 0;
+            overflow-x: auto;
+            overflow-y: hidden;
+            padding: 2px 0;
+        }
+        .custom-scrollbar::-webkit-scrollbar {
+            width: 6px;
+            height: 6px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-track {
+            background: #f1f5f9;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb {
+            background: #cbd5e1;
+            border-radius: 4px;
+        }
+        
+        /* Estilos de impresión para el reporte */
+        @media print {
+            .no-print { display: none !important; }
+            .print-only { display: block !important; }
+            body { background: white; color: black; }
+            .card-print { border: 1px solid #cbd5e1 !important; page-break-inside: avoid; margin-bottom: 1.5rem; box-shadow: none !important; }
+            #report-card { border: 2px solid black !important; background: none !important; display: block !important; page-break-before: always; }
+        }
+    </style>
+</head>
+<body class="min-h-screen flex flex-col justify-between">
+
+    <header class="bg-brand-900 text-white shadow-lg sticky top-0 z-40 no-print">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex items-center justify-between h-16">
+                <!-- Title & Badge -->
+                <div class="flex items-center space-x-3">
+                    <div class="bg-brand-500 p-2 rounded-lg text-white">
+                        <i class="fa-solid fa-wave-square text-xl"></i>
+                    </div>
+                    <div>
+                        <h1 class="text-lg sm:text-xl font-bold tracking-tight">Física MEP — Temas 10, 11 y 12</h1>
+                        <p class="text-xs text-brand-100 hidden sm:block">Ondas, Efecto Invernadero y Relatividad</p>
+                    </div>
+                </div>
+
+                <!-- Navigation Tabs -->
+                <div class="flex items-center space-x-1 sm:space-x-2">
+                    <button id="btn-mode-study" onclick="switchMode('study')" class="px-3 py-1.5 sm:px-4 sm:py-2 text-xs sm:text-sm font-medium rounded-lg transition-colors flex items-center space-x-1 bg-brand-700 text-white">
+                        <i class="fa-solid fa-book-open"></i>
+                        <span class="hidden md:inline">Modo</span> <span>Estudio</span>
+                    </button>
+                    <button id="btn-mode-exam" onclick="switchMode('exam')" class="px-3 py-1.5 sm:px-4 sm:py-2 text-xs sm:text-sm font-medium rounded-lg transition-colors flex items-center space-x-1 hover:bg-brand-800 text-slate-300">
+                        <i class="fa-solid fa-stopwatch"></i>
+                        <span class="hidden md:inline">Modo</span> <span>Examen</span>
+                    </button>
+                    <button id="btn-mode-print" onclick="switchMode('print')" class="px-3 py-1.5 sm:px-4 sm:py-2 text-xs sm:text-sm font-medium rounded-lg transition-colors flex items-center space-x-1 hover:bg-brand-800 text-slate-300">
+                        <i class="fa-solid fa-print"></i>
+                        <span class="hidden md:inline">Resumen /</span> <span>Imprimir</span>
+                    </button>
+                    <button onclick="toggleFormulaModal()" class="px-3 py-1.5 sm:px-4 sm:py-2 text-xs sm:text-sm font-medium rounded-lg bg-amber-500 hover:bg-amber-600 text-slate-900 font-semibold transition-colors flex items-center space-x-1 ml-2">
+                        <i class="fa-solid fa-square-root-variable"></i>
+                        <span>Formulario</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 flex-grow w-full">
+        
+        <!-- Control Panel & Filters (No-Print) -->
+        <div id="top-controls" class="no-print bg-white p-4 rounded-xl shadow-sm border border-slate-200 mb-6">
+            <div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
+                
+                <!-- Search & Filters (Visible in Study Mode) -->
+                <div id="study-filters" class="flex flex-wrap items-center gap-3 flex-1">
+                    <div class="relative flex-1 min-w-[200px]">
+                        <i class="fa-solid fa-magnifying-glass absolute left-3 top-1/2 transform -translate-y-1/2 text-slate-400"></i>
+                        <input type="text" id="search-input" oninput="handleSearch()" placeholder="Buscar en preguntas o soluciones..." class="w-full pl-9 pr-4 py-2 border border-slate-300 rounded-lg text-sm focus:ring-2 focus:ring-brand-500 focus:outline-none">
+                    </div>
+                    
+                    <select id="topic-filter" onchange="handleTopicFilter()" class="border border-slate-300 rounded-lg py-2 px-3 text-sm focus:ring-2 focus:ring-brand-500 focus:outline-none bg-white">
+                        <option value="all">Todos los temas (30)</option>
+                        <option value="ondas">10. Ondas</option>
+                        <option value="invernadero">11. Efecto Invernadero</option>
+                        <option value="relatividad">12. Teoría de la Relatividad</option>
+                    </select>
+
+                    <button onclick="resetFilters()" class="px-3 py-2 text-xs font-medium text-slate-600 hover:text-slate-900 border border-slate-300 rounded-lg hover:bg-slate-50 transition">
+                        <i class="fa-solid fa-rotate-left mr-1"></i> Reiniciar
+                    </button>
+                </div>
+
+                <!-- Exam Timer Dashboard -->
+                <div id="exam-dashboard" class="hidden flex items-center space-x-4 w-full md:w-auto justify-between bg-slate-50 p-2 rounded-lg border border-slate-200">
+                    <div id="student-header" class="text-sm text-brand-700 font-semibold hidden md:block"></div>
+                    <div class="flex items-center space-x-4">
+                        <div class="text-right">
+                            <div class="text-xs text-slate-500 font-medium">Tiempo restante</div>
+                            <div id="timer-display" class="text-lg font-mono font-bold text-rose-600">90:00</div>
+                        </div>
+                        <button id="btn-finish-exam" onclick="evaluateExam()" class="px-4 py-2 bg-brand-600 hover:bg-brand-700 text-white rounded-lg text-sm font-semibold transition">
+                            Enviar Examen
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Stats summary in study mode -->
+                <div id="study-dashboard" class="flex items-center space-x-4 text-xs sm:text-sm text-slate-600">
+                    <div><span id="answered-count" class="font-bold text-brand-600">0</span> / 30 respondidas</div>
+                    <div class="h-4 w-px bg-slate-300"></div>
+                    <div>Puntuación: <span id="score-display" class="font-bold text-emerald-600">0%</span></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- PANTALLA DE INICIO DEL EXAMEN -->
+        <div id="start-exam-container" class="hidden bg-white p-8 rounded-xl shadow-md border border-slate-200 max-w-2xl mx-auto my-10 text-center">
+            <h2 class="text-2xl font-bold text-brand-900 mb-2">Práctica Calificada - Física</h2>
+            <p class="text-slate-500 mb-6">Por favor, ingresa tus datos para registrar tu calificación en la base de datos del profesor.</p>
+            
+            <div class="text-left bg-slate-50 p-6 rounded-lg border border-slate-200 mb-6">
+                <div class="mb-4">
+                    <label for="studentName" class="block font-bold text-brand-800 mb-2">Nombre Completo del Estudiante:</label>
+                    <input type="text" id="studentName" placeholder="Ej. Juan Pérez" required class="w-full p-3 border border-slate-300 rounded-lg focus:ring-2 focus:ring-brand-500 focus:outline-none">
+                </div>
+                
+                <div>
+                    <label for="studentGrade" class="block font-bold text-brand-800 mb-2">Sección / Grado:</label>
+                    <select id="studentGrade" required class="w-full p-3 border border-slate-300 rounded-lg focus:ring-2 focus:ring-brand-500 focus:outline-none bg-white">
+                        <option value="">Seleccione su sección...</option>
+                        <option value="11-A">11-A</option>
+                        <option value="11-B">11-B</option>
+                        <option value="11-C">11-C</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="bg-blue-50 border-l-4 border-blue-500 p-4 text-left mb-6 text-sm text-blue-800">
+                <p><strong>Nota:</strong> Este examen permite el uso de ventanas emergentes y herramientas externas según se indique, no cuenta con bloqueos de pantalla agresivos.</p>
+            </div>
+
+            <button onclick="startAppScriptExam()" class="w-full py-3 bg-brand-600 hover:bg-brand-700 text-white font-bold rounded-lg text-lg transition shadow-md">
+                Comenzar Examen
+            </button>
+        </div>
+
+        <!-- REPORTE DE NOTA (AppScript) -->
+        <div id="report-card" class="hidden bg-slate-50 border-2 border-brand-500 rounded-xl p-8 my-6 text-center shadow-lg max-w-3xl mx-auto">
+            <h2 class="text-2xl font-bold text-brand-900 mb-6 uppercase tracking-wide border-b pb-4">Resultados Oficiales del Examen</h2>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-left text-lg mb-6">
+                <div class="bg-white p-4 rounded border border-slate-200 shadow-sm">
+                    <span class="block text-xs text-slate-500 uppercase font-bold">Estudiante</span>
+                    <span id="rep-student" class="font-semibold text-slate-800"></span>
+                </div>
+                <div class="bg-white p-4 rounded border border-slate-200 shadow-sm">
+                    <span class="block text-xs text-slate-500 uppercase font-bold">Tiempo Empleado</span>
+                    <span id="rep-time" class="font-semibold text-slate-800"></span>
+                </div>
+                <div class="bg-white p-4 rounded border border-slate-200 shadow-sm">
+                    <span class="block text-xs text-slate-500 uppercase font-bold">Aciertos</span>
+                    <span id="rep-score" class="font-semibold text-slate-800"></span>
+                </div>
+                <div class="bg-white p-4 rounded border border-slate-200 shadow-sm">
+                    <span class="block text-xs text-slate-500 uppercase font-bold">Calificación Final</span>
+                    <span id="rep-grade" class="font-bold text-brand-600 text-xl"></span>
+                </div>
+            </div>
+            
+            <!-- Estado de envío a Google Sheets -->
+            <div id="sync-status" class="font-bold p-4 rounded-lg bg-amber-100 text-amber-800 border border-amber-200 mb-6 shadow-inner">
+                <i class="fa-solid fa-spinner fa-spin mr-2"></i> Enviando nota a la base de datos...
+            </div>
+            
+            <button onclick="window.print()" class="no-print w-full sm:w-auto px-6 py-3 bg-slate-800 hover:bg-slate-900 text-white font-bold rounded-lg transition shadow-md">
+                <i class="fa-solid fa-file-pdf mr-2"></i> Guardar Reporte en PDF
+            </button>
+            <p class="no-print mt-4 text-xs text-slate-500">Guarde este reporte como comprobante físico o envíe el PDF al docente si ocurre un error de red.</p>
+        </div>
+
+        <!-- Content View Container -->
+        <div id="questions-container" class="space-y-6">
+            <!-- Dynamic Question Cards populated by JS -->
+        </div>
+
+    </main>
+
+    <!-- MEP Formula Sheet Modal -->
+    <div id="formula-modal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
+        <div class="bg-white rounded-2xl max-w-4xl w-full max-h-[90vh] flex flex-col shadow-2xl overflow-hidden border border-slate-100">
+            <!-- Modal Header -->
+            <div class="p-4 sm:p-6 bg-brand-900 text-white flex justify-between items-center">
+                <div class="flex items-center space-x-3">
+                    <i class="fa-solid fa-square-root-variable text-amber-400 text-xl"></i>
+                    <div>
+                        <h3 class="text-lg font-bold">Formulario Oficial MEP — Física PNE</h3>
+                        <p class="text-xs text-slate-300">Constantes físicas y ecuaciones de los Temas 10 y 12</p>
+                    </div>
+                </div>
+                <button onclick="toggleFormulaModal()" class="text-slate-300 hover:text-white text-2xl font-bold focus:outline-none">&times;</button>
+            </div>
+
+            <!-- Modal Content with Scroll -->
+            <div class="p-6 overflow-y-auto space-y-6 custom-scrollbar text-sm">
+                <!-- Constants Grid -->
+                <div>
+                    <h4 class="text-sm font-bold text-brand-700 uppercase tracking-wider mb-3 border-b pb-1">1. Constantes Físicas Fundamentales</h4>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
+                        <div class="p-3 bg-slate-50 rounded-lg border border-slate-200">
+                            <span class="font-bold text-slate-800 block text-xs">Velocidad de la luz en el vacío ($c$):</span>
+                            <div class="mt-1 text-slate-700 font-semibold text-base">$$c = 3.00 \times 10^8 \text{ m/s}$$</div>
+                        </div>
+                        <div class="p-3 bg-slate-50 rounded-lg border border-slate-200">
+                            <span class="font-bold text-slate-800 block text-xs">Velocidad del sonido en el agua (aprox.):</span>
+                            <div class="mt-1 text-slate-700 font-semibold text-base">$$v_{\text{sonido}} \approx 1500 \text{ m/s}$$</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Equations Grid -->
+                <div>
+                    <h4 class="text-sm font-bold text-brand-700 uppercase tracking-wider mb-3 border-b pb-1">2. Ecuaciones por Tema</h4>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <!-- Tema 10 -->
+                        <div class="p-4 bg-blue-50/50 rounded-lg border border-blue-100 space-y-3">
+                            <h5 class="font-bold text-blue-900 text-xs uppercase tracking-wider border-b border-blue-200 pb-1">10. Ondas</h5>
+                            <div>
+                                <span class="text-xs text-slate-600 font-semibold block">Rapidez de propagación ($v$):</span>
+                                <div class="text-sm py-1">$$v = \lambda \cdot f \quad \text{o} \quad v = \frac{\lambda}{T}$$</div>
+                            </div>
+                            <div>
+                                <span class="text-xs text-slate-600 font-semibold block">Relación Período ($T$) y Frecuencia ($f$):</span>
+                                <div class="text-sm py-1">$$T = \frac{1}{f} \quad \Longleftrightarrow \quad f = \frac{1}{T}$$</div>
+                            </div>
+                        </div>
+
+                        <!-- Tema 12 -->
+                        <div class="p-4 bg-purple-50/50 rounded-lg border border-purple-100 space-y-3">
+                            <h5 class="font-bold text-purple-900 text-xs uppercase tracking-wider border-b border-purple-200 pb-1">12. Teoría de la Relatividad Especial</h5>
+                            <div>
+                                <span class="text-xs text-slate-600 font-semibold block">Factor de Lorentz ($\gamma$):</span>
+                                <div class="text-sm py-1">$$\gamma = \frac{1}{\sqrt{1 - \frac{v^2}{c^2}}}$$</div>
+                            </div>
+                            <div>
+                                <span class="text-xs text-slate-600 font-semibold block">Dilatación del Tiempo:</span>
+                                <div class="text-sm py-1">$$\Delta t = \gamma \cdot \Delta t_0$$</div>
+                            </div>
+                            <div>
+                                <span class="text-xs text-slate-600 font-semibold block">Contracción de la Longitud:</span>
+                                <div class="text-sm py-1">$$L = \frac{L_0}{\gamma}$$</div>
+                            </div>
+                            <div>
+                                <span class="text-xs text-slate-600 font-semibold block">Masa Relativista:</span>
+                                <div class="text-sm py-1">$$m = \gamma \cdot m_0$$</div>
+                            </div>
+                            <div>
+                                <span class="text-xs text-slate-600 font-semibold block">Equivalencia Masa-Energía:</span>
+                                <div class="text-sm py-1">$$E = m \cdot c^2$$</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Modal Footer -->
+            <div class="p-4 bg-slate-100 border-t flex justify-between items-center">
+                <span class="text-xs text-slate-500">Documento oficial de apoyo académico MEP</span>
+                <button onclick="toggleFormulaModal()" class="px-5 py-2 bg-brand-600 hover:bg-brand-700 text-white font-medium rounded-lg text-sm transition">
+                    Entendido
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // LA URL DE TU BASE DE DATOS (Google Apps Script)
+        const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxdTiX_oWAwoSkdg9EXozwHeXlQlPa1UkZaJU5xtARiEAdfbGeECjlBvUKjRKII8w2E7g/exec';
+
+        // DATABASE DE LAS 30 PREGUNTAS (Ondas, Invernadero, Relatividad)
+        const questionsData = [
+            // --- TEMA 10: ONDAS ---
+            {
+                id: 1, topic: "ondas", topicName: "Ondas",
+                context: "Las ondas pueden clasificarse según el medio en el que se propagan.",
+                question: "¿Cuál es la principal diferencia entre las ondas mecánicas y las ondas electromagnéticas?",
+                options: [
+                    "Las ondas mecánicas requieren un medio material para propagarse, mientras que las electromagnéticas pueden viajar en el vacío.",
+                    "Las ondas mecánicas solo viajan en el vacío, mientras que las electromagnéticas requieren un medio material.",
+                    "Las ondas mecánicas transportan materia, mientras que las electromagnéticas solo transportan energía.",
+                    "Las ondas electromagnéticas son siempre longitudinales, y las mecánicas siempre transversales."
+                ],
+                correct: 0,
+                explanation: "Las ondas mecánicas (como el sonido) necesitan partículas. Las electromagnéticas (luz) no requieren medio."
+            },
+            {
+                id: 2, topic: "ondas", topicName: "Ondas",
+                context: "Una emisora de radio transmite con una frecuencia de $105.0 \\times 10^6 \\text{ Hz}$. La velocidad es $c = 3.0 \\times 10^8 \\text{ m/s}$.",
+                question: "¿Cuál es la longitud de onda ($\\lambda$) aproximada?",
+                options: ["$2.86 \\text{ m}$", "$3.15 \\text{ m}$", "$0.35 \\text{ m}$", "$28.6 \\text{ m}$"],
+                correct: 0,
+                explanation: "$\\lambda = v / f = 3.0\\times 10^8 / 105.0\\times 10^6 \\approx 2.86 \\text{ m}$."
+            },
+            {
+                id: 3, topic: "ondas", topicName: "Ondas",
+                context: "El sonar emite ondas con $\\lambda = 0.50 \\text{ m}$ a una velocidad de $1500 \\text{ m/s}$.",
+                question: "¿Cuál es la frecuencia de las ondas?",
+                options: ["$3000 \\text{ Hz}$", "$750 \\text{ Hz}$", "$1500 \\text{ Hz}$", "$3.3 \\times 10^{-4} \\text{ Hz}$"],
+                correct: 0,
+                explanation: "$f = v / \\lambda = 1500 / 0.50 = 3000 \\text{ Hz}$."
+            },
+            {
+                id: 4, topic: "ondas", topicName: "Ondas",
+                context: "Una boya completa un ciclo cada $4.0 \\text{ segundos}$.",
+                question: "¿Cuál es la frecuencia de oscilación?",
+                options: ["$0.25 \\text{ Hz}$", "$4.0 \\text{ Hz}$", "$2.5 \\text{ Hz}$", "$0.40 \\text{ Hz}$"],
+                correct: 0,
+                explanation: "$f = 1 / T = 1 / 4.0 = 0.25 \\text{ Hz}$."
+            },
+            {
+                id: 5, topic: "ondas", topicName: "Ondas",
+                context: "El espectro electromagnético agrupa los distintos tipos de ondas.",
+                question: "¿Cuál de estas ondas posee la mayor frecuencia y energía?",
+                options: ["Los rayos X", "La luz visible", "Las ondas de radio", "Las microondas"],
+                correct: 0,
+                explanation: "Los rayos X tienen frecuencias mucho mayores que la luz visible y las ondas de radio."
+            },
+            {
+                id: 6, topic: "ondas", topicName: "Ondas",
+                context: "Una onda viaja a $20 \\text{ m/s}$ y su longitud de onda es $0.80 \\text{ m}$.",
+                question: "¿Cuál es el período de esta onda?",
+                options: ["$0.04 \\text{ s}$", "$25 \\text{ s}$", "$16 \\text{ s}$", "$0.40 \\text{ s}$"],
+                correct: 0,
+                explanation: "$T = \\lambda / v = 0.80 / 20 = 0.04 \\text{ s}$."
+            },
+            {
+                id: 7, topic: "ondas", topicName: "Ondas",
+                context: "Las ondas son fundamentales en las aplicaciones tecnológicas modernas.",
+                question: "¿Qué tipo de onda electromagnética se utiliza en sistemas de radar y Wi-Fi?",
+                options: ["Microondas", "Ondas infrarrojas", "Rayos ultravioleta", "Rayos gamma"],
+                correct: 0,
+                explanation: "Las microondas son el estándar para el radar y el Wi-Fi."
+            },
+            {
+                id: 8, topic: "ondas", topicName: "Ondas",
+                context: "Un estudiante genera ondas en un resorte empujando y jalando en la misma dirección.",
+                question: "¿Qué tipo de onda está generando?",
+                options: [
+                    "Onda longitudinal.",
+                    "Onda transversal.",
+                    "Onda electromagnética.",
+                    "Onda estacionaria."
+                ],
+                correct: 0,
+                explanation: "Las zonas de compresión definen a las ondas longitudinales."
+            },
+            {
+                id: 9, topic: "ondas", topicName: "Ondas",
+                context: "En el estudio de las ondas sonoras, el tono y el volumen tienen causas distintas.",
+                question: "El volumen de un sonido está determinado principalmente por su:",
+                options: ["Amplitud", "Frecuencia", "Velocidad de propagación", "Longitud de onda"],
+                correct: 0,
+                explanation: "La amplitud determina cuánta energía transporta la onda (volumen)."
+            },
+            {
+                id: 10, topic: "ondas", topicName: "Ondas",
+                context: "La distancia vertical desde el valle hasta la cresta es de $0.60 \\text{ m}$.",
+                question: "¿Cuál es la amplitud de la onda?",
+                options: ["$0.30 \\text{ m}$", "$0.60 \\text{ m}$", "$1.20 \\text{ m}$", "$0.15 \\text{ m}$"],
+                correct: 0,
+                explanation: "La amplitud es la mitad de la distancia cresta-valle: $0.60 / 2 = 0.30 \\text{ m}$."
+            },
+            // --- TEMA 11: EFECTO INVERNADERO ---
+            {
+                id: 11, topic: "invernadero", topicName: "Efecto Invernadero",
+                context: "El Efecto Invernadero es un fenómeno natural originado por ciertos gases.",
+                question: "¿Cuál es el alcance positivo fundamental del Efecto Invernadero natural?",
+                options: [
+                    "Retiene parte del calor emitido, manteniendo una temperatura adecuada para la vida.",
+                    "Filtra la radiación ultravioleta dañina.",
+                    "Genera las corrientes oceánicas.",
+                    "Evita que los meteoritos impacten."
+                ],
+                correct: 0,
+                explanation: "Atrapa calor infrarrojo, elevando la temperatura global a un nivel habitable."
+            },
+            {
+                id: 12, topic: "invernadero", topicName: "Efecto Invernadero",
+                context: "El Efecto Invernadero Antropogénico ha aumentado la concentración de gases.",
+                question: "¿Cuál es una consecuencia negativa directa?",
+                options: [
+                    "El calentamiento global y alteración de patrones climáticos.",
+                    "Disminución del nivel del mar.",
+                    "Incremento del grosor de la capa de ozono.",
+                    "Purificación natural de los océanos."
+                ],
+                correct: 0,
+                explanation: "Genera calentamiento global, alterando todo el clima."
+            },
+            {
+                id: 13, topic: "invernadero", topicName: "Efecto Invernadero",
+                context: "Cuando los residuos orgánicos se descomponen en vertederos sin oxígeno...",
+                question: "¿Qué gas de efecto invernadero se libera predominantemente?",
+                options: ["Metano ($CH_4$)", "Ozono ($O_3$)", "Dióxido de azufre ($SO_2$)", "Argón ($Ar$)"],
+                correct: 0,
+                explanation: "La descomposición anaeróbica produce gas metano."
+            },
+            {
+                id: 14, topic: "invernadero", topicName: "Efecto Invernadero",
+                context: "La regla de las 3R (Reducir, Reutilizar, Reciclar).",
+                question: "¿Qué acción ejemplifica mejor \"Reutilizar\"?",
+                options: [
+                    "Usar envases de vidrio limpios para almacenar semillas.",
+                    "Fundir botellas de plástico.",
+                    "Evitar comprar productos en envoltorios plásticos.",
+                    "Llevar desechos a un centro de acopio."
+                ],
+                correct: 0,
+                explanation: "Darle un nuevo uso sin proceso industrial es reutilización directa."
+            },
+            {
+                id: 15, topic: "invernadero", topicName: "Efecto Invernadero",
+                context: "Protección de bosques y reforestación.",
+                question: "¿Cómo ayuda esto a mitigar el Efecto Invernadero?",
+                options: [
+                    "Los árboles absorben el $CO_2$ actuando como sumideros de carbono.",
+                    "Los bosques producen metano.",
+                    "La vegetación refleja radiación infrarroja.",
+                    "Los árboles absorben CFCs."
+                ],
+                correct: 0,
+                explanation: "Capturan $CO_2$ atmosférico y lo transforman en biomasa (fotosíntesis)."
+            },
+            {
+                id: 16, topic: "invernadero", topicName: "Efecto Invernadero",
+                context: "Clasificación de restos de frutas de la soda del colegio.",
+                question: "¿Cuál es la forma más ecológica de manejarlos?",
+                options: [
+                    "Procesarlos en una compostera para generar fertilizante orgánico.",
+                    "Quemarlos en un incinerador.",
+                    "Mezclarlos con plásticos.",
+                    "Enterrarlos profundamente en bolsas plásticas."
+                ],
+                correct: 0,
+                explanation: "El compostaje aeróbico evita el metano y produce abono."
+            },
+            {
+                id: 17, topic: "invernadero", topicName: "Efecto Invernadero",
+                context: "Transporte impulsado por fósiles y su impacto.",
+                question: "¿Qué acción ciudadana mitiga este impacto?",
+                options: [
+                    "Fomentar el uso de la bicicleta o transporte público electrificado.",
+                    "Sustituir motores de gasolina por diésel.",
+                    "Aumentar límites de velocidad.",
+                    "Quemar carbón en vehículos."
+                ],
+                correct: 0,
+                explanation: "Reducir el uso de petróleo y usar movilidad activa o eléctrica."
+            },
+            {
+                id: 18, topic: "invernadero", topicName: "Efecto Invernadero",
+                context: "Efecto sobre los océanos.",
+                question: "¿Qué consecuencia negativa produce el aumento de $CO_2$ sobre el agua oceánica?",
+                options: [
+                    "Acidificación de las aguas marinas.",
+                    "Aumento de salinidad.",
+                    "Disminución drástica del nivel del mar.",
+                    "Congelación de rutas."
+                ],
+                correct: 0,
+                explanation: "El océano absorbe $CO_2$, formando ácido carbónico (acidificación)."
+            },
+            {
+                id: 19, topic: "invernadero", topicName: "Efecto Invernadero",
+                context: "Clasificación de materiales.",
+                question: "¿Cuál grupo está conformado exclusivamente por elementos altamente reciclables?",
+                options: [
+                    "Aluminio, cartón, envases de vidrio y papel periódico.",
+                    "Papel higiénico y jeringas.",
+                    "Bolsas metalizadas de snacks.",
+                    "Vidrio roto mezclado con tierra."
+                ],
+                correct: 0,
+                explanation: "Aluminio, vidrio, cartón y papel tienen un alto mercado de reciclaje."
+            },
+            {
+                id: 20, topic: "invernadero", topicName: "Efecto Invernadero",
+                context: "Impacto de la ganadería extensiva.",
+                question: "¿Por qué la ganadería bovina contribuye negativamente?",
+                options: [
+                    "Por la emisión de metano digestivo y deforestación para pastos.",
+                    "Porque consumen el oxígeno rural.",
+                    "Por absorción de radiación solar en la carne.",
+                    "Por uso exclusivo de vehículos saturados."
+                ],
+                correct: 0,
+                explanation: "Las vacas emiten mucho metano y la ganadería frecuentemente deforesta."
+            },
+            // --- TEMA 12: RELATIVIDAD ---
+            {
+                id: 21, topic: "relatividad", topicName: "Relatividad",
+                context: "Postulados de la Relatividad Especial (1905).",
+                question: "¿Cuál es el segundo postulado de Einstein?",
+                options: [
+                    "La velocidad de la luz en el vacío es constante para todos los observadores inerciales.",
+                    "Las leyes de la física son idénticas en sistemas acelerados.",
+                    "El tiempo fluye al mismo ritmo absoluto en el cosmos.",
+                    "La masa es constante al acercarse a la luz."
+                ],
+                correct: 0,
+                explanation: "La velocidad de la luz $c$ es absoluta e invariante."
+            },
+            {
+                id: 22, topic: "relatividad", topicName: "Relatividad",
+                context: "Aplicaciones de la Relatividad en la tecnología moderna.",
+                question: "¿Por qué el GPS necesita fórmulas de Relatividad?",
+                options: [
+                    "Los relojes atómicos en los satélites avanzan a un ritmo diferente que en la Tierra.",
+                    "Las ondas pierden velocidad en la atmósfera.",
+                    "La masa de los satélites se reduce en el espacio.",
+                    "Las ecuaciones de Newton no miden distancias largas."
+                ],
+                correct: 0,
+                explanation: "Dilatación temporal por alta velocidad y baja gravedad requiere corrección en los satélites."
+            },
+            {
+                id: 23, topic: "relatividad", topicName: "Relatividad",
+                context: "Una nave espacial viaja a $v = 0.8c$.",
+                question: "¿Cuál es el valor del Factor de Lorentz ($\\gamma$)?",
+                options: ["$1.67$ ($5/3$)", "$1.25$ ($5/4$)", "$0.60$ ($3/5$)", "$1.00$"],
+                correct: 0,
+                explanation: "$\\gamma = 1/\\sqrt{1 - 0.8^2} = 1/0.6 = 5/3 \\approx 1.67$."
+            },
+            {
+                id: 24, topic: "relatividad", topicName: "Relatividad",
+                context: "Nave a $\\gamma = 1.25$. Tiempo propio $\\Delta t_0 = 4 \\text{ años}$.",
+                question: "¿Cuánto tiempo transcurrió para la Tierra?",
+                options: ["$5.0 \\text{ años}$", "$3.2 \\text{ años}$", "$4.0 \\text{ años}$", "$6.4 \\text{ años}$"],
+                correct: 0,
+                explanation: "$\\Delta t = \\gamma \\cdot \\Delta t_0 = 1.25 \\times 4 = 5.0 \\text{ años}$."
+            },
+            {
+                id: 25, topic: "relatividad", topicName: "Relatividad",
+                context: "Longitud propia de una nave es $L_0 = 150 \\text{ m}$. Factor $\\gamma = 1.50$.",
+                question: "¿Qué longitud $L$ se mide desde la Tierra?",
+                options: ["$100 \\text{ m}$", "$225 \\text{ m}$", "$150 \\text{ m}$", "$75 \\text{ m}$"],
+                correct: 0,
+                explanation: "$L = L_0 / \\gamma = 150 / 1.50 = 100 \\text{ m}$ (Contracción)."
+            },
+            {
+                id: 26, topic: "relatividad", topicName: "Relatividad",
+                context: "La masa relativista de un objeto al acercarse a la luz.",
+                question: "¿Qué le ocurre a la masa o inercia cuando $v \\to c$?",
+                options: [
+                    "Aumenta tendiendo al infinito.",
+                    "Disminuye hasta volverse cero.",
+                    "Permanece constante.",
+                    "Aumenta hasta detenerse bruscamente."
+                ],
+                correct: 0,
+                explanation: "Como $\\gamma \\to \\infty$, la masa relativista tiende al infinito."
+            },
+            {
+                id: 27, topic: "relatividad", topicName: "Relatividad",
+                context: "Un protón viaja con $\\gamma = 2.0$.",
+                question: "¿Cuál será su masa relativista?",
+                options: ["$2.0 m_0$ (Doble)", "$0.5 m_0$ (Mitad)", "$4.0 m_0$ (Cuádruple)", "$m_0$ (Sin cambio)"],
+                correct: 0,
+                explanation: "$m = \\gamma m_0 = 2.0 m_0$."
+            },
+            {
+                id: 28, topic: "relatividad", topicName: "Relatividad",
+                context: "Equivalencia masa-energía: $E = m c^2$.",
+                question: "¿Qué significado fundamental tiene esto?",
+                options: [
+                    "Masa y energía son equivalentes; poca masa contiene muchísima energía.",
+                    "La energía cinética siempre es la velocidad de la luz al cuadrado.",
+                    "Solo la luz posee energía.",
+                    "Se requiere fuerza inmensa para romper átomos."
+                ],
+                correct: 0,
+                explanation: "La masa es energía concentrada. Base de la energía nuclear."
+            },
+            {
+                id: 29, topic: "relatividad", topicName: "Relatividad",
+                context: "Paradoja de los Gemelos.",
+                question: "¿Qué pasa al reencontrarse?",
+                options: [
+                    "El gemelo viajero será más joven que el de la Tierra.",
+                    "Ambos tendrán la misma edad.",
+                    "El viajero será más viejo.",
+                    "El terrestre será más joven."
+                ],
+                correct: 0,
+                explanation: "Por dilatación temporal, el tiempo pasó más lento para el viajero."
+            },
+            {
+                id: 30, topic: "relatividad", topicName: "Relatividad",
+                context: "Tiempo en Tierra $\\Delta t = 10 \\text{ años}$. Nave a $\\gamma = 2.5$.",
+                question: "¿Cuál es el tiempo propio de los astronautas ($\\Delta t_0$)?",
+                options: ["$4.0 \\text{ años}$", "$25.0 \\text{ años}$", "$10.0 \\text{ años}$", "$2.5 \\text{ años}$"],
+                correct: 0,
+                explanation: "$\\Delta t_0 = \\Delta t / \\gamma = 10 / 2.5 = 4.0 \\text{ años}$."
+            }
+        ];
+
+        // -------------------------------------------------------------
+        // STATE
+        // -------------------------------------------------------------
+        let currentMode = 'study'; // 'study', 'exam_start', 'exam_active', 'exam_results', 'print'
+        let userAnswers = {};      
+        let bookmarked = {};       
+        let currentFilterTopic = 'all';
+        let searchQuery = '';
+        let examTimer = null;
+        let timeRemaining = 5400;  
+        let startTime = 0;
+
+        window.addEventListener('DOMContentLoaded', () => {
+            renderQuestions();
+            setupMathJaxKaTeXAutoRender();
+        });
+
+        function setupMathJaxKaTeXAutoRender() {
+            if (window.renderMathInElement) {
+                renderMathInElement(document.body, {
+                    delimiters: [
+                        {left: '$$', right: '$$', display: true}, 
+                        {left: '$', right: '$', display: false}
+                    ], 
+                    throwOnError: false
+                });
+            }
+        }
+
+        function triggerMathRender(elementId = 'questions-container') {
+            setTimeout(() => {
+                const el = document.getElementById(elementId);
+                if (window.renderMathInElement && el) {
+                    renderMathInElement(el, {
+                        delimiters: [
+                            {left: '$$', right: '$$', display: true}, 
+                            {left: '$', right: '$', display: false}
+                        ], 
+                        throwOnError: false
+                    });
+                }
+            }, 50);
+        }
+
+        function switchMode(mode) {
+            if(currentMode === 'exam_active' && mode !== 'exam_active' && mode !== 'exam_results') {
+                if(!confirm("¿Deseas salir del examen en curso? Tu progreso actual se perderá.")) return;
+                clearInterval(examTimer);
+            }
+
+            // Tabs Styling
+            const activeTabClass = 'px-3 py-1.5 sm:px-4 sm:py-2 text-xs sm:text-sm font-medium rounded-lg transition-colors flex items-center space-x-1 bg-brand-700 text-white';
+            const inactiveTabClass = 'px-3 py-1.5 sm:px-4 sm:py-2 text-xs sm:text-sm font-medium rounded-lg transition-colors flex items-center space-x-1 hover:bg-brand-800 text-slate-300';
+            
+            document.getElementById('btn-mode-study').className = (mode === 'study') ? activeTabClass : inactiveTabClass;
+            document.getElementById('btn-mode-exam').className = (mode.includes('exam')) ? activeTabClass : inactiveTabClass;
+            document.getElementById('btn-mode-print').className = (mode === 'print') ? activeTabClass : inactiveTabClass;
+
+            // Display logic
+            document.getElementById('study-filters').classList.toggle('hidden', mode !== 'study');
+            document.getElementById('study-dashboard').classList.toggle('hidden', mode !== 'study');
+            document.getElementById('exam-dashboard').classList.toggle('hidden', mode !== 'exam_active');
+            
+            document.getElementById('start-exam-container').classList.add('hidden');
+            document.getElementById('report-card').classList.add('hidden');
+            document.getElementById('questions-container').classList.remove('hidden');
+
+            if (mode === 'exam') {
+                if (localStorage.getItem('activeExamSubmitted') === 'true') {
+                    currentMode = 'exam_results';
+                    document.getElementById('report-card').classList.remove('hidden');
+                    populateReportCardFromStorage();
+                } else {
+                    currentMode = 'exam_start';
+                    document.getElementById('questions-container').classList.add('hidden');
+                    document.getElementById('start-exam-container').classList.remove('hidden');
+                    document.getElementById('top-controls').classList.add('hidden');
+                }
+            } else {
+                currentMode = mode;
+                document.getElementById('top-controls').classList.remove('hidden');
+            }
+
+            if (mode === 'print') {
+                setTimeout(() => window.print(), 300);
+            }
+
+            if (currentMode !== 'exam_start') {
+                renderQuestions();
+            }
+        }
+
+        function startAppScriptExam() {
+            const nameInput = document.getElementById('studentName').value.trim();
+            const gradeInput = document.getElementById('studentGrade').value;
+
+            if (!nameInput || !gradeInput) {
+                alert("Por favor, ingresa tu nombre completo y selecciona tu sección.");
+                return;
+            }
+
+            localStorage.setItem('activeExamName', nameInput);
+            localStorage.setItem('activeExamGrade', gradeInput);
+
+            document.getElementById('student-header').innerText = `${nameInput} (${gradeInput})`;
+
+            userAnswers = {}; // Reset answers
+            currentMode = 'exam_active';
+            
+            document.getElementById('start-exam-container').classList.add('hidden');
+            document.getElementById('top-controls').classList.remove('hidden');
+            document.getElementById('exam-dashboard').classList.remove('hidden');
+            document.getElementById('study-filters').classList.add('hidden');
+            document.getElementById('questions-container').classList.remove('hidden');
+
+            // Timer setup
+            timeRemaining = 5400; // 60 mins
+            startTime = Date.now();
+            clearInterval(examTimer);
+            updateTimerDisplay();
+            examTimer = setInterval(() => {
+                timeRemaining--;
+                updateTimerDisplay();
+                if (timeRemaining <= 0) {
+                    clearInterval(examTimer);
+                    evaluateExam();
+                }
+            }, 1000);
+
+            renderQuestions();
+        }
+
+        function updateTimerDisplay() {
+            const minutes = Math.floor(timeRemaining / 90);
+            const seconds = timeRemaining % 90;
+            document.getElementById('timer-display').innerText = `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+        }
+
+        function evaluateExam() {
+            if (!confirm("¿Estás seguro de que deseas finalizar tu examen y enviarlo? Ya no podrás realizar modificaciones.")) return;
+
+            clearInterval(examTimer);
+            currentMode = 'exam_results';
+            
+            const totalQuestions = questionsData.length;
+            let score = 0;
+            questionsData.forEach(q => {
+                if (userAnswers[q.id] === q.correct) score++;
+            });
+            const gradePercent = ((score / totalQuestions) * 100).toFixed(1);
+            
+            const totalSeconds = Math.floor((Date.now() - startTime) / 1000);
+            const timeStr = `${Math.floor(totalSeconds / 60)}m ${totalSeconds % 60}s`;
+
+            const studentName = localStorage.getItem('activeExamName') || 'Estudiante';
+            const studentGrade = localStorage.getItem('activeExamGrade') || 'N/A';
+
+            localStorage.setItem('activeExamSubmitted', 'true');
+            localStorage.setItem('lastScore', score);
+            localStorage.setItem('lastGrade', gradePercent);
+            localStorage.setItem('lastTime', timeStr);
+
+            document.getElementById('exam-dashboard').classList.add('hidden');
+            document.getElementById('report-card').classList.remove('hidden');
+            
+            populateReportCardFromStorage();
+            renderQuestions();
+
+            const payload = {
+                estudiante: studentName,
+                grado: studentGrade,
+                prueba: "Práctica Calificada - Temas 10, 11 y 12",
+                nota: gradePercent,
+                puntos: score,
+                tiempo: timeStr,
+                seguridad: "Sin restricciones de ventana (Normal)"
+            };
+
+            const syncStatus = document.getElementById('sync-status');
+            syncStatus.innerHTML = `<i class="fa-solid fa-spinner fa-spin mr-2"></i> Enviando nota a la base de datos...`;
+            syncStatus.className = "font-bold p-4 rounded-lg bg-amber-100 text-amber-800 border border-amber-200 mb-6 shadow-inner";
+
+            fetch(SCRIPT_URL, {
+                method: 'POST',
+                mode: 'no-cors',
+                headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+                body: JSON.stringify(payload)
+            })
+            .then(() => {
+                syncStatus.className = "font-bold p-4 rounded-lg bg-green-100 text-green-800 border border-green-200 mb-6 shadow-inner";
+                syncStatus.innerHTML = '<i class="fa-solid fa-check-circle mr-2"></i> ¡Tu nota ha sido guardada y enviada al profesor correctamente!';
+            })
+            .catch(error => {
+                syncStatus.className = "font-bold p-4 rounded-lg bg-red-100 text-red-800 border border-red-200 mb-6 shadow-inner";
+                syncStatus.innerHTML = '<i class="fa-solid fa-triangle-exclamation mr-2"></i> Error de conexión: No se pudo enviar la nota automáticamente. Por favor, guarda el PDF y envíalo a tu profesor.';
+            });
+            
+            window.scrollTo(0,0);
+        }
+
+        function populateReportCardFromStorage() {
+            document.getElementById('rep-student').innerText = `${localStorage.getItem('activeExamName')} (${localStorage.getItem('activeExamGrade')})`;
+            document.getElementById('rep-score').innerText = `${localStorage.getItem('lastScore')} / 30`;
+            document.getElementById('rep-grade').innerText = `${localStorage.getItem('lastGrade')}%`;
+            document.getElementById('rep-time').innerText = localStorage.getItem('lastTime');
+        }
+
+        function renderQuestions() {
+            const container = document.getElementById('questions-container');
+            container.innerHTML = '';
+
+            const filtered = questionsData.filter(q => {
+                if (currentMode === 'exam_active' || currentMode === 'exam_results') return true; 
+                const matchTopic = (currentFilterTopic === 'all') || (q.topic === currentFilterTopic);
+                const matchSearch = searchQuery === '' || 
+                    q.context.toLowerCase().includes(searchQuery.toLowerCase()) || 
+                    q.question.toLowerCase().includes(searchQuery.toLowerCase()) ||
+                    q.explanation.toLowerCase().includes(searchQuery.toLowerCase());
+                return matchTopic && matchSearch;
+            });
+
+            if (filtered.length === 0) {
+                container.innerHTML = `<div class="text-center py-12 bg-white rounded-xl border border-slate-200">No se encontraron preguntas</div>`;
+                return;
+            }
+
+            filtered.forEach((q, index) => {
+                const card = document.createElement('div');
+                card.className = `bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden card-print transition-all`;
+
+                const isAnswered = userAnswers[q.id] !== undefined;
+                const selectedIdx = userAnswers[q.id];
+                
+                if (currentMode === 'exam_results') {
+                    if (selectedIdx === q.correct) card.classList.add('border-l-4', 'border-l-emerald-500');
+                    else card.classList.add('border-l-4', 'border-l-rose-500');
+                }
+
+                let headerBadgeClass = 'bg-slate-100 text-slate-700 border-slate-200';
+                if (q.topic === 'ondas') headerBadgeClass = 'bg-blue-50 text-blue-700 border-blue-200';
+                if (q.topic === 'invernadero') headerBadgeClass = 'bg-green-50 text-green-700 border-green-200';
+                if (q.topic === 'relatividad') headerBadgeClass = 'bg-purple-50 text-purple-700 border-purple-200';
+
+                card.innerHTML = `
+                    <div class="px-5 py-3 bg-slate-50 border-b border-slate-100 flex items-center justify-between no-print">
+                        <div class="flex items-center space-x-2">
+                            <span class="font-bold text-slate-800 text-sm">Pregunta ${q.id}</span>
+                            <span class="text-xs px-2.5 py-0.5 rounded-full border ${headerBadgeClass} font-medium">${q.topicName}</span>
+                        </div>
+                    </div>
+                    
+                    <div class="p-5 space-y-4">
+                        <div class="bg-slate-50/80 p-4 rounded-lg border border-slate-200/60 text-sm leading-relaxed text-slate-700">
+                            ${q.context}
+                        </div>
+                        <div class="text-sm font-semibold text-slate-900 leading-snug">${q.question}</div>
+
+                        <div class="space-y-2 pt-1">
+                            ${q.options.map((opt, oIdx) => {
+                                let btnStyle = 'border-slate-200 hover:border-brand-300 bg-white text-slate-800';
+                                let iconStyle = 'text-slate-400 border-slate-300';
+                                
+                                if ((currentMode === 'study' || currentMode === 'exam_results') && isAnswered) {
+                                    if (oIdx === q.correct) {
+                                        btnStyle = 'border-emerald-500 bg-emerald-50/80 text-emerald-950 font-medium ring-1 ring-emerald-500';
+                                        iconStyle = 'bg-emerald-600 text-white border-emerald-600';
+                                    } else if (oIdx === selectedIdx) {
+                                        btnStyle = 'border-rose-500 bg-rose-50/80 text-rose-950 font-medium ring-1 ring-rose-500';
+                                        iconStyle = 'bg-rose-600 text-white border-rose-600';
+                                    }
+                                } else if (selectedIdx === oIdx) {
+                                    btnStyle = 'border-brand-500 bg-brand-50 text-brand-900 font-medium ring-1 ring-brand-500';
+                                    iconStyle = 'bg-brand-600 text-white border-brand-600';
+                                }
+
+                                const disabledAttr = (currentMode === 'exam_results' || currentMode === 'print') ? 'disabled' : '';
+                                const cursorStyle = disabledAttr ? 'cursor-default' : 'cursor-pointer';
+
+                                return `
+                                    <button onclick="selectOption(${q.id}, ${oIdx})" ${disabledAttr} class="w-full text-left p-3 rounded-lg border text-sm transition-all flex items-center space-x-3 group ${btnStyle}${cursorStyle}">
+                                        <span class="w-6 h-6 rounded-full border text-xs font-semibold flex items-center justify-center flex-shrink-0 transition ${iconStyle}">
+                                            ${['A', 'B', 'C', 'D'][oIdx]}
+                                        </span>
+                                        <span class="leading-normal">${opt}</span>
+                                    </button>
+                                `;
+                            }).join('')}
+                        </div>
+
+                        ${((currentMode === 'study' && isAnswered) || currentMode === 'print' || currentMode === 'exam_results') ? `
+                            <div class="mt-4 pt-4 border-t border-slate-200">
+                                <div class="p-4 bg-emerald-50/60 rounded-xl border border-emerald-200 text-xs sm:text-sm text-slate-800 space-y-2">
+                                    <div class="flex items-center space-x-2 text-emerald-800 font-bold">
+                                        <i class="fa-solid fa-circle-check text-emerald-600"></i>
+                                        <span>Solución y Explicación:</span>
+                                    </div>
+                                    <div class="prose prose-sm max-w-none text-slate-700 font-sans">${q.explanation}</div>
+                                </div>
+                            </div>
+                        ` : ''}
+                    </div>
+                `;
+                container.appendChild(card);
+            });
+
+            if(currentMode === 'study') updateStats();
+            triggerMathRender('questions-container');
+        }
+
+        function selectOption(questionId, optionIdx) {
+            if (currentMode === 'exam_results') return;
+            userAnswers[questionId] = optionIdx;
+            renderQuestions();
+        }
+
+        function handleSearch() { searchQuery = document.getElementById('search-input').value; renderQuestions(); }
+        function handleTopicFilter() { currentFilterTopic = document.getElementById('topic-filter').value; renderQuestions(); }
+        function resetFilters() {
+            document.getElementById('search-input').value = '';
+            document.getElementById('topic-filter').value = 'all';
+            searchQuery = ''; currentFilterTopic = 'all';
+            renderQuestions();
+        }
+        function updateStats() {
+            const keys = Object.keys(userAnswers);
+            document.getElementById('answered-count').innerText = keys.length;
+            let correct = 0;
+            keys.forEach(id => {
+                const q = questionsData.find(item => item.id == id);
+                if (q && userAnswers[id] === q.correct) correct++;
+            });
+            const percent = keys.length > 0 ? Math.round((correct / keys.length) * 100) : 0;
+            document.getElementById('score-display').innerText = `${percent}% (${correct}/${keys.length})`;
+        }
+
+        function toggleFormulaModal() {
+            const modal = document.getElementById('formula-modal');
+            modal.classList.toggle('hidden');
+            if (!modal.classList.contains('hidden')) {
+                triggerMathRender('formula-modal');
+            }
+        }
+    </script>
+</body>
+</html>
