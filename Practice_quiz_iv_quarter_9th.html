@@ -76,7 +76,7 @@ table.tb td{border:1px solid var(--ln);padding:5px 8px;background:#fff}
 .practice-tag{display:inline-block;background:var(--go);color:#fff;border-radius:20px;padding:3px 14px;font-size:.85rem;font-weight:bold;letter-spacing:1px;text-transform:uppercase;margin-bottom:6px}
 </style>
 </head>
-<body oncontextmenu="return false;">
+<body>
 
 <div id="start-container">
   <div class="header-top">
@@ -138,11 +138,10 @@ table.tb td{border:1px solid var(--ln);padding:5px 8px;background:#fff}
       <li>Ensure all questions have an answer before submitting. If a connection error occurs, save the PDF report and send it to your teacher.</li>
     </ol>
 
-    <h3>Security Rules (same as the real quiz)</h3>
+    <h3>Practice Mode</h3>
     <ul>
-      <li>The practice opens in mandatory full screen mode.</li>
-      <li>If you switch tabs, minimize the browser, or exit full screen, you will receive <b>one warning</b>. A <b>second exit</b> will automatically lock and submit your practice with your current score.</li>
-      <li>Copying, pasting, printing, and right-clicking are disabled during the practice.</li>
+      <li>No full screen or tab restrictions. You may open your notes or other tabs while you practice.</li>
+      <li>On the real quiz, security mode will be active (full screen, tab-switch lock, copy/paste disabled).</li>
     </ul>
   </div>
 
@@ -384,42 +383,32 @@ function startExam(){
  if(!nm||!gr){alert('Please enter your full name and select your section before starting.');return}
  localStorage.setItem(KEY+'name',nm);localStorage.setItem(KEY+'grade',gr);
  $('student-header').innerText=`Student: ${nm} | Section: ${gr}`;
- const d=document.documentElement;if(d.requestFullscreen)d.requestFullscreen();else if(d.webkitRequestFullscreen)d.webkitRequestFullscreen();
  $('start-container').style.display='none';$('quiz-layout').style.display='block';
- isExamActive=true;startTime=Date.now();timerInterval=setInterval(updateTimer,1000);setupSecurityListeners()}
+ isExamActive=true;startTime=Date.now();timerInterval=setInterval(updateTimer,1000)}
 
 function updateTimer(){const e=Math.floor((Date.now()-startTime)/1000);$('time-display').innerText=String(Math.floor(e/60)).padStart(2,'0')+':'+String(e%60).padStart(2,'0')}
-
-function setupSecurityListeners(){
- window.addEventListener('blur',triggerSecurityWarning);
- document.addEventListener('visibilitychange',()=>{if(document.visibilityState==='hidden')triggerSecurityWarning()});
- document.addEventListener('keydown',e=>{if(e.ctrlKey&&['c','v','u','p'].includes(e.key)){e.preventDefault();alert('Function disabled for security.')}})}
-
-function triggerSecurityWarning(){if(!isExamActive)return;focusLossCount++;
- if(focusLossCount===1)alert(' WARNING:\nYou have left the practice screen. If you do it again, your practice will be automatically submitted with your current score.');
- else{alert(' PRACTICE LOCKED:\nYou left the tab a second time. Your practice has been submitted.');evaluateExam(true)}}
 
 function evaluateExam(forced=false){
  if(!forced&&!confirm('Are you sure you want to finish your practice? You will no longer be able to make changes.'))return;
  if(!isExamActive)return;
- isExamActive=false;clearInterval(timerInterval);window.removeEventListener('blur',triggerSecurityWarning);
+ isExamActive=false;clearInterval(timerInterval);
  const total=45,scs={MUA:0,NL:0};let score=0;
  items.forEach(it=>{const p=it.grade();score+=p;scs[it.sec]+=p;it.el.className='question '+(p>=it.max?'correct':p>0?'partial':'incorrect');it.el.querySelector('.pts').textContent=`${p} / ${it.max} pts`});
  const grade=(score/total*100).toFixed(2),ts=Math.floor((Date.now()-startTime)/1000),timeStr=`${Math.floor(ts/60)}m ${ts%60}s`;
  const nm=localStorage.getItem(KEY+'name'),gr=localStorage.getItem(KEY+'grade');
- let st='Completed Safely';if(forced)st='Locked (Tab switched)';else if(focusLossCount>0)st=`Warnings: ${focusLossCount}`;
+ const st='Practice mode (no restrictions)';
  $('rep-student').innerText=`Student: ${nm} (${gr})`;
  $('rep-score').innerText=`Score: ${score} / ${total}`;
  $('rep-sec').innerText=`MUA: ${scs.MUA} / 20 · Newton's Laws: ${scs.NL} / 25`;
  $('rep-grade').innerText=`Grade: ${grade}%`;
  $('rep-time').innerText=`Time elapsed: ${timeStr}`;
- $('rep-status').innerText=`Security: ${st}`;
+ $('rep-status').innerText=`Mode: ${st}`;
  $('report-card').style.display='block';localStorage.setItem(KEY+'submitted','true');lockExam();
  const payload={estudiante:nm,grado:gr,prueba:'PRACTICE - I Quiz IV Quarter - Physics 9th',nota:grade,puntos:score,mua:scs.MUA,newton:scs.NL,tiempo:timeStr,seguridad:st};
  fetch(SCRIPT_URL,{method:'POST',mode:'no-cors',headers:{'Content-Type':'text/plain;charset=utf-8'},body:JSON.stringify(payload)})
  .then(()=>{const s=$('sync-status');s.style.background='#c6f6d5';s.style.color='#2f855a';s.innerText=' Your practice results have been sent to the teacher!'})
  .catch(()=>{const s=$('sync-status');s.style.background='#fed7d7';s.style.color='#c53030';s.innerText=' Connection error: save the PDF and send it to your teacher.'});
- if(document.exitFullscreen)document.exitFullscreen().catch(()=>{})}
+}
 
 function lockExam(){
  document.querySelectorAll('#quiz-layout input,#quiz-layout select,#quiz-layout .act').forEach(i=>i.disabled=true);
