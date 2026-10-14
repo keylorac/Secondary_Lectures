@@ -1,0 +1,496 @@
+
+Pasted text.txt
+Pasted text.txt
+TXT
+realizarme una version similar a este quiz, pero que se llame practica para el quiz, tiene que ser similar, pero no igual en numeros:
+
+Adjusting the ramp diagram and finalizing practice scoring details.
+Armo la versión de práctica con la misma estructura y puntaje (45 pts), datos nuevos y una clave de almacenamiento distinta para que no choque con el quiz real.
+
+Created a file, shared a file
+Ahí está la práctica. Mantuvimos la misma estructura, el mismo puntaje (20 + 25 = 45) y las mismas reglas de seguridad. Cambiamos los números, los contextos y el orden de las fórmulas para arrastrar.
+
+Clave de respuestas (para verificar):
+
+#	Problema	Respuesta
+1–3	MC MUA	
+a
+=
+(
+v
+f
+−
+v
+i
+)
+/
+t
+a=(v 
+f
+​
+ −v 
+i
+​
+ )/t · Positive · upward / 9.8 down
+4	Aceleración desde reposo (30 m/s, 5 s)	6.0 m/s²
+5	Tiempo (a = 2.0, vᵢ = 8.0, d = 65 m)	5.0 s
+6	Frenado (25 m/s, −5 m/s²)	62.5 m
+8	Lanzamiento vertical (29.4 m/s)	3.0 s
+9–12	MC Newton	Zero · Is halved · Water pushes swimmer · First Law
+13	Resultante (60, 80 N)	100.0 N
+14	2ª ley (150 N, 25 kg)	6.0 m/s²
+15	Plano 12 kg, 35°	wₓ = 67.5 N, w_y = 96.3 N
+16	Rampa 20 kg, 25°	wₓ = 82.8 N, a = 4.1 m/s²
+18	Cohete (90 N, 3 kg)	F_net = 60.6 N, a = 20.2 m/s²
+Tres detalles. La práctica usa otra clave de localStorage, así que no bloquea el quiz real en el mismo dispositivo. Envía al mismo Apps Script, pero con prueba: 'PRACTICE - ...' para que la distingamos en la hoja. Igual que el quiz, solo permite un intento por dispositivo. Si queremos que los estudiantes la repitan, quitamos el bloque if(localStorage.getItem(KEY+'submitted')...) del window.onload.
+
+
+Practice quiz iv quarter 9th
+Code·HTML 
+
+
+
+
+Claude is AI and can make mistakes.
+
+
+Practice quiz iv quarter 9th · HTML
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes">
+<title>Practice for the I Quiz IV Quarter - 9th Grade Physics</title>
+ 
+<script>
+window.MathJax = {
+  tex: {
+    inlineMath: [['$', '$'], ['\\(', '\\)']],
+    displayMath: [['$$', '$$'], ['[', ']']]
+  },
+  options: {
+    skipHtmlTags: ['script', 'noscript', 'style', 'textarea', 'pre']
+  }
+};
+</script>
+<script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+ 
+<style>
+:root{--nd:#133565;--nb:#215CAF;--cl:#50AAD7;--go:#C69214;--tx:#3C3C3C;--bg:#F5F7FA;--ln:#D8DEE8}
+*{box-sizing:border-box}
+body{font-family:Georgia,'Times New Roman',serif;line-height:1.6;max-width:880px;margin:0 auto;padding:15px;background:var(--bg);color:var(--tx);user-select:text;-webkit-user-select:text}
+input,select{user-select:text;-webkit-user-select:text}
+h1,h2{text-align:center;color:var(--nd);margin:10px 0}
+#start-container{text-align:center;background:#fff;padding:30px 20px;border-radius:12px;border-top:6px solid var(--go);box-shadow:0 2px 8px rgba(19,53,101,.12);margin-top:2%}
+.student-info{text-align:left;background:var(--bg);padding:20px;border-radius:8px;margin:20px 0;border:1px solid var(--ln)}
+.student-info label{font-weight:bold;color:var(--nd);display:block;margin-bottom:5px}
+.student-info input,.student-info select{width:100%;padding:10px;margin-bottom:15px;border:1px solid var(--ln);border-radius:5px;font:inherit}
+#quiz-layout{display:none}
+.sec{background:var(--nd);color:#fff;padding:12px 18px;border-radius:8px;margin:28px 0 12px;font-weight:bold;border-bottom:4px solid var(--go);font-size:1.1rem}
+.question{margin-bottom:20px;padding:18px;background:#fff;border-radius:8px;border-left:5px solid var(--nb);box-shadow:0 1px 4px rgba(19,53,101,.08)}
+.question .hd{display:flex;justify-content:space-between;align-items:center;gap:10px;color:var(--nd);margin-bottom:8px}
+.pts{color:var(--go);font-weight:bold;white-space:nowrap;font-size:1.05rem}
+.breakdown{font-size:0.88rem;color:#55707d;background:#e3f3f5;padding:6px 12px;border-radius:6px;margin:6px 0 12px;border-left:3px solid var(--nb)}
+.correct{background:#d9f2e0!important;border-left-color:#2f855a!important}
+.partial{background:#FBF3E1!important;border-left-color:var(--go)!important}
+.incorrect{background:#fde0e0!important;border-left-color:#c53030!important}
+label.option{display:block;margin:8px 0;padding:8px 10px;border-radius:6px;cursor:pointer;border:1px solid transparent}
+label.option:hover{background:#edf2f7;border-color:var(--ln)}
+canvas{width:100%;max-width:600px;height:auto;background:#fff;border:1px solid var(--ln);border-radius:8px;display:block;margin:12px 0}
+.ctl{display:flex;flex-wrap:wrap;gap:10px 16px;align-items:center;margin:8px 0;font-size:.95rem}
+.ctl input[type=range]{accent-color:var(--nb);width:170px}
+.ans{width:110px;padding:6px 8px;border:1px solid var(--nb);border-radius:6px;font:inherit}
+.mut{color:#6b7a90;font-size:.9rem}
+.act{padding:8px 16px;font-size:1rem;margin:0;width:auto;background:var(--nb);color:#fff;border:none;border-radius:6px;cursor:pointer;font-weight:bold;touch-action:none}
+.act:disabled{opacity:.5;cursor:default}
+.chip{display:inline-block;padding:6px 14px;margin:4px;background:var(--nd);color:#fff;border-radius:6px;cursor:grab;font-weight:bold}
+.chip.sel{outline:3px solid var(--go)}
+.blank{display:inline-block;min-width:68px;min-height:34px;border:2px dashed var(--nb);border-radius:6px;vertical-align:middle;padding:2px 6px;background:#fff;text-align:center}
+.pool{padding:10px;border:1px dashed var(--ln);border-radius:8px;min-height:48px;margin-bottom:12px;background:#f9fbfd}
+.stm{margin:10px 0;font-size:1.05rem}
+button.big{padding:15px;font-size:1.15rem;cursor:pointer;border-radius:6px;border:none;font-weight:bold;width:100%;margin-top:15px;color:#fff}
+.btn-start{background:var(--nb)}#submitBtn{background:var(--nd)}#pdfBtn{background:#2b8a8a;display:none}
+#report-card{display:none;background:#EAF3FB;border:2px solid var(--nb);border-radius:10px;padding:25px;margin:20px 0;text-align:center}
+.rm{font-size:1.15rem;margin:8px 0;color:var(--nd)}
+#sync-status{font-weight:bold;margin-top:15px;padding:10px;border-radius:5px}
+@media print{body{background:#fff}#submitBtn,#pdfBtn,.instructions,#start-container{display:none!important}.question{box-shadow:none;border:1px solid #ccc;page-break-inside:avoid}#report-card{display:block!important;border:2px solid #000;background:none}}
+ 
+.header-top{display:flex;align-items:center;justify-content:space-between;border-bottom:2px solid var(--ln);padding-bottom:15px;margin-bottom:20px;gap:15px;text-align:left}
+.logo-container{width:75px;height:75px;flex-shrink:0;display:flex;align-items:center;justify-content:center;background:#e3f3f5;border-radius:50%;border:2px solid var(--nb);color:var(--nd)}
+.school-info{flex-grow:1}
+.school-info h3{margin:0 0 6px;color:var(--nd);font-size:1.2rem;text-transform:uppercase;letter-spacing:0.5px}
+.info-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:8px;font-size:0.9rem;color:var(--tx)}
+.info-item{background:var(--bg);padding:5px 10px;border-radius:5px;border:1px solid var(--ln)}
+ 
+table.tb{width:100%;border-collapse:collapse;margin:10px 0;font-size:.92rem;text-align:left}
+table.tb th{background:var(--nd);color:#fff;padding:6px 8px}
+table.tb td{border:1px solid var(--ln);padding:5px 8px;background:#fff}
+.rules{text-align:left;font-size:.94rem;background:var(--bg);border:1px solid var(--ln);border-radius:8px;padding:10px 18px;margin:12px 0}
+.rules ol,.rules ul{margin:4px 0;padding-left:20px}
+.rules h3{margin:8px 0 2px;color:var(--nd);font-size:1rem}
+.valor{display:inline-block;background:var(--nd);color:#fff;border-radius:8px;padding:6px 16px;border-bottom:4px solid var(--go);font-weight:bold}
+.quote{font-style:italic;color:#55707d;margin:15px 0 5px;font-size:0.95rem;text-align:center}
+.practice-tag{display:inline-block;background:var(--go);color:#fff;border-radius:20px;padding:3px 14px;font-size:.85rem;font-weight:bold;letter-spacing:1px;text-transform:uppercase;margin-bottom:6px}
+</style>
+</head>
+<body oncontextmenu="return false;">
+ 
+<div id="start-container">
+  <div class="header-top">
+    <div class="logo-container" title="School / Science Logo">
+      <svg width="45" height="45" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+        <circle cx="12" cy="12" r="2.5"></circle>
+        <path d="M12 2v20M2 12h20"></path>
+        <ellipse cx="12" cy="12" rx="9" ry="3.5" transform="rotate(30 12 12)"></ellipse>
+        <ellipse cx="12" cy="12" rx="9" ry="3.5" transform="rotate(150 12 12)"></ellipse>
+      </svg>
+    </div>
+    <div class="school-info">
+      <h3>Science Department</h3>
+      <div class="info-grid">
+        <div class="info-item"><b>Subject:</b> Physics (Science)</div>
+        <div class="info-item"><b>Teacher:</b> Keylor Arley</div>
+        <div class="info-item"><b>Value:</b> Practice (not graded)</div>
+        <div class="info-item"><b>Time:</b> 1 lesson (2 adapt.)</div>
+      </div>
+    </div>
+  </div>
+ 
+  <span class="practice-tag">Practice</span>
+  <h2>Practice for the I Quiz · IV Quarter — 9th Grade Physics</h2>
+  <p><span class="valor">Total Points: 45 points</span></p>
+ 
+  <div class="student-info">
+    <label for="studentName">Student's Full Name:</label>
+    <input type="text" id="studentName" placeholder="E.g. John Smith">
+    <label for="studentGrade">Section / Grade:</label>
+    <select id="studentGrade">
+      <option value="">Select your section...</option>
+      <option value="9-A">9-A</option>
+      <option value="9-B">9-B</option>
+      <option value="9-C">9-C</option>
+      <option value="9-D">9-D</option>
+    </select>
+  </div>
+ 
+  <div class="rules">
+    <h3>Practice Structure & Point Breakdown</h3>
+    <table class="tb">
+      <tr><th>Part</th><th>Content</th><th>Breakdown</th><th>Points</th></tr>
+      <tr><td>Part I</td><td>Uniformly Accelerated Motion (MUA)</td><td>Multiple Choice & Calculations</td><td>20</td></tr>
+      <tr><td>Part II</td><td>Newton's Laws of Motion</td><td>Multiple Choice, Vectors & Calculations</td><td>25</td></tr>
+      <tr><td colspan="3"><b>Total Practice Points</b></td><td><b>45 pts</b></td></tr>
+    </table>
+ 
+    <h3>General Instructions</h3>
+    <ol>
+      <li>This is a <b>practice</b> with the same format as the real quiz. Use it to prepare.</li>
+      <li>Read the entire test carefully and ensure you understand what is being asked before answering.</li>
+      <li>Gravitational Acceleration: Use $g = 9.8\text{ m/s}^2$ for all calculations.</li>
+      <li><b>Allowed Materials:</b> Pen, pencil, eraser, and scientific calculator. You are not allowed to borrow or lend materials.</li>
+      <li><b>Electronic Devices:</b> Cell phones, smartwatches, and other electronic devices must remain turned off and stored inside backpacks. They must not be kept inside clothing pockets.</li>
+      <li><b>Multiple Choice:</b> Select the single correct option. There is no penalty for incorrect choices.</li>
+      <li><b>Numerical Answers:</b> Enter only the numerical value in the indicated unit. A small margin is accepted for decimal rounding.</li>
+      <li><b>Interactive Simulations:</b> Perform your calculations first, then set or run the simulation. You have only <b>1 attempt</b> per interactive problem.</li>
+      <li>Ensure all questions have an answer before submitting. If a connection error occurs, save the PDF report and send it to your teacher.</li>
+    </ol>
+ 
+    <h3>Security Rules (same as the real quiz)</h3>
+    <ul>
+      <li>The practice opens in mandatory full screen mode.</li>
+      <li>If you switch tabs, minimize the browser, or exit full screen, you will receive <b>one warning</b>. A <b>second exit</b> will automatically lock and submit your practice with your current score.</li>
+      <li>Copying, pasting, printing, and right-clicking are disabled during the practice.</li>
+    </ul>
+  </div>
+ 
+  <p class="quote">“Commit to the Lord whatever you do, and he will establish your plans” — Proverbs 16:3</p>
+ 
+  <button class="big btn-start" onclick="startExam()">Start Practice</button>
+</div>
+ 
+<div id="quiz-layout">
+  <h1>Practice for the I Quiz · IV Quarter — 9th Grade Physics</h1>
+  <div id="student-header" style="font-weight:bold;color:var(--nb)"></div>
+  <div style="text-align:right;font-weight:bold;color:#c53030;margin-bottom:10px">Elapsed time: <span id="time-display">00:00</span></div>
+  <form id="quiz-form" onsubmit="return false">
+    <div id="quiz-container"></div>
+    <button type="button" class="big" id="submitBtn" onclick="evaluateExam(false)">Submit and Grade Practice</button>
+  </form>
+  <div id="report-card">
+    <h2>Practice Results</h2>
+    <div class="rm" id="rep-student"></div>
+    <div class="rm" id="rep-score"></div>
+    <div class="rm" id="rep-sec"></div>
+    <div class="rm" id="rep-grade"></div>
+    <div class="rm" id="rep-time"></div>
+    <div class="rm" id="rep-status"></div>
+    <div id="sync-status" style="background:#fefcbf;color:#b7791f">⏳ Sending results to the teacher...</div>
+    <p style="margin-top:15px;font-size:.9em">Review the colored questions: green = correct, yellow = partial, red = incorrect.</p>
+  </div>
+  <button class="big" id="pdfBtn" onclick="window.print()">Save Report as PDF</button>
+</div>
+ 
+<script>
+const SCRIPT_URL='https://script.google.com/macros/s/AKfycbxdTiX_oWAwoSkdg9EXozwHeXlQlPa1UkZaJU5xtARiEAdfbGeECjlBvUKjRKII8w2E7g/exec';
+const KEY='q4i_9th_practice_v1_';
+const $=id=>document.getElementById(id),C=$('quiz-container'),items=[],loops=[];
+let n=0,cn=0,startTime,timerInterval,focusLossCount=0,isExamActive=false;
+const num=v=>parseFloat(String(v).replace(',','.'));
+const near=(v,a,t)=>!isNaN(v)&&Math.abs(v-a)<=t;
+const sec=t=>C.insertAdjacentHTML('beforeend',`<div class="sec">${t}</div>`);
+ 
+function card(s,title,max,bd,html,grade){
+  const d=document.createElement('div');
+  d.className='question';
+  const bdHtml = bd ? `<div class="breakdown"><b>Point Breakdown:</b> ${bd}</div>` : '';
+  d.innerHTML=`<div class="hd"><b>${++n}. ${title}</b><span class="pts">${max} pts</span></div>${bdHtml}${html}`;
+  C.appendChild(d);
+  items.push({el:d,sec:s,max,grade});
+  return d;
+}
+ 
+const numBox=(id,u)=>`<input type="text" class="ans" id="${id}" inputmode="decimal" autocomplete="off"> ${u}`;
+(function loop(){loops.forEach(f=>f());requestAnimationFrame(loop)})();
+ 
+function mc(s,q,name){
+  const o=[...q[2]].sort(()=>Math.random()-.5);
+  card(s,'Multiple Choice',1,'1 pt for selecting the single correct option.',`<p>${q[0]}</p>`+o.map(t=>`<label class="option"><input type="radio" name="${name}" value="${t}"> ${t}</label>`).join(''),
+  ()=>{const c=document.querySelector(`input[name=${name}]:checked`);return c&&c.value===q[1]?1:0});
+}
+ 
+/* ================= PART I: UNIFORMLY ACCELERATED MOTION (MUA) ================= */
+sec('Part I · Uniformly Accelerated Motion (20 pts)');
+ 
+[["A bicycle speeds up with constant acceleration. You know $v_i$, $v_f$ and $t$, and the distance ($d$) is <b>not needed</b>. Which equation must be used to find the acceleration?",
+  "$a = \\frac{v_f - v_i}{t}$",
+  ["$d = \\frac{v_f^2 - v_i^2}{2a}$", "$a = \\frac{v_f - v_i}{t}$", "$d = \\frac{(v_f + v_i)t}{2}$", "$d = v_i t + \\frac{a t^2}{2}$"]],
+ ["A cyclist moves in the positive direction ($+x$) and increases its speed. What is the sign of its acceleration?",
+  "Positive",
+  ["Positive", "Negative", "Zero", "It cannot be determined"]],
+ ["While a ball thrown straight up is still <b>rising</b> (using $g = 9.8\\text{ m/s}^2$):",
+  "Velocity points upward and acceleration is $9.8\\text{ m/s}^2$ downward",
+  ["Velocity points upward and acceleration is $9.8\\text{ m/s}^2$ upward",
+   "Velocity points upward and acceleration is $9.8\\text{ m/s}^2$ downward",
+   "Velocity is zero and acceleration is zero",
+   "Velocity is constant and acceleration is zero"]]
+].forEach((q,k)=>mc('MUA',q,'m'+k));
+ 
+card('MUA','Acceleration from Rest',2,'1 pt for correct equation/setup, 1 pt for correct numerical value.',
+`<p>A motorcycle starts from rest ($v_i = 0\\text{ m/s}$) and reaches a velocity of $30.0\\text{ m/s}$ in $5.0\\text{ s}$. Calculate its acceleration ($a$).</p>${numBox('d1','m/s²')}`,
+()=>near(num($('d1').value),6.0,0.1)?2:0);
+ 
+card('MUA','Time Calculation (MUA)',3,'3 pts for the correct time within ± 0.2 s.',
+`<p>A car accelerates at $a = 2.0\\text{ m/s}^2$ from an initial velocity $v_i = 8.0\\text{ m/s}$. Calculate the time $t$ required for the car to cover exactly <b>$d = 65.0\\text{ m}$</b>.</p>
+<canvas id="mc1_static" width="520" height="150"></canvas>
+<div class="ctl">Calculated Time $t$: ${numBox('st1_ans','s')}</div>`,
+()=>near(num($('st1_ans').value),5.0,0.2)?3:0);
+ 
+(function(){
+  const x=$('mc1_static').getContext('2d');
+  x.fillStyle='#133565';x.fillRect(20,90,480,4);
+  for(let m=0;m<=120;m+=20){
+    const px=20+m*3.8;x.fillRect(px,90,2,8);x.font='11px Georgia';x.fillText(m+'m',px-8,112);
+  }
+  x.fillStyle='#215CAF';x.fillRect(20,65,30,20);
+  x.fillStyle='#C69214';x.beginPath();x.arc(27,85,4,0,7);x.arc(43,85,4,0,7);x.fill();
+  const tx = 20 + 65 * 3.8;
+  x.fillStyle='#c53030';x.strokeStyle='#c53030';
+  x.setLineDash([5, 5]);
+  x.beginPath(); x.moveTo(tx, 40); x.lineTo(tx, 90); x.stroke(); x.setLineDash([]);
+  x.font='bold 13px Georgia'; x.fillText('Target: 65.0 m', tx - 45, 30);
+})();
+ 
+card('MUA','Braking Distance',3,'1 pt for correct setup, 2 pts for correct stopping distance value.',
+`<p>A bus moving at $v_i = 25.0\\text{ m/s}$ applies its brakes with a constant deceleration of $a = -5.0\\text{ m/s}^2$ until it comes to a complete stop ($v_f = 0\\text{ m/s}$). Calculate its stopping distance ($d$).</p>${numBox('d2','m')}`,
+()=>near(num($('d2').value),62.5,1.0)?3:0);
+ 
+card('MUA','Complete MUA Equations',5,'1 pt for each correctly placed variable blank (5 blanks total).',
+`<p>Drag each box to its correct space in the MUA formulas (or tap the box and then the blank space).</p>
+<div id="dd1"><div class="pool" id="pool1">${['a','2','d','t','v_i'].sort(()=>Math.random()-.5).map(k=>`<span class="chip" draggable="true" data-v="${k}">${k}</span>`).join('')}</div>
+<div class="stm">$a = (v_f - v_i) / $ <span class="blank" data-a="t"></span></div>
+<div class="stm">$v_f^2 = v_i^2 + 2 \\cdot a \\cdot$ <span class="blank" data-a="d"></span></div>
+<div class="stm">$v_f = $ <span class="blank" data-a="v_i"></span> $+ a \\cdot t$</div>
+<div class="stm">$d = (v_f + v_i) \\cdot t / $ <span class="blank" data-a="2"></span></div>
+<div class="stm">$d = v_i \\cdot t +$ <span class="blank" data-a="a"></span> $\\cdot t^2 / 2$</div></div>`,
+()=>[...document.querySelectorAll('#dd1 .blank')].filter(b=>b.firstChild&&b.firstChild.dataset.v===b.dataset.a).length);
+ 
+(function(){const dd=$('dd1'),pool=$('pool1');let sel=null;
+ const pick=c=>{if(sel)sel.classList.remove('sel');sel=c;c.classList.add('sel')};
+ const put=b=>{if(!sel)return;if(b.firstChild)pool.appendChild(b.firstChild);b.appendChild(sel);sel.classList.remove('sel');sel=null};
+ dd.addEventListener('click',e=>{const c=e.target.closest('.chip'),b=e.target.closest('.blank');
+  if(c)pick(c);else if(b)put(b);else if(sel&&e.target.closest('#pool1')){pool.appendChild(sel);sel.classList.remove('sel');sel=null}});
+ dd.addEventListener('dragstart',e=>{pick(e.target);e.dataTransfer.setData('text','x')});
+ dd.addEventListener('dragover',e=>e.preventDefault());
+ dd.addEventListener('drop',e=>{e.preventDefault();const b=e.target.closest('.blank');if(b)put(b);else if(sel){pool.appendChild(sel);sel.classList.remove('sel');sel=null}})})();
+ 
+{const v0=29.4,g=9.8,tPeak=v0/g;let used=0,res=null,run=null,tt=0,last=0;
+card('MUA','Vertical Launch Simulation',4,'4 pts for accurate peak time within $\\pm 0.2\\text{ s}$ (2 pts partial credit within $\\pm 0.5\\text{ s}$).',
+`<p>A projectile is launched vertically upward with $v_0 = 29.4\\text{ m/s}$ ($g = 9.8\\text{ m/s}^2$). <b>Calculate</b> the time required to reach the peak height, type it, and press <b>Fire</b>. You have only <b>1 attempt</b>.</p>
+<canvas id="vc1" width="520" height="260"></canvas>
+<div class="ctl">Time $t = $ ${numBox('vci','s')} <button type="button" class="act" id="vcf">Fire (1 attempt)</button> <span id="vcm" class="mut"></span></div>`,
+()=>res===null?0:res<=0.2?4:res<=0.5?2:0);
+ 
+const x=$('vc1').getContext('2d'),val=()=>num($('vci').value);
+const h=t=>v0*t-0.5*g*t*t;
+function draw(){x.clearRect(0,0,520,260);x.fillStyle='#133565';x.fillRect(0,240,520,20);
+ x.font='12px Georgia';for(let hh=0;hh<=80;hh+=20){const py=240-hh*2.5;x.fillRect(40,py,6,1);x.fillText(hh+'m',12,py+4)}
+ if(run){const py=240-run.cy*2.5;x.fillStyle='#215CAF';x.beginPath();x.arc(260,py,6,0,7);x.fill()}}
+function step(){if(!run)return;const now=performance.now();tt+=(now-last)/1000*2;last=now;const t=Math.min(tt,run.targetT);
+ run.cy=Math.max(0,h(t));
+ if(tt>=run.targetT){res=Math.abs(run.targetT-tPeak);run=null;$('vcm').innerHTML=`Reached height ${Math.max(0,h(t)).toFixed(1)} m at t = ${t.toFixed(1)} s. `+(res<=0.2?'<b style="color:#2f855a">Impact at Peak!</b>':'Missed peak.')}
+ draw();if(run)requestAnimationFrame(step)}
+$('vcf').onclick=()=>{if(run||used)return;const v=val();if(!(v>0)){alert('Enter a valid time in seconds.');return}
+ used=1;$('vcf').disabled=true;run={targetT:v,cy:0};tt=0;last=performance.now();requestAnimationFrame(step)};draw()}
+ 
+/* ================= PART II: NEWTON'S LAWS & DYNAMICS ================= */
+sec("Part II · Newton's Laws of Motion (25 pts)");
+ 
+[["A hockey puck slides across smooth ice at a constant velocity. According to Newton's First Law, the net force acting on it is:",
+  "Zero",
+  ["Equal to its weight", "In the direction of motion", "Zero", "Opposite to its motion"]],
+ ["If the mass of a cart doubles while the net force acting on it remains constant, its acceleration:",
+  "Is halved",
+  ["Is halved", "Doubles", "Stays the same", "Quadruples"]],
+ ["A swimmer pushes the water backward with her hands. According to Newton's Third Law, what pushes the swimmer forward?",
+  "The water pushing the swimmer forward",
+  ["The swimmer's muscles alone", "The water pushing the swimmer forward", "Gravity pulling the swimmer", "The weight of the water"]],
+ ["Passengers in a bus lurch forward when the bus brakes suddenly. Which of Newton's Laws primarily explains this phenomenon?",
+  "First Law (Inertia)",
+  ["First Law (Inertia)", "Second Law (Force and Acceleration)", "Third Law (Action and Reaction)", "Law of Universal Gravitation"]]
+].forEach((q,k)=>mc('NL',q,'n'+k));
+ 
+card('NL',"Resultant Force Vector",4,'4 pts for the correct magnitude of the resultant force within ± 0.5 N.',
+`<p>A sled is pulled by two perpendicular ropes. One exerts a force $F_x = 60.0\\text{ N}$ to the right, and the other $F_y = 80.0\\text{ N}$ upward. Calculate the magnitude of the <b>resultant force</b> acting on the sled.</p>
+<canvas id="fres_canvas" width="300" height="200" style="margin: 0 auto"></canvas>
+<div class="ctl" style="justify-content: center;">Resultant Force $F_R$: ${numBox('fr_ans','N')}</div>`,
+()=>near(num($('fr_ans').value),100.0,0.5)?4:0);
+ 
+(function(){
+  const x=$('fres_canvas').getContext('2d');
+  x.fillStyle='#C69214'; x.fillRect(50,130,40,40);
+  x.strokeStyle='#215CAF'; x.fillStyle='#215CAF'; x.lineWidth=3;
+  x.beginPath(); x.moveTo(90, 150); x.lineTo(180, 150); x.stroke();
+  x.beginPath(); x.moveTo(180, 150); x.lineTo(170, 145); x.lineTo(170, 155); x.fill();
+  x.font='bold 14px Georgia'; x.fillText('Fx = 60.0 N', 100, 140);
+  x.strokeStyle='#c53030'; x.fillStyle='#c53030';
+  x.beginPath(); x.moveTo(70, 130); x.lineTo(70, 15); x.stroke();
+  x.beginPath(); x.moveTo(70, 15); x.lineTo(65, 25); x.lineTo(75, 25); x.fill();
+  x.fillText('Fy = 80.0 N', 85, 50);
+})();
+ 
+card('NL',"Newton's Second Law Calculation",2,'1 pt for setup/formula, 1 pt for correct numerical value.',
+`<p>A net horizontal force $F_{\\text{net}} = 150.0\\text{ N}$ acts on a $25.0\\text{ kg}$ cart. Calculate its acceleration ($a$).</p>${numBox('d3','m/s²')}`,
+()=>near(num($('d3').value),6.0,0.1)?2:0);
+ 
+card('NL','Inclined Plane Weight Components',4,'2 pts for each correct component within ± 1.0 N.',
+`<p>A $12.0\\text{ kg}$ block rests on a fixed ramp inclined at $\\theta = 35^\\circ$ ($g = 9.8\\text{ m/s}^2$, Total Weight $w = 117.6\\text{ N}$). Using trigonometry, calculate both weight components.</p>
+<canvas id="ic1_static" width="520" height="260"></canvas>
+<div class="ctl">Parallel Force $w_x$: ${numBox('wx_ans','N')} <br> Perpendicular Force $w_y$: ${numBox('wy_ans','N')}</div>`,
+()=>(near(num($('wx_ans').value),67.5,1.0)?2:0)+(near(num($('wy_ans').value),96.3,1.0)?2:0));
+ 
+(function(){
+  const x=$('ic1_static').getContext('2d'), a=35, rad=a*Math.PI/180;
+  x.fillStyle='#133565';x.beginPath();x.moveTo(100,240);x.lineTo(400,240);x.lineTo(400,240-300*Math.tan(rad));x.closePath();x.fill();
+  const bx=260,by=240-160*Math.tan(rad);
+  x.save();x.translate(bx,by);x.rotate(-rad);
+  x.fillStyle='#C69214';x.fillRect(-25,-25,50,25);
+  x.fillStyle='#c53030'; x.strokeStyle='#c53030'; x.lineWidth=2;
+  x.beginPath(); x.moveTo(0,-12.5); x.lineTo(-40,-12.5); x.stroke();
+  x.beginPath(); x.moveTo(-40,-12.5); x.lineTo(-30,-17.5); x.lineTo(-30,-7.5); x.fill();
+  x.beginPath(); x.moveTo(0,-12.5); x.lineTo(0,40); x.stroke();
+  x.beginPath(); x.moveTo(0,40); x.lineTo(-5,30); x.lineTo(5,30); x.fill();
+  x.restore();
+  x.fillStyle='#133565';x.font='13px Georgia';
+  x.fillText('Angle θ = 35°', 20, 40);
+  x.fillText('Weight w = 117.6 N', 20, 60);
+})();
+ 
+card('NL','Ramp Dynamics Calculation',3,'a) 2 pts for correct parallel weight $w_x$, b) 1 pt for correct downhill acceleration $a$.',
+`<p>A $20.0\\text{ kg}$ box slides down a frictionless ramp inclined at $\\theta = 25^\\circ$ ($g = 9.8\\text{ m/s}^2$, Total Weight $w = 196.0\\text{ N}$). Calculate:</p>
+<p>a) The parallel weight component $w_x$: ${numBox('r1','N')}</p>
+<p>b) The acceleration down the ramp ($a$): ${numBox('r2','m/s²')}</p>`,
+()=>(near(num($('r1').value),82.8,1.0)?2:0)+(near(num($('r2').value),4.1,0.2)?1:0));
+ 
+card('NL',"Complete Newton's Equations",4,'1 pt for each correctly placed variable blank (4 blanks total).',
+`<p>Drag each box to its correct space in the dynamics formulas.</p>
+<div id="dd2"><div class="pool" id="pool2">${['a','sin','cos','2'].sort(()=>Math.random()-.5).map(k=>`<span class="chip" draggable="true" data-v="${k}">${k}</span>`).join('')}</div>
+<div class="stm">$w_y = m \\cdot g \\cdot$ <span class="blank" data-a="cos"></span> $\\theta$</div>
+<div class="stm">1 N = 1 kg · m/s<sup><span class="blank" data-a="2"></span></sup></div>
+<div class="stm">$F_{\\text{net}} = m \\cdot$ <span class="blank" data-a="a"></span></div>
+<div class="stm">$w_x = m \\cdot g \\cdot$ <span class="blank" data-a="sin"></span> $\\theta$</div></div>`,
+()=>[...document.querySelectorAll('#dd2 .blank')].filter(b=>b.firstChild&&b.firstChild.dataset.v===b.dataset.a).length);
+ 
+(function(){const dd=$('dd2'),pool=$('pool2');let sel=null;
+ const pick=c=>{if(sel)sel.classList.remove('sel');sel=c;c.classList.add('sel')};
+ const put=b=>{if(!sel)return;if(b.firstChild)pool.appendChild(b.firstChild);b.appendChild(sel);sel.classList.remove('sel');sel=null};
+ dd.addEventListener('click',e=>{const c=e.target.closest('.chip'),b=e.target.closest('.blank');
+  if(c)pick(c);else if(b)put(b);else if(sel&&e.target.closest('#pool2')){pool.appendChild(sel);sel.classList.remove('sel');sel=null}});
+ dd.addEventListener('dragstart',e=>{pick(e.target);e.dataTransfer.setData('text','x')});
+ dd.addEventListener('dragover',e=>e.preventDefault());
+ dd.addEventListener('drop',e=>{e.preventDefault();const b=e.target.closest('.blank');if(b)put(b);else if(sel){pool.appendChild(sel);sel.classList.remove('sel');sel=null}})})();
+ 
+card('NL','Action-Reaction & Rocket Thrust',4,'a) 2 pts for correct net upward force $F_{\\text{net}}$, b) 2 pts for initial acceleration $a$.',
+`<p>A model rocket engine pushes exhaust gases downward with a force of $90.0\\text{ N}$. The rocket has a mass of $3.0\\text{ kg}$ ($g = 9.8\\text{ m/s}^2$, Weight $w = 29.4\\text{ N}$). Calculate:</p>
+<p>a) The net upward force $F_{\\text{net}}$: ${numBox('rk1','N')}</p>
+<p>b) The initial upward acceleration ($a$): ${numBox('rk2','m/s²')}</p>`,
+()=>(near(num($('rk1').value),60.6,1.0)?2:0)+(near(num($('rk2').value),20.2,0.5)?2:0));
+ 
+/* ================= SECURITY, TIMING AND SUBMISSION ================= */
+function startExam(){
+ const nm=$('studentName').value.trim(),gr=$('studentGrade').value;
+ if(!nm||!gr){alert('Please enter your full name and select your section before starting.');return}
+ localStorage.setItem(KEY+'name',nm);localStorage.setItem(KEY+'grade',gr);
+ $('student-header').innerText=`Student: ${nm} | Section: ${gr}`;
+ const d=document.documentElement;if(d.requestFullscreen)d.requestFullscreen();else if(d.webkitRequestFullscreen)d.webkitRequestFullscreen();
+ $('start-container').style.display='none';$('quiz-layout').style.display='block';
+ isExamActive=true;startTime=Date.now();timerInterval=setInterval(updateTimer,1000);setupSecurityListeners()}
+ 
+function updateTimer(){const e=Math.floor((Date.now()-startTime)/1000);$('time-display').innerText=String(Math.floor(e/60)).padStart(2,'0')+':'+String(e%60).padStart(2,'0')}
+ 
+function setupSecurityListeners(){
+ window.addEventListener('blur',triggerSecurityWarning);
+ document.addEventListener('visibilitychange',()=>{if(document.visibilityState==='hidden')triggerSecurityWarning()});
+ document.addEventListener('keydown',e=>{if(e.ctrlKey&&['c','v','u','p'].includes(e.key)){e.preventDefault();alert('Function disabled for security.')}})}
+ 
+function triggerSecurityWarning(){if(!isExamActive)return;focusLossCount++;
+ if(focusLossCount===1)alert(' WARNING:\nYou have left the practice screen. If you do it again, your practice will be automatically submitted with your current score.');
+ else{alert(' PRACTICE LOCKED:\nYou left the tab a second time. Your practice has been submitted.');evaluateExam(true)}}
+ 
+function evaluateExam(forced=false){
+ if(!forced&&!confirm('Are you sure you want to finish your practice? You will no longer be able to make changes.'))return;
+ if(!isExamActive)return;
+ isExamActive=false;clearInterval(timerInterval);window.removeEventListener('blur',triggerSecurityWarning);
+ const total=45,scs={MUA:0,NL:0};let score=0;
+ items.forEach(it=>{const p=it.grade();score+=p;scs[it.sec]+=p;it.el.className='question '+(p>=it.max?'correct':p>0?'partial':'incorrect');it.el.querySelector('.pts').textContent=`${p} / ${it.max} pts`});
+ const grade=(score/total*100).toFixed(2),ts=Math.floor((Date.now()-startTime)/1000),timeStr=`${Math.floor(ts/60)}m ${ts%60}s`;
+ const nm=localStorage.getItem(KEY+'name'),gr=localStorage.getItem(KEY+'grade');
+ let st='Completed Safely';if(forced)st='Locked (Tab switched)';else if(focusLossCount>0)st=`Warnings: ${focusLossCount}`;
+ $('rep-student').innerText=`Student: ${nm} (${gr})`;
+ $('rep-score').innerText=`Score: ${score} / ${total}`;
+ $('rep-sec').innerText=`MUA: ${scs.MUA} / 20 · Newton's Laws: ${scs.NL} / 25`;
+ $('rep-grade').innerText=`Grade: ${grade}%`;
+ $('rep-time').innerText=`Time elapsed: ${timeStr}`;
+ $('rep-status').innerText=`Security: ${st}`;
+ $('report-card').style.display='block';localStorage.setItem(KEY+'submitted','true');lockExam();
+ const payload={estudiante:nm,grado:gr,prueba:'PRACTICE - I Quiz IV Quarter - Physics 9th',nota:grade,puntos:score,mua:scs.MUA,newton:scs.NL,tiempo:timeStr,seguridad:st};
+ fetch(SCRIPT_URL,{method:'POST',mode:'no-cors',headers:{'Content-Type':'text/plain;charset=utf-8'},body:JSON.stringify(payload)})
+ .then(()=>{const s=$('sync-status');s.style.background='#c6f6d5';s.style.color='#2f855a';s.innerText=' Your practice results have been sent to the teacher!'})
+ .catch(()=>{const s=$('sync-status');s.style.background='#fed7d7';s.style.color='#c53030';s.innerText=' Connection error: save the PDF and send it to your teacher.'});
+ if(document.exitFullscreen)document.exitFullscreen().catch(()=>{})}
+ 
+function lockExam(){
+ document.querySelectorAll('#quiz-layout input,#quiz-layout select,#quiz-layout .act').forEach(i=>i.disabled=true);
+ $('submitBtn').style.display='none';$('pdfBtn').style.display='block';window.scrollTo(0,0)}
+ 
+window.onload=()=>{
+  if(window.MathJax) MathJax.typesetPromise();
+  if(localStorage.getItem(KEY+'submitted')==='true'){
+    $('start-container').style.display='none';$('quiz-layout').style.display='block';$('submitBtn').style.display='none';
+    $('report-card').style.display='block';$('report-card').innerHTML='<h3>Practice previously completed. Results have already been recorded on this device.</h3>'
+  }
+};
+</script>
+</body>
+</html>
+ 
+Claude finished the response
