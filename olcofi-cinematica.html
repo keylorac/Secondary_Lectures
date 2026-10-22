@@ -1,0 +1,884 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>OLCOFI · Tema 1: Cinemática</title>
+<script>
+window.MathJax = {
+  tex: {
+    inlineMath: [['\\(', '\\)']], displayMath: [['\\[', '\\]']], tags: 'none',
+    macros: { sen: '\\operatorname{sen}' }
+  },
+  svg: { fontCache: 'local' },
+  options: { skipHtmlTags: ['script','noscript','style','textarea','pre','code','select','option'] }
+};
+function cargarRespaldoMathJax(){
+  var s = document.createElement('script');
+  s.src = 'https://cdn.jsdelivr.net/npm/mathjax@3.2.2/es5/tex-svg.js';
+  document.head.appendChild(s);
+}
+</script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/3.2.2/es5/tex-svg.min.js" onerror="cargarRespaldoMathJax()"></script>
+<style>
+:root{
+  --eth-blue-dark:#133565;
+  --eth-blue:#215CAF;
+  --celeste-ucr:#50AAD7;
+  --gold-ucr:#C69214;
+  --gris-texto:#3C3C3C;
+  --fondo-nota:#F5F7FA;
+  --fondo-gold:#FBF3E1;
+  --linea:#D8DEE8;
+}
+*{box-sizing:border-box;}
+html{scroll-behavior:smooth;}
+body{
+  margin:0; padding:0;
+  font-family: Georgia, 'Cambria', 'Times New Roman', serif;
+  color:var(--gris-texto); background:#fff; line-height:1.55;
+}
+mjx-container svg{display:inline-block !important; margin:0 !important; vertical-align:middle;}
+svg text{font-family:Georgia, serif;}
+h1,h2,h3{color:var(--eth-blue-dark); font-weight:700; margin:0 0 .5em 0;}
+p{margin:0 0 1em 0;}
+.wrap{max-width:900px; margin:0 auto; padding:0 24px;}
+.narrow{max-width:70ch;}
+
+/* ---------- Portada ---------- */
+.portada{
+  min-height:100vh; display:flex; flex-direction:column; justify-content:center;
+  border-bottom:6px solid var(--gold-ucr); padding:48px 24px 64px;
+  background:
+    radial-gradient(circle at 85% 12%, rgba(80,170,215,.10), transparent 45%),
+    radial-gradient(circle at 10% 85%, rgba(198,146,20,.08), transparent 45%);
+}
+.portada-header{
+  display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:8px;
+  max-width:900px; width:100%; margin:0 auto 56px; padding-bottom:18px;
+  border-bottom:1.5px solid rgba(33,92,175,.35);
+  color:var(--eth-blue-dark); font-size:1rem; letter-spacing:.03em;
+}
+.portada-header b{font-size:1.35rem;}
+.portada-titulo{max-width:900px; width:100%; margin:0 auto;}
+.eyebrow{font-size:1.05rem; letter-spacing:.02em;}
+.curso{color:var(--eth-blue-dark); font-size:2.6rem; font-weight:700; margin:.1em 0 .3em;}
+.gold-rule{width:110px; height:3px; background:var(--gold-ucr); margin:.4em 0 .7em;}
+.tema-titulo{font-size:1.7rem; color:var(--eth-blue); font-weight:700; margin:0 0 .15em;}
+.tema-sub{font-size:1.1rem;}
+.portada-footer{max-width:900px; width:100%; margin:64px auto 0; font-size:.95rem;}
+.portada-footer b{color:var(--eth-blue-dark);}
+
+/* ---------- Nav ---------- */
+nav.toc{
+  position:sticky; top:0; z-index:50; background:rgba(255,255,255,.94); backdrop-filter:blur(4px);
+  border-bottom:1px solid var(--linea); overflow-x:auto; white-space:nowrap;
+}
+nav.toc .wrap{display:flex; gap:4px; padding:10px 24px;}
+nav.toc a{
+  flex:0 0 auto; font-size:.85rem; color:var(--eth-blue-dark); text-decoration:none;
+  padding:6px 12px; border-radius:16px; border:1px solid transparent;
+}
+nav.toc a:hover{border-color:var(--eth-blue); background:var(--fondo-nota);}
+
+/* ---------- Secciones ---------- */
+section{padding:56px 0; border-bottom:1px solid var(--linea);}
+section:last-of-type{border-bottom:none;}
+.kicker{
+  display:inline-block; font-size:1.15rem; font-weight:700; color:var(--eth-blue-dark);
+  border:2px solid var(--gold-ucr); border-radius:10px; padding:8px 18px; margin-bottom:24px; background:#fff;
+}
+h3.sub{font-size:1.05rem; margin:34px 0 10px;}
+
+/* ---------- Cajas ---------- */
+.ley{background:#EAF3FB; border-left:4px solid var(--eth-blue); border-radius:4px; padding:16px 20px; margin:18px 0;}
+.ley b{color:var(--eth-blue-dark);}
+.nota{background:var(--fondo-nota); border:1px solid var(--linea); border-radius:6px; padding:14px 18px; margin:18px 0; font-size:.94rem;}
+.riesgo{background:#F4EFE3; border-left:4px solid #8A7A1C; border-radius:4px; padding:12px 18px; margin:18px 0; font-size:.92rem;}
+.riesgo b.t{color:#6B5E10; text-transform:uppercase; font-size:.78rem; letter-spacing:.04em; display:block; margin-bottom:2px;}
+.modelo{border:2px solid var(--gold-ucr); border-radius:8px; margin:22px 0; overflow:hidden;}
+.modelo .cab{background:var(--gold-ucr); color:#fff; font-weight:700; padding:8px 18px; font-size:.95rem;}
+.modelo .cuerpo{padding:14px 20px; font-size:.94rem;}
+.leyenda{border:1px solid var(--linea); border-radius:6px; padding:12px 16px; margin:14px 0 0; font-size:.9rem; background:#fff;}
+.leyenda b{color:var(--eth-blue-dark);}
+.deriv{border:1px solid var(--linea); border-left:4px solid var(--celeste-ucr); border-radius:6px; background:#fff; padding:12px 18px 8px; margin:18px 0; font-size:.94rem;}
+.deriv-t{font-weight:700; color:var(--eth-blue-dark); font-size:.82rem; letter-spacing:.04em; text-transform:uppercase; margin-bottom:4px;}
+
+/* ---------- Ecuaciones ---------- */
+.eq{
+  display:block; text-align:center; background:var(--fondo-nota); border-left:3px solid var(--eth-blue);
+  padding:12px 14px; margin:18px 0; border-radius:4px; overflow-x:auto; overflow-y:hidden;
+}
+mjx-container[display="true"]{margin:0.35em 0 !important; max-width:100%; overflow-x:auto; overflow-y:hidden;}
+mjx-container svg{overflow:visible;}
+
+/* ---------- Tablas ---------- */
+table.datos{border-collapse:collapse; width:100%; font-size:.92rem; margin:14px 0;}
+table.datos th, table.datos td{border-bottom:1px solid var(--linea); padding:7px 10px; text-align:center;}
+table.datos th{color:var(--eth-blue-dark); border-bottom:2px solid var(--eth-blue-dark);}
+.tabla-scroll{overflow-x:auto;}
+
+/* ---------- Figuras ---------- */
+.fig{text-align:center; margin:14px 0 6px;}
+.fig svg{display:inline-block; width:100%; height:auto;}
+.fig-cap{font-size:.82rem; color:#777; margin-top:2px;}
+
+/* ---------- Ejemplos paso a paso ---------- */
+.ejemplo{border:1px solid var(--linea); border-radius:10px; margin:26px 0; overflow:hidden; outline:none;}
+.ejemplo:focus{box-shadow:0 0 0 3px rgba(33,92,175,.25);}
+.ejemplo-header{
+  background:var(--eth-blue-dark); color:#fff; padding:12px 20px;
+  display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:8px;
+}
+.ejemplo-header b{font-size:1rem;}
+.ejemplo-body{padding:20px 22px;}
+.enunciado{background:var(--fondo-nota); border-left:4px solid var(--eth-blue-dark); padding:14px 18px; border-radius:4px; margin-bottom:6px;}
+.fuente{font-size:.76rem; color:#7A5A0C; letter-spacing:.05em; text-transform:uppercase; font-weight:700; margin-bottom:6px;}
+.opciones{display:grid; grid-template-columns:repeat(auto-fit, minmax(170px, 1fr)); gap:4px 18px; margin-top:10px;}
+.step{
+  opacity:0; max-height:0; overflow:hidden; transform:translateY(8px);
+  transition:opacity .45s ease, transform .45s ease, max-height .45s ease; padding-top:0;
+}
+.step.shown{opacity:1; max-height:1400px; transform:translateY(0); padding-top:14px;}
+.step .titulo-paso{font-weight:700; color:var(--eth-blue); margin-bottom:4px; font-size:.92rem;}
+.resultado-final{background:var(--fondo-gold); border:1px solid var(--gold-ucr); border-radius:6px; padding:12px 16px; color:#7A5A0C;}
+.ejemplo-controles{display:flex; gap:10px; align-items:center; padding:14px 22px 20px; border-top:1px dashed var(--linea);}
+button{
+  font-family:inherit; font-size:.9rem; border-radius:6px; background:var(--eth-blue-dark); color:#fff;
+  border:none; cursor:pointer; padding:8px 16px; font-weight:600;
+}
+button:hover{background:var(--eth-blue);}
+button:focus-visible, a:focus-visible{outline:3px solid var(--celeste-ucr); outline-offset:2px;}
+button.secundario{background:#fff; color:var(--eth-blue-dark); border:1px solid var(--eth-blue-dark);}
+button.secundario:hover{background:var(--fondo-nota);}
+.hint-enter{font-size:.82rem; color:#8a8a8a;}
+.progreso{font-size:.82rem;}
+.badge{display:inline-block; font-size:.72rem; font-weight:700; letter-spacing:.04em; padding:2px 9px; border-radius:10px; background:var(--fondo-gold); color:#7A5A0C; border:1px solid var(--gold-ucr); margin-left:6px; vertical-align:middle;}
+
+footer.doc-footer{padding:40px 24px 60px; text-align:center; color:#8a8a8a; font-size:.85rem;}
+@media (max-width:640px){ .curso{font-size:2rem;} .ejemplo-body{padding:16px 14px;} }
+</style>
+</head>
+<body>
+
+<!-- Puntas de flecha compartidas por todas las figuras -->
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <defs>
+    <marker id="ah" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#133565"/></marker>
+    <marker id="ahB" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#1B63B8"/></marker>
+    <marker id="ahO" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#E8832A"/></marker>
+    <marker id="ahG" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#555"/></marker>
+  </defs>
+</svg>
+
+<!-- ============================================================ PORTADA -->
+<div class="portada">
+  <div class="portada-header">
+    <span>Olimpiada Costarricense de Física</span>
+    <b>OLCOFI</b>
+  </div>
+  <div class="portada-titulo">
+    <div class="eyebrow">Preparación para la primera prueba · Categorías A y B</div>
+    <div class="curso">Olimpiadas Física</div>
+    <div class="gold-rule"></div>
+    <div class="tema-titulo">Tema 1 — Cinemática</div>
+    <div class="tema-sub">Vectores, MRU, movimiento relativo, análisis gráfico, MUA, caída libre, movimiento parabólico y movimiento circular. Ejemplos de las pruebas OLCOFI 2025.</div>
+  </div>
+  <div class="portada-footer">
+    <div><b>Docente:</b> Keylor Arley Castro</div>
+  </div>
+</div>
+
+<nav class="toc">
+  <div class="wrap">
+    <a href="#prueba">La prueba</a>
+    <a href="#vectores">Vectores</a>
+    <a href="#mru">MRU y relativo</a>
+    <a href="#graficas">Gráficas</a>
+    <a href="#mua">MUA</a>
+    <a href="#caida">Caída libre</a>
+    <a href="#parabolico">Parabólico</a>
+    <a href="#circular">Circular</a>
+  </div>
+</nav>
+
+<!-- ============================================================ LA PRUEBA -->
+<section id="prueba">
+  <div class="wrap">
+    <div class="kicker">0 · La primera prueba</div>
+    <p class="narrow">La cinemática entra en la primera prueba de ambas categorías. Todas las preguntas son de selección única. Pocas se resuelven con una sola fórmula: casi todas piden elegir bien el sistema de referencia.</p>
+    <div class="tabla-scroll">
+      <table class="datos">
+        <tr><th>Categoría</th><th>Preguntas</th><th>Tiempo</th><th>\(g\)</th></tr>
+        <tr><td>B</td><td>20</td><td>4 h</td><td>\(9{,}8\ \text{m/s}^2\)</td></tr>
+        <tr><td>A</td><td>25</td><td>4 h</td><td>\(10\ \text{m/s}^2\)</td></tr>
+      </table>
+    </div>
+    <div class="ley"><b>Regla de trabajo.</b> Usamos unidades del SI. Convertimos antes de sustituir. Dibujamos siempre un esquema con ejes.</div>
+    <div class="nota">La prueba trae un formulario. No gana quien recuerda más fórmulas: gana quien sabe cuál aplicar y por qué.</div>
+  </div>
+</section>
+
+<!-- ============================================================ 1. VECTORES -->
+<section id="vectores">
+  <div class="wrap">
+    <div class="kicker">1 · Magnitudes escalares y vectoriales</div>
+    <p class="narrow">Un escalar tiene solo magnitud. Un vector tiene magnitud y dirección. Trabajamos con componentes cartesianas:</p>
+    <div class="eq">\[ \vec A=A_x\,\hat\imath+A_y\,\hat\jmath+A_z\,\hat k\qquad\qquad |\vec A|=\sqrt{A_x^2+A_y^2+A_z^2} \]</div>
+    <div class="eq">\[ A_x=A\cos\theta,\qquad A_y=A\sen\theta,\qquad \tan\theta=\frac{A_y}{A_x} \]</div>
+    <p class="narrow" style="margin-top:14px;">Sumamos, restamos y multiplicamos por un escalar <b>componente a componente</b>:</p>
+    <div class="eq">\[ \vec A\pm\vec B=(A_x\pm B_x)\,\hat\imath+(A_y\pm B_y)\,\hat\jmath+(A_z\pm B_z)\,\hat k\qquad\qquad k\vec A=(kA_x)\,\hat\imath+(kA_y)\,\hat\jmath+(kA_z)\,\hat k \]</div>
+    <div class="leyenda"><b>\(A_x,\,A_y,\,A_z\)</b>: componentes &middot; <b>\(\theta\)</b>: ángulo con el eje \(+x\) &middot; <b>\(k\)</b>: escalar (un número)</div>
+    <div class="ley"><b>Método gráfico (polígono).</b> Colocamos cada vector a continuación del anterior. La resultante va del inicio del primero al final del último. Si el polígono se cierra, la suma es cero.</div>
+    <div class="modelo">
+      <div class="cab">Solo categoría A · Productos entre vectores</div>
+      <div class="cuerpo">
+        \[ \vec A\cdot\vec B=A_xB_x+A_yB_y+A_zB_z=|\vec A||\vec B|\cos\theta\qquad\qquad |\vec A\times\vec B|=|\vec A||\vec B|\sen\theta \]
+        El producto punto da un escalar. El producto cruz da un vector perpendicular a ambos.
+      </div>
+    </div>
+    <div class="riesgo"><b class="t">Trampa común</b>La magnitud de la suma no es la suma de las magnitudes: \(|\vec A+\vec B|\le|\vec A|+|\vec B|\).</div>
+
+    <h3 class="sub">Ejemplos</h3>
+
+    <div class="ejemplo" tabindex="0">
+      <div class="ejemplo-header"><b>Ejemplo 1.1 — Combinación de vectores</b><span class="progreso" data-progreso></span></div>
+      <div class="ejemplo-body">
+        <div class="enunciado"><div class="fuente">OLCOFI 2025 · Primera prueba · Cat. B · Pregunta 1</div>
+          Dados los vectores \(\vec A=(3,\,5)\) y \(\vec B=(6,\,4)\), determine la magnitud del vector \(2\vec A-3\vec B\).
+          <div class="opciones"><span>A) \(\sqrt{29}\)</span><span>B) \(12\)</span><span>C) \(\sqrt{119}\)</span><span>D) \(2\sqrt{37}\)</span></div>
+        </div>
+        <div class="step"><div class="titulo-paso">Idea clave</div>Multiplicar por un escalar multiplica cada componente. Luego restamos componente a componente.</div>
+        <div class="step"><div class="titulo-paso">Paso 1 — Escalar por vector</div>\[ 2\vec A=(6,\,10),\qquad 3\vec B=(18,\,12) \]</div>
+        <div class="step"><div class="titulo-paso">Paso 2 — Resta</div>\[ 2\vec A-3\vec B=(6-18,\ 10-12)=(-12,\,-2) \]</div>
+        <div class="step"><div class="titulo-paso">Paso 3 — Magnitud</div>\[ |2\vec A-3\vec B|=\sqrt{(-12)^2+(-2)^2}=\sqrt{148}=\sqrt{4\cdot 37}=2\sqrt{37} \]</div>
+        <div class="step"><div class="titulo-paso">Respuesta</div><div class="resultado-final"><b>D)</b> \(2\sqrt{37}\approx 12{,}2\). La opción B (12) es una trampa de redondeo.</div></div>
+      </div>
+      <div class="ejemplo-controles"><button data-siguiente>Siguiente ▶</button><button class="secundario" data-reiniciar>Reiniciar</button><span class="hint-enter">o presiona Enter</span></div>
+    </div>
+
+    <div class="ejemplo" tabindex="0">
+      <div class="ejemplo-header"><b>Ejemplo 1.2 — Método del polígono</b><span class="progreso" data-progreso></span></div>
+      <div class="ejemplo-body">
+        <div class="enunciado"><div class="fuente">OLCOFI 2025 · Primera prueba · Cat. B · Pregunta 2</div>
+          Del diagrama de vectores mostrado, indique cuál de las ecuaciones vectoriales es <b>falsa</b>.
+          <div class="fig">
+            <svg viewBox="0 0 280 265" style="max-width:300px;">
+              <g stroke="#133565" stroke-width="2.2" marker-end="url(#ah)">
+                <line x1="40" y1="230" x2="130" y2="230"/>
+                <line x1="130" y1="230" x2="220" y2="230"/>
+                <line x1="40" y1="230" x2="130" y2="140"/>
+                <line x1="130" y1="140" x2="130" y2="230"/>
+                <line x1="220" y1="230" x2="130" y2="140"/>
+                <line x1="220" y1="140" x2="130" y2="140"/>
+                <line x1="220" y1="230" x2="220" y2="140"/>
+                <line x1="220" y1="140" x2="220" y2="50"/>
+                <line x1="130" y1="140" x2="220" y2="50"/>
+              </g>
+              <g font-size="16" font-style="italic" font-weight="700" fill="#133565" text-anchor="middle">
+                <text x="85" y="250">a</text><text x="175" y="250">b</text><text x="73" y="180">f</text>
+                <text x="139" y="200">g</text><text x="186" y="203">h</text><text x="175" y="132">i</text>
+                <text x="232" y="192">c</text><text x="232" y="100">d</text><text x="165" y="88">e</text>
+              </g>
+              <g font-size="11" fill="#888" text-anchor="middle">
+                <text x="30" y="246">O</text><text x="138" y="247">N</text><text x="230" y="247">R</text>
+                <text x="116" y="134">M</text><text x="232" y="146">Q</text><text x="231" y="50">T</text>
+              </g>
+            </svg>
+            <div class="fig-cap">Los puntos O, N, R, M, Q y T los agregamos para nombrar los recorridos.</div>
+          </div>
+          <div class="opciones"><span>A) \(\vec a-\vec g-\vec f=\vec 0\)</span><span>B) \(\vec f+\vec e+\vec d-\vec a-\vec b-\vec c=\vec 0\)</span><span>C) \(\vec b+\vec h+\vec g=\vec 0\)</span><span>D) \(\vec \imath+\vec c=\vec h\)</span></div>
+        </div>
+        <div class="step"><div class="titulo-paso">Idea clave</div>Leemos cada vector como un viaje entre dos puntos. Una cadena de vectores equivale a ir directo del primer punto al último. Si el camino regresa al inicio, la suma es cero.</div>
+        <div class="step"><div class="titulo-paso">Paso 1 — Opción A</div>\(\vec f+\vec g\) es el viaje O → M → N, igual a O → N \(=\vec a\). Entonces \(\vec a-\vec g-\vec f=\vec 0\). <b>Verdadera.</b></div>
+        <div class="step"><div class="titulo-paso">Paso 2 — Opción C</div>\(\vec b+\vec h+\vec g\) es N → R → M → N. Regresamos a N. <b>Verdadera.</b></div>
+        <div class="step"><div class="titulo-paso">Paso 3 — Opción D</div>\(\vec c+\vec \imath\) es R → Q → M, igual a R → M \(=\vec h\). <b>Verdadera.</b></div>
+        <div class="step"><div class="titulo-paso">Paso 4 — Opción B</div>\(\vec f+\vec e\) es O → T. \(\vec a+\vec b+\vec c\) es O → Q. Su diferencia es Q → T \(=\vec d\):
+          \[ \vec f+\vec e-\vec a-\vec b-\vec c=\vec d\quad\Rightarrow\quad \vec f+\vec e+\vec d-\vec a-\vec b-\vec c=2\vec d\neq\vec 0 \]</div>
+        <div class="step"><div class="titulo-paso">Respuesta</div><div class="resultado-final"><b>B)</b> es la ecuación falsa. Sería verdadera con \(-\vec d\) en lugar de \(+\vec d\).</div></div>
+      </div>
+      <div class="ejemplo-controles"><button data-siguiente>Siguiente ▶</button><button class="secundario" data-reiniciar>Reiniciar</button><span class="hint-enter">o presiona Enter</span></div>
+    </div>
+
+    <div class="ejemplo" tabindex="0">
+      <div class="ejemplo-header"><b>Ejemplo 1.3 — Resultante nula</b><span class="progreso" data-progreso></span></div>
+      <div class="ejemplo-body">
+        <div class="enunciado"><div class="fuente">OLCOFI 2025 · Primera prueba · Cat. B · Pregunta 3</div>
+          Si la resultante del sistema de vectores mostrado es cero, determine la magnitud de la resultante de \(\vec A\) y \(\vec B\).
+          <div class="fig">
+            <svg viewBox="0 0 300 225" style="max-width:280px;">
+              <g stroke="#133565" stroke-width="2.4" marker-end="url(#ah)">
+                <line x1="150" y1="110" x2="99" y2="36"/>
+                <line x1="150" y1="110" x2="201" y2="36"/>
+                <line x1="150" y1="110" x2="150" y2="205"/>
+              </g>
+              <path d="M135.8,89.4 A25,25 0 0 1 164.2,89.4" fill="none" stroke="#888" stroke-width="1.4"/>
+              <g font-size="16" font-style="italic" font-weight="700" fill="#133565">
+                <text x="84" y="34">A</text><text x="207" y="34">B</text>
+              </g>
+              <text x="150" y="80" font-size="13" text-anchor="middle" fill="#555">69°</text>
+              <text x="160" y="190" font-size="14" fill="#133565">24 u</text>
+            </svg>
+          </div>
+          <div class="opciones"><span>A) 12 u</span><span>B) 18 u</span><span>C) 20 u</span><span>D) 24 u</span></div>
+        </div>
+        <div class="step"><div class="titulo-paso">Idea clave</div>Si \(\vec A+\vec B+\vec C=\vec 0\), la suma de dos vectores es el opuesto del tercero. No necesitamos el ángulo.</div>
+        <div class="step"><div class="titulo-paso">Paso 1</div>\[ \vec A+\vec B=-\vec C\quad\Rightarrow\quad |\vec A+\vec B|=|\vec C|=24\ \text{u} \]</div>
+        <div class="step"><div class="titulo-paso">Paso 2 — Dirección</div>\(\vec A+\vec B\) apunta hacia arriba. Equilibra al vector de 24 u que apunta hacia abajo.</div>
+        <div class="step"><div class="titulo-paso">Respuesta</div><div class="resultado-final"><b>D)</b> 24 u. El ángulo de 69° es un distractor. Lo usaríamos si nos pidieran \(A\) o \(B\) por separado.</div></div>
+      </div>
+      <div class="ejemplo-controles"><button data-siguiente>Siguiente ▶</button><button class="secundario" data-reiniciar>Reiniciar</button><span class="hint-enter">o presiona Enter</span></div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================ 2. MRU Y RELATIVO -->
+<section id="mru">
+  <div class="wrap">
+    <div class="kicker">2 · MRU y movimiento relativo</div>
+    <p class="narrow">En el MRU la velocidad es constante. La velocidad media usa el desplazamiento. La rapidez media usa la distancia recorrida.</p>
+    <div class="eq">\[ \vec v_{\text{med}}=\frac{\Delta\vec r}{\Delta t}\qquad\qquad v_{\text{rapidez media}}=\frac{d}{\Delta t}\qquad\qquad x=x_0+v\,t \]</div>
+    <div class="leyenda"><b>\(\Delta\vec r\)</b>: desplazamiento [m] &middot; <b>\(d\)</b>: distancia recorrida [m] &middot; <b>\(\Delta t\)</b>: intervalo de tiempo [s] &middot; <b>\(x_0\)</b>: posición inicial [m]</div>
+    <p class="narrow" style="margin-top:14px;">La velocidad depende del observador. Si \(P\) es el móvil y \(A\), \(B\) son dos observadores:</p>
+    <div class="eq">\[ \vec v_{P/A}=\vec v_{P/B}+\vec v_{B/A}\qquad\qquad \vec v_{A/B}=-\vec v_{B/A} \]</div>
+    <div class="leyenda"><b>\(\vec v_{P/A}\)</b>: velocidad de \(P\) medida por \(A\) &middot; los subíndices "se encadenan": \(P/B\) seguido de \(B/A\) da \(P/A\)</div>
+    <div class="ley"><b>Encuentros.</b> Dos móviles en sentidos opuestos se acercan con la <i>suma</i> de sus rapideces. En el mismo sentido, con la <i>diferencia</i>. El tiempo de encuentro es separación entre rapidez relativa.</div>
+    <div class="riesgo"><b class="t">Trampa común</b>La rapidez media no es el promedio de las rapideces. Siempre dividimos distancia total entre tiempo total.</div>
+
+    <h3 class="sub">Ejemplos</h3>
+
+    <div class="ejemplo" tabindex="0">
+      <div class="ejemplo-header"><b>Ejemplo 2.1 — Tres automóviles</b><span class="progreso" data-progreso></span></div>
+      <div class="ejemplo-body">
+        <div class="enunciado"><div class="fuente">OLCOFI 2025 · Primera prueba · Cat. B · Pregunta 6</div>
+          Frente a una estación \(A\) pasan dos automóviles en línea recta, con rapidez constante de \(5{,}0\ \text{m/s}\) y \(20\ \text{m/s}\), hacia una estación \(B\). En ese mismo instante pasa por \(B\) otro automóvil hacia \(A\) a \(30\ \text{m/s}\). Este se cruza con los dos anteriores con un intervalo de \(1{,}0\) minuto. ¿Qué distancia hay entre \(A\) y \(B\)?
+          <div class="opciones"><span>A) 5,0 km</span><span>B) 6,0 km</span><span>C) 6,5 km</span><span>D) 7,0 km</span></div>
+        </div>
+        <div class="step"><div class="titulo-paso">Idea clave</div>Cada pareja se acerca con la suma de sus rapideces. Primero se cruza con el más rápido.</div>
+        <div class="step"><div class="titulo-paso">Paso 1 — Rapideces de acercamiento</div>\[ v_{\text{rel},1}=20+30=50\ \text{m/s},\qquad v_{\text{rel},2}=5{,}0+30=35\ \text{m/s} \]</div>
+        <div class="step"><div class="titulo-paso">Paso 2 — Tiempos de encuentro</div>\[ t_1=\frac{D}{50},\qquad t_2=\frac{D}{35} \]</div>
+        <div class="step"><div class="titulo-paso">Paso 3 — Condición del problema</div>\[ t_2-t_1=60\ \text{s}\quad\Rightarrow\quad D\left(\frac{1}{35}-\frac{1}{50}\right)=60\quad\Rightarrow\quad D\cdot\frac{3}{350}=60 \]</div>
+        <div class="step"><div class="titulo-paso">Paso 4 — Despejamos</div>\[ D=\frac{60\cdot 350}{3}=7000\ \text{m} \]</div>
+        <div class="step"><div class="titulo-paso">Respuesta</div><div class="resultado-final"><b>D)</b> \(7{,}0\ \text{km}\).</div></div>
+      </div>
+      <div class="ejemplo-controles"><button data-siguiente>Siguiente ▶</button><button class="secundario" data-reiniciar>Reiniciar</button><span class="hint-enter">o presiona Enter</span></div>
+    </div>
+
+    <div class="ejemplo" tabindex="0">
+      <div class="ejemplo-header"><b>Ejemplo 2.2 — El ave y el automóvil</b><span class="progreso" data-progreso></span></div>
+      <div class="ejemplo-body">
+        <div class="enunciado"><div class="fuente">OLCOFI 2025 · Primera prueba · Cat. B · Pregunta 4 (enunciado precisado)</div>
+          Un automóvil se mueve con velocidad \(4\,\hat\imath\ \text{m/s}\) respecto a la Tierra. Su conductor observa que un ave vuela a \(10\ \text{m/s}\) a lo largo de la línea punteada, hacia arriba y a la izquierda. Determine la velocidad y la rapidez del ave respecto a la Tierra.
+          <div class="fig">
+            <svg viewBox="0 0 380 200" style="max-width:380px;">
+              <line x1="30" y1="170" x2="365" y2="170" stroke="#555" stroke-width="1.4" marker-end="url(#ahG)"/>
+              <line x1="40" y1="182" x2="40" y2="30" stroke="#555" stroke-width="1.4" marker-end="url(#ahG)"/>
+              <text x="360" y="188" font-size="13" font-style="italic">x</text><text x="26" y="38" font-size="13" font-style="italic">y</text>
+              <rect x="80" y="141" width="24" height="10" rx="3" fill="#9fb6d6" stroke="#133565"/>
+              <rect x="70" y="150" width="46" height="14" rx="4" fill="#9fb6d6" stroke="#133565"/>
+              <circle cx="80" cy="166" r="4" fill="#333"/><circle cx="106" cy="166" r="4" fill="#333"/>
+              <line x1="75" y1="128" x2="120" y2="128" stroke="#1B63B8" stroke-width="2.4" marker-end="url(#ahB)"/>
+              <text x="97" y="120" font-size="12" text-anchor="middle" fill="#1B63B8">4 m/s</text>
+              <line x1="330" y1="170" x2="160" y2="42.5" stroke="#888" stroke-width="1.4" stroke-dasharray="6 4"/>
+              <path d="M222,91 L230,97 L238,91" fill="none" stroke="#333" stroke-width="2"/>
+              <line x1="226" y1="92" x2="190" y2="65" stroke="#E8832A" stroke-width="2.4" marker-end="url(#ahO)"/>
+              <text x="184" y="60" font-size="12" text-anchor="end" fill="#B35A00">10 m/s</text>
+              <path d="M300,170 A30,30 0 0 1 306,152" fill="none" stroke="#888" stroke-width="1.4"/>
+              <text x="296" y="164" font-size="12" text-anchor="end" fill="#555">37°</text>
+            </svg>
+          </div>
+          <div class="opciones"><span>A) \((-4\,\hat\imath+6\,\hat\jmath)\ \text{m/s};\ 2\sqrt{13}\ \text{m/s}\)</span><span>B) \((3\,\hat\imath+4\,\hat\jmath)\ \text{m/s};\ 5\ \text{m/s}\)</span><span>C) \((-8\,\hat\imath+6\,\hat\jmath)\ \text{m/s};\ 10\ \text{m/s}\)</span><span>D) \((4\,\hat\imath-6\,\hat\jmath)\ \text{m/s};\ 2\sqrt{13}\ \text{m/s}\)</span></div>
+        </div>
+        <div class="step"><div class="titulo-paso">Idea clave</div>El conductor mide \(\vec v_{\text{ave/auto}}\). Encadenamos los subíndices:
+          \[ \vec v_{\text{ave/T}}=\vec v_{\text{ave/auto}}+\vec v_{\text{auto/T}} \]</div>
+        <div class="step"><div class="titulo-paso">Paso 1 — Componentes respecto al auto</div>El ave sube hacia la izquierda a \(37^\circ\) de la horizontal. Usamos \(\cos37^\circ\approx0{,}8\) y \(\sen37^\circ\approx0{,}6\):
+          \[ \vec v_{\text{ave/auto}}=(-10\cos37^\circ)\,\hat\imath+(10\sen37^\circ)\,\hat\jmath=(-8\,\hat\imath+6\,\hat\jmath)\ \text{m/s} \]</div>
+        <div class="step"><div class="titulo-paso">Paso 2 — Sumamos la velocidad del auto</div>\[ \vec v_{\text{ave/T}}=(-8\,\hat\imath+6\,\hat\jmath)+4\,\hat\imath=(-4\,\hat\imath+6\,\hat\jmath)\ \text{m/s} \]</div>
+        <div class="step"><div class="titulo-paso">Paso 3 — Rapidez</div>\[ |\vec v_{\text{ave/T}}|=\sqrt{(-4)^2+6^2}=\sqrt{52}=2\sqrt{13}\approx7{,}2\ \text{m/s} \]</div>
+        <div class="step"><div class="titulo-paso">Respuesta</div><div class="resultado-final"><b>A)</b> \((-4\,\hat\imath+6\,\hat\jmath)\ \text{m/s}\); \(2\sqrt{13}\ \text{m/s}\).</div>
+          <div class="riesgo"><b class="t">Trampa común</b>Si tomamos los 10 m/s como velocidad respecto a la Tierra, marcamos C y el dato del auto sobra. En una olimpiada, un dato que sobra es una señal de alerta.</div></div>
+      </div>
+      <div class="ejemplo-controles"><button data-siguiente>Siguiente ▶</button><button class="secundario" data-reiniciar>Reiniciar</button><span class="hint-enter">o presiona Enter</span></div>
+    </div>
+
+    <div class="ejemplo" tabindex="0">
+      <div class="ejemplo-header"><b>Ejemplo 2.3 — La cinta transportadora</b><span class="progreso" data-progreso></span></div>
+      <div class="ejemplo-body">
+        <div class="enunciado"><div class="fuente">OLCOFI 2025 · Primera prueba · Cat. B · Pregunta 5</div>
+          Una cinta transportadora se traslada con rapidez \(v\). Un dispositivo automático \(A\) deja \(n\) esferas por unidad de tiempo sobre la cinta. Un contador \(C\) con fotocélula registra las esferas que pasan debajo de él. \(A\) y \(C\) se mueven en el sentido de la cinta con rapideces constantes \(v_A\) y \(v_C\), ambas menores que \(v\). ¿Cuántas esferas por unidad de tiempo registra el contador?
+          <div class="fig">
+            <svg viewBox="0 0 440 190" style="max-width:420px;">
+              <line x1="60" y1="112" x2="380" y2="112" stroke="#555" stroke-width="2"/>
+              <line x1="60" y1="148" x2="380" y2="148" stroke="#555" stroke-width="2"/>
+              <circle cx="60" cy="130" r="18" fill="#ddd" stroke="#555" stroke-width="1.5"/>
+              <circle cx="380" cy="130" r="18" fill="#ddd" stroke="#555" stroke-width="1.5"/>
+              <g fill="#E4725F" stroke="#8c3d31"><circle cx="140" cy="105" r="6"/><circle cx="185" cy="105" r="6"/><circle cx="230" cy="105" r="6"/><circle cx="275" cy="105" r="6"/><circle cx="320" cy="105" r="6"/><circle cx="365" cy="105" r="6"/></g>
+              <rect x="93" y="55" width="34" height="30" fill="#fff" stroke="#133565" stroke-width="1.5"/>
+              <path d="M100,85 L110,96 L120,85 z" fill="#133565"/>
+              <text x="110" y="75" font-size="15" text-anchor="middle" font-weight="700" fill="#133565">A</text>
+              <line x1="95" y1="42" x2="135" y2="42" stroke="#1B63B8" stroke-width="2.2" marker-end="url(#ahB)"/>
+              <text x="142" y="46" font-size="14" font-style="italic" fill="#1B63B8">v<tspan font-size="10" dy="4">A</tspan></text>
+              <rect x="243" y="55" width="34" height="30" fill="#fff" stroke="#133565" stroke-width="1.5"/>
+              <path d="M250,85 L260,96 L270,85 z" fill="#133565"/>
+              <text x="260" y="75" font-size="15" text-anchor="middle" font-weight="700" fill="#133565">C</text>
+              <line x1="245" y1="42" x2="285" y2="42" stroke="#1B63B8" stroke-width="2.2" marker-end="url(#ahB)"/>
+              <text x="292" y="46" font-size="14" font-style="italic" fill="#1B63B8">v<tspan font-size="10" dy="4">C</tspan></text>
+              <line x1="185" y1="172" x2="255" y2="172" stroke="#555" stroke-width="2" marker-end="url(#ahG)"/>
+              <text x="264" y="177" font-size="14" font-style="italic">v</text>
+            </svg>
+          </div>
+          <div class="opciones"><span>A) \(n\left(\dfrac{v+v_A}{v-v_C}\right)\)</span><span>B) \(n\left(\dfrac{v-v_C}{v-v_A}\right)\)</span><span>C) \(n\left(\dfrac{v-(v_A+v_C)}{v}\right)\)</span><span>D) \(n\left(\dfrac{v-v_A}{v-v_C}\right)\)</span></div>
+        </div>
+        <div class="step"><div class="titulo-paso">Idea clave</div>Primero hallamos la separación entre esferas sobre la cinta. Luego vemos con qué rapidez relativa pasan frente al contador.</div>
+        <div class="step"><div class="titulo-paso">Paso 1 — Separación entre esferas</div>Entre dos esferas pasa \(\Delta t=1/n\). En ese tiempo la esfera recién dejada avanza \(v/n\) y el dispositivo avanza \(v_A/n\):
+          \[ \lambda=\frac{v-v_A}{n} \]</div>
+        <div class="step"><div class="titulo-paso">Paso 2 — Rapidez relativa al contador</div>\[ v_{\text{esferas}/C}=v-v_C \]</div>
+        <div class="step"><div class="titulo-paso">Paso 3 — Esferas por unidad de tiempo</div>\[ N=\frac{v-v_C}{\lambda}=n\,\frac{v-v_C}{v-v_A} \]</div>
+        <div class="step"><div class="titulo-paso">Paso 4 — Comprobación</div>Si \(v_A=v_C\), el contador ve todo como lo deja el dispositivo: \(N=n\). ✓</div>
+        <div class="step"><div class="titulo-paso">Respuesta</div><div class="resultado-final"><b>B)</b> \(n\left(\dfrac{v-v_C}{v-v_A}\right)\).</div></div>
+      </div>
+      <div class="ejemplo-controles"><button data-siguiente>Siguiente ▶</button><button class="secundario" data-reiniciar>Reiniciar</button><span class="hint-enter">o presiona Enter</span></div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================ 3. GRÁFICAS -->
+<section id="graficas">
+  <div class="wrap">
+    <div class="kicker">3 · Análisis gráfico</div>
+    <p class="narrow">Cada gráfica guarda información en dos lugares: su <b>pendiente</b> y su <b>área</b>.</p>
+    <div class="tabla-scroll">
+      <table class="datos">
+        <tr><th>Gráfica</th><th>Pendiente</th><th>Área bajo la curva</th></tr>
+        <tr><td>\(x\) vs \(t\)</td><td>velocidad \(v\)</td><td>—</td></tr>
+        <tr><td>\(v\) vs \(t\)</td><td>aceleración \(a\)</td><td>desplazamiento \(\Delta x\)</td></tr>
+        <tr><td>\(a\) vs \(t\)</td><td>—</td><td>cambio de velocidad \(\Delta v\)</td></tr>
+      </table>
+    </div>
+    <div class="eq">\[ v=\frac{\Delta x}{\Delta t}\ (\text{pendiente de }x\text{–}t)\qquad\qquad a=\frac{\Delta v}{\Delta t}\ (\text{pendiente de }v\text{–}t)\qquad\qquad \Delta x=\text{área bajo }v\text{–}t \]</div>
+    <div class="ley"><b>Lectura rápida.</b> Recta horizontal en \(x\)–\(t\): reposo. Recta inclinada en \(x\)–\(t\): MRU. Recta inclinada en \(v\)–\(t\): MUA.</div>
+    <div class="riesgo"><b class="t">Trampa común</b>El área bajo el eje en \(v\)–\(t\) cuenta negativa para el desplazamiento, pero positiva para la distancia recorrida.</div>
+
+    <h3 class="sub">Ejemplos</h3>
+
+    <div class="ejemplo" tabindex="0">
+      <div class="ejemplo-header"><b>Ejemplo 3.1 — Tres cuerpos en una gráfica</b><span class="progreso" data-progreso></span></div>
+      <div class="ejemplo-body">
+        <div class="enunciado"><div class="fuente">OLCOFI 2025 · Primera prueba · Cat. B · Pregunta 7</div>
+          Tres cuerpos se mueven según la gráfica distancia contra tiempo. Es correcto afirmar:
+          <div class="fig">
+            <svg viewBox="0 0 320 220" style="max-width:300px;">
+              <line x1="50" y1="195" x2="300" y2="195" stroke="#555" stroke-width="1.4" marker-end="url(#ahG)"/>
+              <line x1="50" y1="200" x2="50" y2="20" stroke="#555" stroke-width="1.4" marker-end="url(#ahG)"/>
+              <text x="296" y="213" font-size="14" font-style="italic">t</text><text x="34" y="32" font-size="14" font-style="italic">d</text>
+              <line x1="270" y1="195" x2="270" y2="30" stroke="#999" stroke-dasharray="4 3"/>
+              <line x1="50" y1="195" x2="270" y2="110" stroke="#1B63B8" stroke-width="2.4"/>
+              <line x1="50" y1="195" x2="270" y2="40" stroke="#E8832A" stroke-width="2.4"/>
+              <line x1="50" y1="85" x2="270" y2="85" stroke="#2F8F4E" stroke-width="2.4"/>
+              <g font-size="15" font-weight="700"><text x="225" y="142" fill="#1B63B8">1</text><text x="236" y="52" fill="#E8832A">2</text><text x="160" y="78" fill="#2F8F4E">3</text></g>
+            </svg>
+          </div>
+          <div class="opciones"><span>A) 1 tiene la mayor rapidez</span><span>B) 3 no se mueve</span><span>C) 2 recorre el doble que 1</span><span>D) los tres tienen la misma rapidez</span></div>
+        </div>
+        <div class="step"><div class="titulo-paso">Idea clave</div>En una gráfica \(d\)–\(t\), la pendiente es la rapidez.</div>
+        <div class="step"><div class="titulo-paso">Paso 1 — Recta 3</div>Es horizontal: pendiente cero. La distancia no cambia. El cuerpo 3 está en reposo.</div>
+        <div class="step"><div class="titulo-paso">Paso 2 — Rectas 1 y 2</div>La recta 2 tiene más pendiente que la 1: el cuerpo 2 es más rápido. A y D son falsas.</div>
+        <div class="step"><div class="titulo-paso">Paso 3 — Opción C</div>Exigiría que la pendiente de 2 fuera exactamente el doble de la de 1. La gráfica no da valores para afirmarlo.</div>
+        <div class="step"><div class="titulo-paso">Respuesta</div><div class="resultado-final"><b>B)</b> 3 no se mueve.</div></div>
+      </div>
+      <div class="ejemplo-controles"><button data-siguiente>Siguiente ▶</button><button class="secundario" data-reiniciar>Reiniciar</button><span class="hint-enter">o presiona Enter</span></div>
+    </div>
+
+    <div class="ejemplo" tabindex="0">
+      <div class="ejemplo-header"><b>Ejemplo 3.2 — Área bajo la curva v–t</b><span class="progreso" data-progreso></span></div>
+      <div class="ejemplo-body">
+        <div class="enunciado"><div class="fuente">Ejemplo propuesto · Nivel categoría B</div>
+          La gráfica muestra la velocidad de un carrito en función del tiempo. Determine su rapidez media en los 13 s.
+          <div class="fig">
+            <svg viewBox="0 0 360 230" style="max-width:340px;">
+              <polygon points="50,195 130,75 250,75 310,195" fill="rgba(80,170,215,.18)"/>
+              <line x1="50" y1="195" x2="335" y2="195" stroke="#555" stroke-width="1.4" marker-end="url(#ahG)"/>
+              <line x1="50" y1="200" x2="50" y2="35" stroke="#555" stroke-width="1.4" marker-end="url(#ahG)"/>
+              <polyline points="50,195 130,75 250,75 310,195" fill="none" stroke="#1B63B8" stroke-width="2.6"/>
+              <g stroke="#aaa" stroke-dasharray="4 3"><line x1="130" y1="75" x2="130" y2="195"/><line x1="250" y1="75" x2="250" y2="195"/><line x1="50" y1="75" x2="130" y2="75"/></g>
+              <g font-size="12" text-anchor="middle" fill="#333"><text x="130" y="212">4</text><text x="250" y="212">10</text><text x="310" y="212">13</text><text x="40" y="79" text-anchor="end">12</text></g>
+              <text x="335" y="226" font-size="12" text-anchor="end">t (s)</text>
+              <text x="58" y="36" font-size="12">v (m/s)</text>
+            </svg>
+          </div>
+          <div class="opciones"><span>A) 6,0 m/s</span><span>B) 8,8 m/s</span><span>C) 9,5 m/s</span><span>D) 12 m/s</span></div>
+        </div>
+        <div class="step"><div class="titulo-paso">Idea clave</div>El área bajo \(v\)–\(t\) es el desplazamiento. Las pendientes dan las aceleraciones de cada tramo.</div>
+        <div class="step"><div class="titulo-paso">Paso 1 — Aceleraciones (pendientes)</div>\[ a_1=\frac{12-0}{4}=3\ \text{m/s}^2,\qquad a_2=0,\qquad a_3=\frac{0-12}{3}=-4\ \text{m/s}^2 \]</div>
+        <div class="step"><div class="titulo-paso">Paso 2 — Desplazamiento (área)</div>\[ \Delta x=\tfrac12(4)(12)+(6)(12)+\tfrac12(3)(12)=24+72+18=114\ \text{m} \]</div>
+        <div class="step"><div class="titulo-paso">Paso 3 — Rapidez media</div>\[ \bar v=\frac{114\ \text{m}}{13\ \text{s}}\approx8{,}8\ \text{m/s} \]</div>
+        <div class="step"><div class="titulo-paso">Respuesta</div><div class="resultado-final"><b>B)</b> \(8{,}8\ \text{m/s}\). La opción A sale de promediar 0 y 12 m/s: el promedio de velocidades no es la rapidez media.</div></div>
+      </div>
+      <div class="ejemplo-controles"><button data-siguiente>Siguiente ▶</button><button class="secundario" data-reiniciar>Reiniciar</button><span class="hint-enter">o presiona Enter</span></div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================ 4. MUA -->
+<section id="mua">
+  <div class="wrap">
+    <div class="kicker">4 · Movimiento uniformemente acelerado (MUA)</div>
+    <p class="narrow">La aceleración es constante. Con cuatro ecuaciones resolvemos cualquier tramo. Elegimos la que <b>no</b> contiene la variable que no conocemos ni nos piden.</p>
+    <div class="eq">\[ v=v_0+a\,t\qquad\qquad x=x_0+v_0\,t+\tfrac12a\,t^2 \]</div>
+    <div class="eq">\[ v^2=v_0^2+2a\,(x-x_0)\qquad\qquad x-x_0=\frac{v_0+v}{2}\,t \]</div>
+    <div class="leyenda"><b>\(v_0,\ v\)</b>: velocidades inicial y final [m/s] &middot; <b>\(a\)</b>: aceleración [m/s²] &middot; <b>\(t\)</b>: tiempo [s] &middot; <b>\(x-x_0\)</b>: desplazamiento [m]</div>
+    <div class="deriv">
+      <div class="deriv-t">Herramienta olímpica · Intervalos iguales</div>
+      En dos intervalos consecutivos de duración \(T\):
+      \[ \Delta x_1=v_0T+\tfrac12aT^2,\qquad \Delta x_2=(v_0+aT)\,T+\tfrac12aT^2\quad\Rightarrow\quad \Delta x_2-\Delta x_1=aT^2 \]
+      La diferencia no depende de \(v_0\).
+    </div>
+    <div class="riesgo"><b class="t">Trampa común</b>Frenar significa \(a\) opuesta a \(v\). Y siempre convertimos: \(1\ \text{km/h}=\dfrac{1}{3{,}6}\ \text{m/s}\).</div>
+
+    <h3 class="sub">Ejemplos</h3>
+
+    <div class="ejemplo" tabindex="0">
+      <div class="ejemplo-header"><b>Ejemplo 4.1 — Vagón que frena</b><span class="progreso" data-progreso></span></div>
+      <div class="ejemplo-body">
+        <div class="enunciado"><div class="fuente">OLCOFI 2025 · Primera prueba · Cat. B · Pregunta 8</div>
+          Un vagón avanza frenando con aceleración de magnitud \(0{,}5\ \text{m/s}^2\). Su velocidad inicial era \(54\ \text{km/h}\). El tiempo que tarda en detenerse y la distancia que recorre son, respectivamente:
+          <div class="opciones"><span>A) 7,5 s; 14,1 m</span><span>B) 27 s; 182 m</span><span>C) 108 s; 2916 m</span><span>D) 30 s; 225 m</span></div>
+        </div>
+        <div class="step"><div class="titulo-paso">Idea clave</div>Convertimos a m/s. La aceleración es negativa respecto al sentido del movimiento.</div>
+        <div class="step"><div class="titulo-paso">Paso 1 — Unidades</div>\[ v_0=54\ \frac{\text{km}}{\text{h}}\cdot\frac{1000\ \text{m}}{3600\ \text{s}}=15\ \text{m/s} \]</div>
+        <div class="step"><div class="titulo-paso">Paso 2 — Tiempo</div>\[ t=\frac{v-v_0}{a}=\frac{0-15}{-0{,}5}=30\ \text{s} \]</div>
+        <div class="step"><div class="titulo-paso">Paso 3 — Distancia</div>\[ \Delta x=\frac{v^2-v_0^2}{2a}=\frac{0-15^2}{2(-0{,}5)}=225\ \text{m} \]</div>
+        <div class="step"><div class="titulo-paso">Respuesta</div><div class="resultado-final"><b>D)</b> 30 s; 225 m. Comprobamos: \(\Delta x=\tfrac{v_0+v}{2}\,t=\tfrac{15}{2}(30)=225\ \text{m}\). La opción C sale de no convertir los km/h.</div></div>
+      </div>
+      <div class="ejemplo-controles"><button data-siguiente>Siguiente ▶</button><button class="secundario" data-reiniciar>Reiniciar</button><span class="hint-enter">o presiona Enter</span></div>
+    </div>
+
+    <div class="ejemplo" tabindex="0">
+      <div class="ejemplo-header"><b>Ejemplo 4.2 — Dos intervalos de 2 s</b><span class="progreso" data-progreso></span></div>
+      <div class="ejemplo-body">
+        <div class="enunciado"><div class="fuente">OLCOFI 2025 · Primera prueba · Cat. B · Pregunta 9</div>
+          Un cuerpo se mueve con aceleración constante. Recorre \(55\ \text{m}\) en \(2\ \text{s}\) y \(77\ \text{m}\) en los \(2\ \text{s}\) siguientes. Determine su rapidez inicial en m/s.
+          <div class="opciones"><span>A) 16</span><span>B) 22</span><span>C) 33</span><span>D) 44</span></div>
+        </div>
+        <div class="step"><div class="titulo-paso">Idea clave</div>Intervalos iguales y consecutivos: \(\Delta x_2-\Delta x_1=aT^2\).</div>
+        <div class="step"><div class="titulo-paso">Paso 1 — Aceleración</div>\[ 77-55=a\,(2)^2\quad\Rightarrow\quad a=5{,}5\ \text{m/s}^2 \]</div>
+        <div class="step"><div class="titulo-paso">Paso 2 — Primer intervalo</div>\[ 55=v_0(2)+\tfrac12(5{,}5)(2)^2=2v_0+11 \]</div>
+        <div class="step"><div class="titulo-paso">Paso 3 — Despejamos</div>\[ v_0=\frac{55-11}{2}=22\ \text{m/s} \]</div>
+        <div class="step"><div class="titulo-paso">Paso 4 — Comprobación</div>\[ x(4)=22(4)+\tfrac12(5{,}5)(4)^2=88+44=132\ \text{m}=55+77\ \checkmark \]</div>
+        <div class="step"><div class="titulo-paso">Respuesta</div><div class="resultado-final"><b>B)</b> 22 m/s.</div></div>
+      </div>
+      <div class="ejemplo-controles"><button data-siguiente>Siguiente ▶</button><button class="secundario" data-reiniciar>Reiniciar</button><span class="hint-enter">o presiona Enter</span></div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================ 5. CAÍDA LIBRE -->
+<section id="caida">
+  <div class="wrap">
+    <div class="kicker">5 · Caída libre y tiro vertical</div>
+    <p class="narrow">Es un MUA vertical con \(a=-g\). Tomamos \(+y\) hacia arriba:</p>
+    <div class="eq">\[ y=y_0+v_{0y}\,t-\tfrac12g\,t^2\qquad\qquad v_y=v_{0y}-g\,t\qquad\qquad v_y^2=v_{0y}^2-2g\,(y-y_0) \]</div>
+    <div class="eq">\[ t_{\text{subida}}=\frac{v_0}{g}\qquad\qquad H=\frac{v_0^2}{2g}\qquad\qquad t_{\text{vuelo}}=\frac{2v_0}{g}\ \ (\text{regresa al mismo nivel}) \]</div>
+    <div class="leyenda"><b>\(v_{0y}\)</b>: velocidad inicial vertical [m/s] &middot; <b>\(g\)</b>: 9,8 m/s² (Cat. B) o 10 m/s² (Cat. A) &middot; <b>\(H\)</b>: altura máxima sobre el punto de lanzamiento [m]</div>
+    <div class="ley"><b>Idea más útil del tema.</b> Todos los cuerpos en caída libre tienen la misma aceleración. Entonces la velocidad de uno respecto del otro es <i>constante</i>: uno ve al otro moverse en MRU.</div>
+    <div class="riesgo"><b class="t">Trampa común</b>\(H\) se mide desde el punto de lanzamiento, no desde el piso.</div>
+
+    <h3 class="sub">Ejemplos</h3>
+
+    <div class="ejemplo" tabindex="0">
+      <div class="ejemplo-header"><b>Ejemplo 5.1 — El malabarista</b><span class="progreso" data-progreso></span></div>
+      <div class="ejemplo-body">
+        <div class="enunciado"><div class="fuente">OLCOFI 2025 · Primera prueba · Cat. B · Pregunta 11</div>
+          Un malabarista lanza pelotitas verticalmente hacia arriba desde \(1{,}4\ \text{m}\) del piso, con intervalos de \(0{,}5\ \text{s}\). Si el máximo número de pelotitas en el aire es 3, determine la mínima altura del salón. Use \(g=10\ \text{m/s}^2\).
+          <div class="opciones"><span>A) 1,25 m</span><span>B) 2,05 m</span><span>C) 2,35 m</span><span>D) 2,65 m</span></div>
+        </div>
+        <div class="step"><div class="titulo-paso">Idea clave</div>Para que haya 3 pelotitas en el aire, cuando sale una, las dos anteriores siguen arriba. Cada pelotita debe volar al menos dos intervalos.</div>
+        <div class="step"><div class="titulo-paso">Paso 1 — Tiempo de vuelo mínimo</div>\[ t_{\text{vuelo}}=2(0{,}5\ \text{s})=1{,}0\ \text{s} \]
+          Con este valor, la primera regresa a la mano justo cuando sale la tercera.</div>
+        <div class="step"><div class="titulo-paso">Paso 2 — Altura sobre la mano</div>La subida dura la mitad del vuelo, \(0{,}5\ \text{s}\):
+          \[ H=\tfrac12g\left(\frac{t_{\text{vuelo}}}{2}\right)^2=\tfrac12(10)(0{,}5)^2=1{,}25\ \text{m} \]</div>
+        <div class="step"><div class="titulo-paso">Paso 3 — Altura del salón</div>\[ h_{\text{salón}}=1{,}4+1{,}25=2{,}65\ \text{m} \]</div>
+        <div class="step"><div class="titulo-paso">Respuesta</div><div class="resultado-final"><b>D)</b> 2,65 m. La opción A olvida sumar la altura de la mano.</div></div>
+      </div>
+      <div class="ejemplo-controles"><button data-siguiente>Siguiente ▶</button><button class="secundario" data-reiniciar>Reiniciar</button><span class="hint-enter">o presiona Enter</span></div>
+    </div>
+
+    <div class="ejemplo" tabindex="0">
+      <div class="ejemplo-header"><b>Ejemplo 5.2 — Dos esferitas que se cruzan</b><span class="progreso" data-progreso></span></div>
+      <div class="ejemplo-body">
+        <div class="enunciado"><div class="fuente">OLCOFI 2025 · Primera prueba · Cat. B · Pregunta 10</div>
+          En el instante en que se deja caer una esferita, se lanza hacia arriba otra desde una distancia \(L\) más abajo. Cuando están separadas \(L/2\) verticalmente <b>por segunda vez</b>, ambas tienen la misma rapidez. Determine el recorrido de la esferita que se dejó caer hasta ese instante. Desprecie la resistencia del aire.
+          <div class="fig">
+            <svg viewBox="0 0 220 210" style="max-width:200px;">
+              <circle cx="120" cy="40" r="10" fill="#E4725F" stroke="#8c3d31"/>
+              <text x="138" y="45" font-size="13" font-style="italic">v = 0</text>
+              <text x="98" y="45" font-size="13" font-weight="700" text-anchor="end">1</text>
+              <circle cx="120" cy="175" r="10" fill="#5FA8DC" stroke="#2c5f86"/>
+              <line x1="120" y1="162" x2="120" y2="118" stroke="#1B63B8" stroke-width="2.4" marker-end="url(#ahB)"/>
+              <text x="130" y="140" font-size="14" font-style="italic" fill="#1B63B8">v<tspan font-size="10" dy="4">0</tspan></text>
+              <text x="98" y="180" font-size="13" font-weight="700" text-anchor="end">2</text>
+              <line x1="60" y1="40" x2="60" y2="175" stroke="#555" stroke-width="1.3"/>
+              <line x1="54" y1="40" x2="66" y2="40" stroke="#555"/><line x1="54" y1="175" x2="66" y2="175" stroke="#555"/>
+              <text x="46" y="112" font-size="15" font-style="italic" text-anchor="end">L</text>
+            </svg>
+          </div>
+          <div class="opciones"><span>A) \(\tfrac38L\)</span><span>B) \(\tfrac25L\)</span><span>C) \(\tfrac34L\)</span><span>D) \(\tfrac72L\)</span></div>
+        </div>
+        <div class="step"><div class="titulo-paso">Idea clave</div>Las dos caen con la misma \(g\). Su velocidad relativa es constante: la separación cambia como en un MRU.</div>
+        <div class="step"><div class="titulo-paso">Paso 1 — Velocidad relativa</div>\[ v_2-v_1=(v_0-gt)-(-gt)=v_0\quad(\text{constante}) \]
+          La separación vale \(s(t)=|L-v_0t|\).</div>
+        <div class="step"><div class="titulo-paso">Paso 2 — Segunda vez a L/2</div>La primera vez es antes de cruzarse. La segunda, después:
+          \[ v_0t=L+\frac L2\quad\Rightarrow\quad t=\frac{3L}{2v_0} \]</div>
+        <div class="step"><div class="titulo-paso">Paso 3 — Misma rapidez</div>La esferita 1 baja con \(gt\). La 2 todavía sube con \(v_0-gt\):
+          \[ gt=v_0-gt\quad\Rightarrow\quad t=\frac{v_0}{2g} \]</div>
+        <div class="step"><div class="titulo-paso">Paso 4 — Igualamos los tiempos</div>\[ \frac{3L}{2v_0}=\frac{v_0}{2g}\quad\Rightarrow\quad v_0^2=3gL \]</div>
+        <div class="step"><div class="titulo-paso">Paso 5 — Recorrido de la esferita 1</div>\[ h=\tfrac12gt^2=\tfrac12g\left(\frac{v_0}{2g}\right)^2=\frac{v_0^2}{8g}=\frac{3gL}{8g}=\frac38L \]</div>
+        <div class="step"><div class="titulo-paso">Respuesta</div><div class="resultado-final"><b>A)</b> \(\tfrac38L\). No necesitamos conocer \(v_0\) ni \(g\): se cancelan.</div></div>
+      </div>
+      <div class="ejemplo-controles"><button data-siguiente>Siguiente ▶</button><button class="secundario" data-reiniciar>Reiniciar</button><span class="hint-enter">o presiona Enter</span></div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================ 6. PARABÓLICO -->
+<section id="parabolico">
+  <div class="wrap">
+    <div class="kicker">6 · Movimiento parabólico</div>
+    <p class="narrow">Separamos el movimiento en dos: MRU en \(x\) y caída libre en \(y\). Los une el mismo tiempo \(t\).</p>
+    <div class="eq">\[ x=v_0\cos\theta_0\,t\qquad\qquad y=v_0\sen\theta_0\,t-\tfrac12g\,t^2 \]</div>
+    <div class="eq">\[ v_x=v_0\cos\theta_0\ (\text{constante})\qquad\qquad v_y=v_0\sen\theta_0-g\,t\qquad\qquad \tan\varphi=\frac{v_y}{v_x} \]</div>
+    <div class="eq">\[ y=(\tan\theta_0)\,x-\frac{g}{2v_0^2\cos^2\theta_0}\,x^2\qquad\qquad R=\frac{v_0^2\sen2\theta_0}{g}\qquad\qquad H_{\text{máx}}=\frac{v_0^2\sen^2\theta_0}{2g} \]</div>
+    <div class="leyenda"><b>\(\theta_0\)</b>: ángulo de lanzamiento &middot; <b>\(\varphi\)</b>: ángulo de la velocidad en un instante &middot; <b>\(R\)</b>: alcance horizontal [m] &middot; <b>\(H_{\text{máx}}\)</b>: altura máxima [m]</div>
+    <div class="ley"><b>Ángulos notables.</b> En la OLCOFI aparecen mucho \(37^\circ\) y \(53^\circ\): \(\sen37^\circ\approx\cos53^\circ\approx0{,}6\) y \(\cos37^\circ\approx\sen53^\circ\approx0{,}8\).</div>
+    <div class="riesgo"><b class="t">Trampa común</b>\(R\) y \(H_{\text{máx}}\) solo valen si el proyectil cae al mismo nivel del que salió. En otro caso usamos las ecuaciones de \(x\) y \(y\).</div>
+
+    <h3 class="sub">Ejemplos</h3>
+
+    <div class="ejemplo" tabindex="0">
+      <div class="ejemplo-header"><b>Ejemplo 6.1 — De 45° a 37°</b><span class="progreso" data-progreso></span></div>
+      <div class="ejemplo-body">
+        <div class="enunciado"><div class="fuente">OLCOFI 2025 · Primera prueba · Cat. B · Pregunta 12</div>
+          En la figura, \(v_A=20\ \text{m/s}\). Encuentre el tiempo de movimiento de \(A\) hasta \(B\).
+          <div class="fig">
+            <svg viewBox="0 0 470 215" style="max-width:440px;">
+              <line x1="15" y1="200" x2="460" y2="200" stroke="#999" stroke-width="1.4"/>
+              <path d="M40,200 Q240,0 440,200" fill="none" stroke="#888" stroke-width="1.5" stroke-dasharray="6 4"/>
+              <circle cx="40" cy="200" r="6" fill="#555"/><text x="28" y="198" font-size="14" text-anchor="end" font-style="italic">A</text>
+              <line x1="40" y1="200" x2="78" y2="162" stroke="#1B63B8" stroke-width="2.4" marker-end="url(#ahB)"/>
+              <path d="M60,200 A20,20 0 0 0 54.1,185.9" fill="none" stroke="#555" stroke-width="1.2"/>
+              <text x="64" y="195" font-size="11" fill="#555">45°</text>
+              <text x="44" y="168" font-size="14" font-style="italic" fill="#1B63B8" text-anchor="end">v<tspan font-size="10" dy="4">A</tspan></text>
+              <circle cx="90" cy="156" r="6" fill="#555"/><text x="82" y="150" font-size="14" text-anchor="end" font-style="italic">B</text>
+              <line x1="90" y1="156" x2="140" y2="156" stroke="#aaa" stroke-dasharray="4 3"/>
+              <line x1="90" y1="156" x2="126" y2="129" stroke="#1B63B8" stroke-width="2.4" marker-end="url(#ahB)"/>
+              <path d="M110,156 A20,20 0 0 0 106,144" fill="none" stroke="#555" stroke-width="1.2"/>
+              <text x="114" y="152" font-size="11" fill="#555">37°</text>
+              <text x="130" y="124" font-size="14" font-style="italic" fill="#1B63B8">v<tspan font-size="10" dy="4">B</tspan></text>
+            </svg>
+          </div>
+          <div class="opciones"><span>A) 0,23 s</span><span>B) 0,36 s</span><span>C) 0,41 s</span><span>D) 0,50 s</span></div>
+        </div>
+        <div class="step"><div class="titulo-paso">Idea clave</div>\(v_x\) no cambia. Con el ángulo en B obtenemos \(v_y\) en B. El cambio de \(v_y\) da el tiempo.</div>
+        <div class="step"><div class="titulo-paso">Paso 1 — Componente horizontal</div>\[ v_x=20\cos45^\circ=10\sqrt2\approx14{,}1\ \text{m/s} \]</div>
+        <div class="step"><div class="titulo-paso">Paso 2 — Componentes verticales</div>\[ v_{yA}=20\sen45^\circ\approx14{,}1\ \text{m/s},\qquad v_{yB}=v_x\tan37^\circ\approx14{,}1(0{,}75)\approx10{,}6\ \text{m/s} \]</div>
+        <div class="step"><div class="titulo-paso">Paso 3 — Tiempo</div>\[ v_{yB}=v_{yA}-g\,t\quad\Rightarrow\quad t=\frac{v_{yA}-v_{yB}}{g}=\frac{14{,}1-10{,}6}{9{,}8}\approx0{,}36\ \text{s} \]</div>
+        <div class="step"><div class="titulo-paso">Respuesta</div><div class="resultado-final"><b>B)</b> 0,36 s.</div></div>
+      </div>
+      <div class="ejemplo-controles"><button data-siguiente>Siguiente ▶</button><button class="secundario" data-reiniciar>Reiniciar</button><span class="hint-enter">o presiona Enter</span></div>
+    </div>
+
+    <div class="ejemplo" tabindex="0">
+      <div class="ejemplo-header"><b>Ejemplo 6.2 — ¿Es gol?</b><span class="progreso" data-progreso></span></div>
+      <div class="ejemplo-body">
+        <div class="enunciado"><div class="fuente">OLCOFI 2025 · Primera prueba · Cat. B · Pregunta 13</div>
+          Un futbolista, luego de driblear al arquero, está a \(6\ \text{m}\) frente al arco de \(2{,}5\ \text{m}\) de altura. En ese instante lanza el balón con rapidez \(10\ \text{m/s}\) a \(53^\circ\) sobre la horizontal. ¿Anotará el gol?
+          <div class="fig">
+            <svg viewBox="0 0 370 215" style="max-width:360px;">
+              <line x1="15" y1="180" x2="355" y2="180" stroke="#999" stroke-width="1.4"/>
+              <polyline points="40,180 64,150 88,123.8 112,101.6 136,83.4 160,69 184,58.6 208,52 232,49.4 256,50.8 280,56 304,65.2 328,78.2" fill="none" stroke="#1B63B8" stroke-width="1.8" stroke-dasharray="5 4"/>
+              <circle cx="40" cy="180" r="5" fill="#333"/>
+              <line x1="40" y1="180" x2="64" y2="148" stroke="#1B63B8" stroke-width="2.4" marker-end="url(#ahB)"/>
+              <path d="M60,180 A20,20 0 0 0 52,164" fill="none" stroke="#555" stroke-width="1.2"/>
+              <text x="64" y="174" font-size="11" fill="#555">53°</text>
+              <line x1="280" y1="180" x2="280" y2="80" stroke="#333" stroke-width="4"/>
+              <line x1="278" y1="80" x2="312" y2="80" stroke="#333" stroke-width="4"/>
+              <line x1="310" y1="80" x2="310" y2="180" stroke="#aaa" stroke-width="1.2"/>
+              <circle cx="280" cy="56" r="5" fill="#fff" stroke="#333" stroke-width="1.5"/>
+              <line x1="42" y1="195" x2="278" y2="195" stroke="#555" marker-start="url(#ahG)" marker-end="url(#ahG)"/>
+              <text x="160" y="211" font-size="12" text-anchor="middle">6 m</text>
+              <line x1="330" y1="178" x2="330" y2="82" stroke="#555" marker-start="url(#ahG)" marker-end="url(#ahG)"/>
+              <text x="336" y="134" font-size="12">2,5 m</text>
+            </svg>
+          </div>
+          <div class="opciones"><span>A) No, choca con el travesaño</span><span>B) No, pasa por encima del travesaño</span><span>C) Sí, cae dentro del arco</span><span>D) Sí, rebota en el piso y entra</span></div>
+        </div>
+        <div class="step"><div class="titulo-paso">Idea clave</div>Calculamos cuándo llega el balón a \(x=6\ \text{m}\). Luego comparamos su altura con 2,5 m.</div>
+        <div class="step"><div class="titulo-paso">Paso 1 — Componentes</div>\[ v_{0x}=10\cos53^\circ=6\ \text{m/s},\qquad v_{0y}=10\sen53^\circ=8\ \text{m/s} \]</div>
+        <div class="step"><div class="titulo-paso">Paso 2 — Tiempo hasta el arco</div>\[ t=\frac{6\ \text{m}}{6\ \text{m/s}}=1{,}0\ \text{s} \]</div>
+        <div class="step"><div class="titulo-paso">Paso 3 — Altura en ese instante</div>\[ y=8(1{,}0)-\tfrac12(9{,}8)(1{,}0)^2=3{,}1\ \text{m} \]</div>
+        <div class="step"><div class="titulo-paso">Paso 4 — Comparamos</div>\(3{,}1\ \text{m}&gt;2{,}5\ \text{m}\). En ese momento \(v_y=8-9{,}8=-1{,}8\ \text{m/s}\): el balón ya baja, pero todavía va alto.</div>
+        <div class="step"><div class="titulo-paso">Respuesta</div><div class="resultado-final"><b>B)</b> No, pasa por encima del travesaño. Con \(g=10\ \text{m/s}^2\) obtenemos 3,0 m: la conclusión no cambia.</div></div>
+      </div>
+      <div class="ejemplo-controles"><button data-siguiente>Siguiente ▶</button><button class="secundario" data-reiniciar>Reiniciar</button><span class="hint-enter">o presiona Enter</span></div>
+    </div>
+
+    <div class="ejemplo" tabindex="0">
+      <div class="ejemplo-header"><b>Ejemplo 6.3 — Choque en el aire</b><span class="progreso" data-progreso></span></div>
+      <div class="ejemplo-body">
+        <div class="enunciado"><div class="fuente">OLCOFI 2025 · Primera prueba · Cat. B · Pregunta 14</div>
+          Simultáneamente se lanzan dos partículas: la primera, horizontalmente desde lo alto de una torre de \(100\ \text{m}\); la segunda, desde el pie de la torre con un ángulo \(\theta\). Chocan en el punto \(O\), a \(75\ \text{m}\) horizontales de la torre. Determine \(\theta\).
+          <div class="fig">
+            <svg viewBox="0 0 280 245" style="max-width:280px;">
+              <line x1="10" y1="205" x2="270" y2="205" stroke="#999" stroke-width="1.4"/>
+              <rect x="45" y="35" width="22" height="170" fill="#ddd" stroke="#777"/>
+              <circle cx="67" cy="29" r="6" fill="#E4725F" stroke="#8c3d31"/>
+              <line x1="75" y1="29" x2="105" y2="29" stroke="#1B63B8" stroke-width="2.2" marker-end="url(#ahB)"/>
+              <text x="110" y="33" font-size="14" font-style="italic" fill="#1B63B8">v<tspan font-size="10" dy="4">1</tspan></text>
+              <path d="M67,29 Q150,30 195,95" fill="none" stroke="#888" stroke-dasharray="5 4"/>
+              <circle cx="73" cy="199" r="6" fill="#5FA8DC" stroke="#2c5f86"/>
+              <path d="M73,199 Q120,115 195,95" fill="none" stroke="#888" stroke-dasharray="5 4"/>
+              <line x1="73" y1="199" x2="91" y2="175" stroke="#1B63B8" stroke-width="2.2" marker-end="url(#ahB)"/>
+              <text x="94" y="174" font-size="14" font-style="italic" fill="#1B63B8">v<tspan font-size="10" dy="4">2</tspan></text>
+              <path d="M93,199 A20,20 0 0 0 85,183" fill="none" stroke="#555" stroke-width="1.2"/>
+              <text x="97" y="197" font-size="13" font-style="italic">θ</text>
+              <circle cx="195" cy="95" r="4" fill="#111"/><text x="203" y="92" font-size="14" font-style="italic">O</text>
+              <line x1="195" y1="99" x2="195" y2="197" stroke="#aaa" stroke-dasharray="3 3"/>
+              <rect x="191" y="197" width="8" height="8" fill="none" stroke="#555"/>
+              <line x1="32" y1="37" x2="32" y2="203" stroke="#555" marker-start="url(#ahG)" marker-end="url(#ahG)"/>
+              <text x="24" y="122" font-size="12" text-anchor="middle" transform="rotate(-90 24 122)">100 m</text>
+              <line x1="69" y1="222" x2="193" y2="222" stroke="#555" marker-start="url(#ahG)" marker-end="url(#ahG)"/>
+              <text x="131" y="238" font-size="12" text-anchor="middle">75 m</text>
+            </svg>
+          </div>
+          <div class="opciones"><span>A) 53°</span><span>B) 37°</span><span>C) 30°</span><span>D) 60°</span></div>
+        </div>
+        <div class="step"><div class="titulo-paso">Idea clave</div>Ambas caen con la misma \(g\). Vista desde la partícula 1, la 2 viaja en línea recta: debe apuntar a la posición inicial de la 1.</div>
+        <div class="step"><div class="titulo-paso">Paso 1 — Horizontal</div>Salen de la misma vertical y llegan juntas a \(O\):
+          \[ v_1t=v_2\cos\theta\ t=75 \]</div>
+        <div class="step"><div class="titulo-paso">Paso 2 — Vertical</div>\[ 100-\tfrac12gt^2=v_2\sen\theta\ t-\tfrac12gt^2\quad\Rightarrow\quad v_2\sen\theta\ t=100 \]</div>
+        <div class="step"><div class="titulo-paso">Paso 3 — Dividimos</div>\[ \tan\theta=\frac{100}{75}=\frac43\quad\Rightarrow\quad\theta=53^\circ \]</div>
+        <div class="step"><div class="titulo-paso">Respuesta</div><div class="resultado-final"><b>A)</b> 53°. La gravedad se cancela: en la Luna la respuesta sería la misma.</div></div>
+      </div>
+      <div class="ejemplo-controles"><button data-siguiente>Siguiente ▶</button><button class="secundario" data-reiniciar>Reiniciar</button><span class="hint-enter">o presiona Enter</span></div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================ 7. CIRCULAR -->
+<section id="circular">
+  <div class="wrap">
+    <div class="kicker">7 · Movimiento circular</div>
+    <p class="narrow">Describimos la posición con el ángulo \(\theta\). En el <b>MCU</b> la rapidez angular \(\omega\) es constante, pero la velocidad cambia de dirección: hay aceleración centrípeta.</p>
+    <div class="eq">\[ s=r\,\theta\qquad\qquad v=\omega\,r\qquad\qquad \omega=\frac{\Delta\theta}{\Delta t}=\frac{2\pi}{T}=2\pi f\qquad\qquad a_c=\frac{v^2}{r}=\omega^2r \]</div>
+    <div class="leyenda"><b>\(s\)</b>: arco [m] &middot; <b>\(\theta\)</b>: ángulo [rad] &middot; <b>\(\omega\)</b>: rapidez angular [rad/s] &middot; <b>\(T\)</b>: periodo [s] &middot; <b>\(f\)</b>: frecuencia [Hz] &middot; <b>\(a_c\)</b>: aceleración centrípeta [m/s²]</div>
+    <p class="narrow" style="margin-top:14px;">En el <b>MCUA</b> la aceleración angular \(\alpha\) es constante. Las ecuaciones copian las del MUA:</p>
+    <div class="eq">\[ \omega=\omega_0+\alpha t\qquad \theta=\omega_0t+\tfrac12\alpha t^2\qquad \omega^2=\omega_0^2+2\alpha\theta\qquad \theta=\frac{\omega_0+\omega}{2}\,t\qquad a_t=\alpha\,r \]</div>
+    <div class="leyenda"><b>\(\alpha\)</b>: aceleración angular [rad/s²] &middot; <b>\(a_t\)</b>: aceleración tangencial [m/s²] &middot; aceleración total: \(a=\sqrt{a_t^2+a_c^2}\)</div>
+    <div class="ley"><b>Cuerpo rígido.</b> Todos sus puntos giran con la misma \(\omega\). La rapidez lineal crece con la distancia al eje: \(v=\omega r\).</div>
+    <div class="riesgo"><b class="t">Trampa común</b>Los ángulos van en radianes. Para rpm: \(\omega=\dfrac{2\pi\cdot\text{rpm}}{60}\ \text{rad/s}\).</div>
+
+    <h3 class="sub">Ejemplos</h3>
+
+    <div class="ejemplo" tabindex="0">
+      <div class="ejemplo-header"><b>Ejemplo 7.1 — Radio del disco</b><span class="progreso" data-progreso></span></div>
+      <div class="ejemplo-body">
+        <div class="enunciado"><div class="fuente">OLCOFI 2025 · Primera prueba · Cat. B · Pregunta 15</div>
+          El disco rota con rapidez angular constante respecto a su centro. Los puntos \(A\) y \(B\) tienen rapideces de \(20\ \text{m/s}\) y \(40\ \text{m/s}\). Si \(OA=BC=10\ \text{cm}\), determine el radio del disco.
+          <div class="fig">
+            <svg viewBox="0 0 300 240" style="max-width:260px;">
+              <circle cx="150" cy="120" r="95" fill="#f3f6fb" stroke="#133565" stroke-width="2"/>
+              <line x1="150" y1="120" x2="239.3" y2="87.5" stroke="#888" stroke-dasharray="5 4"/>
+              <g fill="#133565"><circle cx="150" cy="120" r="3.5"/><circle cx="179.8" cy="109.2" r="4"/><circle cx="209.5" cy="98.3" r="4"/><circle cx="239.3" cy="87.5" r="4"/></g>
+              <g font-size="14" font-style="italic"><text x="142" y="140">O</text><text x="174" y="100">A</text><text x="204" y="89">B</text><text x="245" y="82">C</text></g>
+              <path d="M135,120 A15,15 0 1 1 150,135" fill="none" stroke="#E8832A" stroke-width="1.8" marker-end="url(#ahO)"/>
+              <text x="124" y="156" font-size="15" font-style="italic" fill="#B35A00">ω</text>
+            </svg>
+          </div>
+          <div class="opciones"><span>A) 30 cm</span><span>B) 35 cm</span><span>C) 40 cm</span><span>D) 45 cm</span></div>
+        </div>
+        <div class="step"><div class="titulo-paso">Idea clave</div>A y B tienen la misma \(\omega\). Con A encontramos \(\omega\); con \(\omega\) encontramos dónde está B.</div>
+        <div class="step"><div class="titulo-paso">Paso 1 — Rapidez angular</div>\[ \omega=\frac{v_A}{r_A}=\frac{20}{0{,}10}=200\ \text{rad/s} \]</div>
+        <div class="step"><div class="titulo-paso">Paso 2 — Posición de B</div>\[ r_B=\frac{v_B}{\omega}=\frac{40}{200}=0{,}20\ \text{m} \]</div>
+        <div class="step"><div class="titulo-paso">Paso 3 — Radio</div>\[ R=r_B+BC=0{,}20+0{,}10=0{,}30\ \text{m} \]</div>
+        <div class="step"><div class="titulo-paso">Respuesta</div><div class="resultado-final"><b>A)</b> 30 cm.</div></div>
+      </div>
+      <div class="ejemplo-controles"><button data-siguiente>Siguiente ▶</button><button class="secundario" data-reiniciar>Reiniciar</button><span class="hint-enter">o presiona Enter</span></div>
+    </div>
+
+    <div class="ejemplo" tabindex="0">
+      <div class="ejemplo-header"><b>Ejemplo 7.2 — La bala y el cilindro</b><span class="progreso" data-progreso></span></div>
+      <div class="ejemplo-body">
+        <div class="enunciado"><div class="fuente">OLCOFI 2025 · Primera prueba · Cat. B · Pregunta 16</div>
+          Un cilindro hueco de \(3\ \text{m}\) de largo gira alrededor de su eje a \(100\ \text{rpm}\). Una bala disparada paralela al eje perfora las dos bases en puntos cuyos radios forman un ángulo de \(8^\circ\). Determine la rapidez de la bala.
+          <div class="opciones"><span>A) 205 m/s</span><span>B) 400 m/s</span><span>C) 225 m/s</span><span>D) 405 m/s</span></div>
+        </div>
+        <div class="step"><div class="titulo-paso">Idea clave</div>Mientras la bala recorre el cilindro, este gira \(8^\circ\). Ese tiempo es el mismo para los dos movimientos.</div>
+        <div class="step"><div class="titulo-paso">Paso 1 — Rapidez angular</div>\[ \omega=\frac{2\pi(100)}{60}=\frac{10\pi}{3}\ \text{rad/s} \]</div>
+        <div class="step"><div class="titulo-paso">Paso 2 — Ángulo en radianes</div>\[ \theta=8^\circ\cdot\frac{\pi}{180^\circ}=\frac{2\pi}{45}\ \text{rad} \]</div>
+        <div class="step"><div class="titulo-paso">Paso 3 — Tiempo</div>\[ t=\frac{\theta}{\omega}=\frac{2\pi/45}{10\pi/3}=\frac{1}{75}\ \text{s} \]</div>
+        <div class="step"><div class="titulo-paso">Paso 4 — Rapidez de la bala</div>\[ v=\frac{L}{t}=\frac{3\ \text{m}}{1/75\ \text{s}}=225\ \text{m/s} \]</div>
+        <div class="step"><div class="titulo-paso">Respuesta</div><div class="resultado-final"><b>C)</b> 225 m/s. Suponemos que el cilindro gira menos de una vuelta mientras pasa la bala.</div></div>
+      </div>
+      <div class="ejemplo-controles"><button data-siguiente>Siguiente ▶</button><button class="secundario" data-reiniciar>Reiniciar</button><span class="hint-enter">o presiona Enter</span></div>
+    </div>
+
+    <div class="ejemplo" tabindex="0">
+      <div class="ejemplo-header"><b>Ejemplo 7.3 — El ciclista en el velódromo <span class="badge">CAT. A</span></b><span class="progreso" data-progreso></span></div>
+      <div class="ejemplo-body">
+        <div class="enunciado"><div class="fuente">OLCOFI 2025 · Primera prueba · Cat. A · Pregunta 10</div>
+          Un ciclista recorre un velódromo de modo que al cabo de \(5\ \text{s}\) su rapidez es \(15\ \text{m/s}\). En ese tiempo gira un ángulo central de \(2\ \text{rad}\). El radio de la pista es \(25\ \text{m}\). Calcule su rapidez inicial.
+          <div class="opciones"><span>A) 0,6</span><span>B) 0,2</span><span>C) 5</span><span>D) 15</span></div>
+        </div>
+        <div class="step"><div class="titulo-paso">Idea clave</div>Convertimos el ángulo en arco recorrido. Con aceleración tangencial constante, el arco es la rapidez media por el tiempo.</div>
+        <div class="step"><div class="titulo-paso">Paso 1 — Arco</div>\[ s=r\theta=(25)(2)=50\ \text{m} \]</div>
+        <div class="step"><div class="titulo-paso">Paso 2 — Rapidez media</div>\[ s=\frac{v_0+v}{2}\,t\quad\Rightarrow\quad 50=\frac{v_0+15}{2}\,(5) \]</div>
+        <div class="step"><div class="titulo-paso">Paso 3 — Despejamos</div>\[ v_0+15=20\quad\Rightarrow\quad v_0=5\ \text{m/s} \]</div>
+        <div class="step"><div class="titulo-paso">Respuesta</div><div class="resultado-final"><b>C)</b> 5 m/s.</div></div>
+      </div>
+      <div class="ejemplo-controles"><button data-siguiente>Siguiente ▶</button><button class="secundario" data-reiniciar>Reiniciar</button><span class="hint-enter">o presiona Enter</span></div>
+    </div>
+
+    <div class="ejemplo" tabindex="0">
+      <div class="ejemplo-header"><b>Ejemplo 7.4 — Aceleración tangencial <span class="badge">CAT. A</span></b><span class="progreso" data-progreso></span></div>
+      <div class="ejemplo-body">
+        <div class="enunciado"><div class="fuente">OLCOFI 2025 · Primera prueba · Cat. A · Pregunta 11</div>
+          Un punto parte del reposo y se mueve por una circunferencia de \(10\ \text{m}\) de radio, con aceleración tangencial constante de \(8\ \text{m/s}^2\). ¿Cuál es su rapidez angular, en rad/s, a los \(40\ \text{s}\)?
+          <div class="opciones"><span>A) 320</span><span>B) 32</span><span>C) 0,80</span><span>D) 0,25</span></div>
+        </div>
+        <div class="step"><div class="titulo-paso">Idea clave</div>La aceleración constante es la tangencial: cambia la rapidez. Luego pasamos de \(v\) a \(\omega\).</div>
+        <div class="step"><div class="titulo-paso">Paso 1 — Rapidez lineal</div>\[ v=a_t\,t=(8)(40)=320\ \text{m/s} \]</div>
+        <div class="step"><div class="titulo-paso">Paso 2 — Rapidez angular</div>\[ \omega=\frac{v}{r}=\frac{320}{10}=32\ \text{rad/s} \]</div>
+        <div class="step"><div class="titulo-paso">Paso 3 — Otra ruta</div>\[ \alpha=\frac{a_t}{r}=0{,}8\ \text{rad/s}^2,\qquad \omega=\alpha t=(0{,}8)(40)=32\ \text{rad/s} \]</div>
+        <div class="step"><div class="titulo-paso">Respuesta</div><div class="resultado-final"><b>B)</b> 32 rad/s. La opción A es \(v\), no \(\omega\). La opción C es \(\alpha\).</div></div>
+      </div>
+      <div class="ejemplo-controles"><button data-siguiente>Siguiente ▶</button><button class="secundario" data-reiniciar>Reiniciar</button><span class="hint-enter">o presiona Enter</span></div>
+    </div>
+  </div>
+</section>
+
+<footer class="doc-footer">Preparación OLCOFI · Tema 1: Cinemática · Docente Keylor Arley Castro</footer>
+
+<script>
+'use strict';
+/* Ejemplos paso a paso: "Siguiente" o Enter muestra un paso; "Reiniciar" los oculta. */
+document.querySelectorAll('.ejemplo').forEach(function(ej){
+  var steps = ej.querySelectorAll('.step'),
+      btnSig = ej.querySelector('[data-siguiente]'),
+      btnRe = ej.querySelector('[data-reiniciar]'),
+      prog = ej.querySelector('[data-progreso]'),
+      actual = 0;
+  function render(){
+    steps.forEach(function(s, i){ s.classList.toggle('shown', i < actual); });
+    prog.textContent = 'Paso ' + actual + ' / ' + steps.length;
+  }
+  function avanzar(){ if(actual < steps.length){ actual++; render(); } }
+  btnSig.addEventListener('click', avanzar);
+  btnRe.addEventListener('click', function(){ actual = 0; render(); });
+  ej.addEventListener('keydown', function(e){
+    if(e.key === 'Enter' && e.target === ej){ avanzar(); e.preventDefault(); }
+  });
+  render();
+});
+</script>
+</body>
+</html>
