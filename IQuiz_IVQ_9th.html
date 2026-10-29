@@ -164,6 +164,17 @@ body.rev #rvResumen20{display:block}
 /* Prueba ordinaria: sin negritas en los enunciados. Solo con el apoyo de palabras clave en la prueba específica. */
 body:not(.kwon) .question :is(p,label,div,td,span,sup) b{font-weight:inherit}
 .question .hd b,.question .step>b:first-child,.question .formbox>b:first-child,.question .breakdown>b{font-weight:bold!important}
+#lockov{position:fixed;inset:0;z-index:99999;background:rgba(10,32,58,.88);display:flex;align-items:center;justify-content:center;padding:16px;overflow:auto}
+.lkcard{background:#fff;border-radius:16px;max-width:660px;width:100%;overflow:hidden;box-shadow:0 18px 50px rgba(0,0,0,.4)}
+.lkcard svg{display:block;width:100%;height:auto}
+.lkbody{padding:16px 22px 20px}.lkbody h2{margin:0 0 6px;color:var(--nd)}.lkbody p{margin:6px 0}
+.lkok{color:#2f855a;font-weight:bold}
+.lkpin{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin-top:10px}.lkpin label{font-weight:bold;color:var(--nd)}
+.lkpin input{flex:1;min-width:140px;padding:9px 12px;font-size:1.05rem;border:2px solid var(--nb);border-radius:8px}
+#toast{position:fixed;left:50%;bottom:24px;transform:translateX(-50%) translateY(20px);background:#133565;color:#fff;padding:10px 18px;border-radius:10px;font-size:.95rem;opacity:0;pointer-events:none;transition:.25s;z-index:100000;max-width:90vw}
+#toast.on{opacity:1;transform:translateX(-50%) translateY(0)}
+#resumeBox{background:#FFF8E6;border:2px solid var(--go);border-radius:12px;padding:14px 18px;margin:12px 0}#resumeBox h3{margin:0 0 6px;color:var(--nd)}
+body.hasprog .btn-start{display:none}
 </style>
 </head>
 <body oncontextmenu="return false;">
@@ -222,7 +233,7 @@ body:not(.kwon) .question :is(p,label,div,td,span,sup) b{font-weight:inherit}
     <h3>Security Rules</h3>
     <ul>
       <li>The quiz opens in mandatory full screen.</li>
-      <li>If you switch tabs, minimize the browser or exit full screen, you will receive <b>one warning</b>. The <b>second exit</b> submits and grades the quiz automatically with the points earned so far.</li>
+      <li>If you switch tabs, minimize the browser or exit full screen, the quiz is <b>paused</b>. Raise your hand: your teacher will enter a PIN so you can continue. Your answers are saved automatically.</li>
       <li>Copy, paste, print and right-click are disabled during the quiz.</li>
     </ul>
   </div>
@@ -317,6 +328,12 @@ const SCRIPT_URL='https://script.google.com/macros/s/AKfycbxdTiX_oWAwoSkdg9EXozw
 const KEY='q9i_';
 const PRUEBA='I Quiz IV Quarter - Physics 9th'; // prefijo propio: no choca con el quiz anterior
 const PIN='2026';  // PIN del docente o aplicador
+/* ===== Avance guardado: semilla fija para que los datos aleatorios se recuperen igual ===== */
+const PKEY=KEY+'progress',SIMS={};
+let PROG=null;try{PROG=JSON.parse(localStorage.getItem(PKEY)||'null')}catch(e){}
+const SEED=(PROG&&PROG.seed)||(1+Math.floor(Math.random()*2147483646));
+const _rnd=Math.random;
+Math.random=(a=>()=>{a|=0;a=a+0x6D2B79F5|0;let t=Math.imul(a^a>>>15,1|a);t=t+Math.imul(t^t>>>7,61|t)^t;return((t^t>>>14)>>>0)/4294967296})(SEED);
 const $=id=>document.getElementById(id),C=$('quiz-container'),items=[],loops=[];
 let n=0,cn=0,startTime,timerInterval,focusLossCount=0,isExamActive=false;
 const num=v=>parseFloat(String(v).replace(',','.'));
@@ -459,6 +476,7 @@ function draw(){x.clearRect(0,0,520,260);x.fillStyle='#133565';x.fillRect(0,240,
 function step(){if(!run)return;const now=performance.now();tt+=(now-last)/1000*2;last=now;const t=Math.min(tt,run.targetT);run.cy=Math.max(0,39.2*t-4.9*t*t);
  if(tt>=run.targetT){res=Math.abs(run.targetT-4.0);$('vcm').innerHTML=`Height ${(39.2*t-4.9*t*t).toFixed(1)} m at t = ${t.toFixed(1)} s. `+(res<=0.4?'<b style="color:#2f855a">Peak reached.</b>':'Missed the peak.');draw();run=null;return}
  draw();requestAnimationFrame(step)}
+SIMS.vl={get:()=>({res,used,msg:$('vcm').innerHTML}),set:o=>{res=o.res;used=o.used||0;$('vcm').innerHTML=o.msg||'';$('vcf').disabled=!!used}};
 $('vcf').onclick=()=>{if(run||used)return;const v=val();if(!(v>0)||v>10){alert('Enter a time between 0 and 10 seconds.');return}used=1;$('vcf').disabled=true;run={targetT:v,cy:0};tt=0;last=performance.now();requestAnimationFrame(step)};draw()}
 
 /* ================= PART II: NEWTON'S LAWS ================= */
@@ -519,6 +537,7 @@ function dragDrop(ddId,poolId){const dd=$(ddId),pool=$(poolId);let sel=null;
  dd.addEventListener('dragover',e=>e.preventDefault());
  dd.addEventListener('drop',e=>{e.preventDefault();const b=e.target.closest('.blank');if(b)put(b);else if(sel){pool.appendChild(sel);sel.classList.remove('sel');sel=null}})}
 
+Math.random=_rnd;   // fin de la construcción de ítems con semilla
 /* ================= BOLETA DIGITAL ================= */
 Object.keys(ROSTER).forEach(s=>$('studentGrade').insertAdjacentHTML('beforeend',`<option value="${s}">${s}</option>`));
 $('studentGrade').addEventListener('change',e=>{const g=e.target.value,sel=$('studentName');
@@ -560,7 +579,7 @@ function renderPanel(){const nm=$('studentName').value,gr=$('studentGrade').valu
 $('btnVisit').addEventListener('click',()=>{if(!isExamActive)return;askPin('Registrar paso del docente',{nota:true},v=>{S.visitas.push({t:Date.now(),nota:v});renderPanel()})});
 
 /* ================= SEGURIDAD, TIEMPO Y ENVÍO ================= */
-function startExam(){
+function startExam(resume){
  const nm=$('studentName').value,gr=$('studentGrade').value;
  if(!nm||!gr){alert('Please select your section and your full name before starting.');return}
  teacher=false;renderBoleta();
@@ -568,8 +587,8 @@ function startExam(){
  $('student-header').innerText=`Student: ${nm} | Section: ${gr} | ${S.tipo==='E'?'Specific':'Ordinary'} test`;
  const d=document.documentElement;if(d.requestFullscreen)d.requestFullscreen();else if(d.webkitRequestFullscreen)d.webkitRequestFullscreen();
  $('start-container').style.display='none';$('quiz-layout').style.display='block';
- isExamActive=true;startTime=Date.now();S.inicio=startTime;timerInterval=setInterval(updateTimer,1000);setupSecurityListeners();
- $('tpanel').style.display='block';$('tpanel').open=window.innerWidth>=1460;renderPanel();window.scrollTo(0,0)}
+ isExamActive=true;startTime=resume&&PROG?PROG.startTime:Date.now();S.inicio=resume&&PROG&&PROG.S&&PROG.S.inicio?PROG.S.inicio:startTime;timerInterval=setInterval(updateTimer,1000);setupSecurityListeners();
+ $('tpanel').style.display='block';$('tpanel').open=window.innerWidth>=1460;renderPanel();window.scrollTo(0,0);saveProg()}
 function updateTimer(){const e=Math.floor((Date.now()-startTime)/1000);$('time-display').innerText=String(Math.floor(e/60)).padStart(2,'0')+':'+String(e%60).padStart(2,'0')}
 function setupSecurityListeners(){
  window.addEventListener('blur',triggerSecurityWarning);
@@ -577,10 +596,8 @@ function setupSecurityListeners(){
  document.addEventListener('visibilitychange',()=>{if(document.visibilityState==='hidden')triggerSecurityWarning()});
  document.addEventListener('keydown',e=>{if(e.ctrlKey&&['c','v','u','p'].includes(e.key)){e.preventDefault();alert('This function is disabled for security.')}})}
 let inWarn=false,lastT=0;
-function triggerSecurityWarning(){if(!isExamActive||inWarn||Date.now()-lastT<1500)return;inWarn=true;_warn();inWarn=false;lastT=Date.now()}
-function _warn(){focusLossCount++;
- if(focusLossCount===1)alert('WARNING:\nYou left the quiz screen. If you do it again, your quiz will be submitted automatically with the points earned so far.');
- else{alert('QUIZ LOCKED:\nYou left the quiz tab a second time. Your quiz has been submitted.');closeModal();evaluateExam(true)}}
+function triggerSecurityWarning(){if(!isExamActive||locked||inWarn||Date.now()-lastT<1500)return;inWarn=true;_warn();inWarn=false;lastT=Date.now()}
+function _warn(){focusLossCount++;lockScreen()}
 
 /* ¿La pregunta tiene respuesta? (para la revisión de finalización) */
 function answered(it){const el=it.el;
@@ -609,7 +626,7 @@ function pedirEntrega(){if(REVIEW){vistaPrevia();return}if(!isExamActive)return;
  $('rvNo').onclick=closeModal;$('rvOk').onclick=()=>askPin('Verificación del aplicador',{},()=>{S.revisionVerificada=true;evaluateExam(false,true)})}
 
 function evaluateExam(forced=false,skip=false){
- if(!forced&&!skip&&!confirm('Are you sure you want to finish your quiz? You will not be able to change your answers.'))return;
+ if(!forced&&!skip){openModal(`<h3>${LK.finT}</h3><p>${LK.finQ}</p><div class="mrow"><button type="button" class="act alt" id="fNo">${LK.no}</button><button type="button" class="act" id="fOk">${LK.yes}</button></div>`);$('fNo').onclick=closeModal;$('fOk').onclick=()=>{closeModal();evaluateExam(false,true)};return}
  if(!isExamActive)return;
  isExamActive=false;clearInterval(timerInterval);window.removeEventListener('blur',triggerSecurityWarning);
  S.fin=Date.now();renderPanel();$('btnVisit').disabled=true;
@@ -617,14 +634,14 @@ function evaluateExam(forced=false,skip=false){
  items.forEach(it=>{const p=it.grade();it.p=p;it.resp=summary(it);score+=p;scs[it.sec]+=p;it.el.className='question '+(p>=it.max?'correct':p>0?'partial':'incorrect');it.el.querySelector('.pts').textContent=`${p} / ${it.max} pts`});
  const grade=(score/total*100).toFixed(2),ts=Math.floor((Date.now()-startTime)/1000),timeStr=`${Math.floor(ts/60)}m ${ts%60}s`;
  const nm=localStorage.getItem(KEY+'name'),gr=localStorage.getItem(KEY+'grade');
- let st='Completed securely';if(forced)st='Locked (left the quiz tab)';else if(focusLossCount>0)st=`Warnings: ${focusLossCount}`;
+ let st=estadoSeguridad();
  $('rep-student').innerText=`Student: ${nm} (${gr})`;
  $('rep-score').innerText=`Score: ${score} / ${total}`;
  $('rep-sec').innerText=`Uniformly Accelerated Motion: ${scs.MUA} / 20 · Newton's Laws: ${scs.NL} / 25`;
  $('rep-grade').innerText=`Grade: ${grade}% · ${S.tipo==='E'?'Specific':'Ordinary'} test`;
  $('rep-time').innerText=`Time used: ${timeStr}`;
  $('rep-status').innerText=`Security: ${st}`;
- $('report-card').style.display='block';localStorage.setItem(KEY+'submitted','true');lockExam();
+ $('report-card').style.display='block';localStorage.setItem(KEY+'submitted','true');localStorage.removeItem(PKEY);lockExam();
  renderComite({nm,gr,score,total,grade,timeStr,st,scs});
  $('drive-box').style.display='block';setTimeout(()=>subirPDF(false),600);
  const dudas=items.map((it,i)=>{const d=it.el.querySelector('.duda textarea').value.trim();return d?`P${i+1}: ${d}`:''}).filter(Boolean).join(' | ');
@@ -789,13 +806,137 @@ function dlTxt(){const a=document.createElement('a');a.href=URL.createObjectURL(
 cargarRevision();
 
 /* Equipo de recinto aparte: el docente puede habilitarlo para otro estudiante */
-function resetDevice(){askPin('Habilitar equipo para otro estudiante',{},()=>{['name','grade','submitted'].forEach(k=>localStorage.removeItem(KEY+k));location.reload()})}
+function resetDevice(){askPin('Habilitar equipo para otro estudiante',{},()=>{['name','grade','submitted'].forEach(k=>localStorage.removeItem(KEY+k));localStorage.removeItem(PKEY);location.reload()})}
 
 document.addEventListener('DOMContentLoaded',()=>{if(window.renderMathInElement)renderMathInElement(document.body,{delimiters:[{left:'$$',right:'$$',display:true},{left:'$',right:'$',display:false},{left:'\\(',right:'\\)',display:false}],throwOnError:false})});
 window.addEventListener('load',()=>{if(localStorage.getItem(KEY+'submitted')==='true'){
  $('start-container').style.display='none';$('quiz-layout').style.display='block';$('submitBtn').style.display='none';
  $('report-card').style.display='block';$('report-card').innerHTML='<h3>This quiz was already completed on this device. The results were recorded.</h3><button type="button" class="act alt" onclick="resetDevice()">Habilitar para otro estudiante (docente)</button> <button type="button" class="act alt" onclick="pedirRevision()">Revisión de la prueba</button>';
  document.querySelectorAll('#quiz-container').forEach(e=>e.style.display='none')}});
+const LK={bad:'Incorrect PIN.',ok:'Completed securely',paused:n=>`Paused ${n} time${n>1?'s':''} (resumed with teacher PIN)`,
+ resumeT:'Continue the quiz',discardT:'Discard the saved quiz',resumeH:'Quiz in progress',
+ resumeP:(nm,gr,t)=>`An unfinished quiz was found on this computer for <b>${nm}</b> (${gr}), last saved: ${t}. The teacher must enter the PIN to continue. The answers will be recovered.`,
+ resumeB:'Continue quiz (teacher PIN)',discardB:'Discard (teacher PIN)',finT:'Finish the quiz',finQ:'Are you sure you want to finish your quiz? You will not be able to change your answers.',no:'Go back',yes:'Finish and submit'};
+/* =====================================================================
+   PAUSA CON PIN Y AVANCE GUARDADO
+   - Si el estudiante sale de la pantalla, la prueba se pausa (no se envía).
+     El docente ingresa el PIN y el estudiante continúa. Sin límite de pausas.
+   - Las respuestas se guardan en el equipo cada pocos segundos. Si la
+     computadora se apaga o se cierra la pestaña, al abrir de nuevo el enlace
+     el docente ingresa el PIN y la prueba continúa donde quedó.
+   ===================================================================== */
+let locked=false,incid=[];
+function toast(m){let t=$('toast');if(!t){t=document.createElement('div');t.id='toast';document.body.appendChild(t)}t.textContent=m;t.classList.add('on');clearTimeout(t._h);t._h=setTimeout(()=>t.classList.remove('on'),3200)}
+window.alert=m=>toast(String(m));
+function collect(){const c=$('quiz-container'),o={v:{},r:{},g:{},b:[],t:{},sims:{}};
+ c.querySelectorAll('input.ans,select').forEach(e=>{if(e.id)o.v[e.id]=e.value});
+ c.querySelectorAll('input[type=radio]:checked').forEach(r=>o.r[r.name]=r.value);
+ c.querySelectorAll('input[type=range]').forEach(g=>o.g[g.id]=[g.value,g.dataset.touched||'']);
+ o.b=[...c.querySelectorAll('.blank')].map(b=>b.firstChild&&b.firstChild.dataset?b.firstChild.dataset.v:null);
+ c.querySelectorAll('.duda textarea').forEach(t=>o.t[t.id]=t.value);
+ for(const k in SIMS){try{o.sims[k]=SIMS[k].get()}catch(e){}}
+ return o}
+function applyAns(o){if(!o)return;const c=$('quiz-container');
+ for(const id in o.v){const e=$(id);if(e)e.value=o.v[id]}
+ for(const n in o.r){const r=[...c.querySelectorAll('input[type=radio]')].find(x=>x.name===n&&x.value===o.r[n]);if(r)r.checked=true}
+ for(const id in o.g){const e=$(id);if(e){e.value=o.g[id][0];if(o.g[id][1])e.dataset.touched='1';e.dispatchEvent(new Event('input'))}}
+ const bl=[...c.querySelectorAll('.blank')];(o.b||[]).forEach((v,i)=>{if(!v||!bl[i])return;const dd=bl[i].closest('[id]'),pool=dd&&dd.querySelector('.pool');if(!pool)return;
+  const ch=[...pool.querySelectorAll('.chip')].find(x=>x.dataset.v===v);if(ch)bl[i].appendChild(ch)});
+ for(const id in o.t){const e=$(id);if(e)e.value=o.t[id]}
+ for(const k in o.sims||{}){if(SIMS[k])try{SIMS[k].set(o.sims[k])}catch(e){}}}
+function saveProg(){if(!isExamActive||(typeof REVIEW!=='undefined'&&REVIEW))return;
+ try{localStorage.setItem(PKEY,JSON.stringify({seed:SEED,nm:$('studentName').value,gr:$('studentGrade').value,startTime,incid,saved:Date.now(),
+  S:{tipo:S.tipo,tipoAuto:S.tipoAuto,apl:S.apl,exp:S.exp,kw:S.kw,form:S.form,nota:S.nota,visitas:S.visitas,inicio:S.inicio,revisionVerificada:S.revisionVerificada},a:collect()}))}catch(e){}}
+let _svT=0;const saveSoon=()=>{clearTimeout(_svT);_svT=setTimeout(saveProg,400)};
+['input','change','click'].forEach(ev=>document.addEventListener(ev,()=>{if(isExamActive)saveSoon()},true));
+setInterval(saveProg,4000);window.addEventListener('pagehide',saveProg);
+function lockScreen(){if(!isExamActive||locked)return;locked=true;incid.push({t:Date.now()});saveProg();
+ $('lkN').textContent=incid.length;$('lkPin').value='';$('lkErr').textContent='';$('lockov').style.display='flex';setTimeout(()=>$('lkPin').focus(),60)}
+function unlockScreen(){if($('lkPin').value!==PIN){$('lkErr').textContent=LK.bad;$('lkPin').value='';$('lkPin').focus();return}
+ incid[incid.length-1].fin=Date.now();locked=false;$('lockov').style.display='none';lastT=Date.now();
+ const d=document.documentElement;if(!document.fullscreenElement){const f=d.requestFullscreen||d.webkitRequestFullscreen;if(f)try{const pr=f.call(d);if(pr&&pr.catch)pr.catch(()=>{})}catch(e){}}
+ saveProg()}
+document.addEventListener('DOMContentLoaded',()=>{$('lkGo').onclick=unlockScreen;$('lkPin').onkeydown=e=>{if(e.key==='Enter')unlockScreen()}});
+function estadoSeguridad(){if(!incid.length)return LK.ok;return LK.paused(incid.length)+': '+incid.map(x=>hora(x.t)).join(', ')}
+/* Prueba sin terminar en este equipo */
+function resumeExam(){askPin(LK.resumeT,{},()=>{const g=$('studentGrade');g.value=PROG.gr;g.dispatchEvent(new Event('change'));
+ const n=$('studentName');n.value=PROG.nm;n.dispatchEvent(new Event('change'));
+ Object.assign(S,PROG.S||{});incid=PROG.incid||[];renderBoleta();document.body.classList.remove('hasprog');const rb=$('resumeBox');if(rb)rb.remove();applyAns(PROG.a);startExam(true)})}
+function discardExam(){askPin(LK.discardT,{},()=>{localStorage.removeItem(PKEY);location.reload()})}
+window.addEventListener('load',()=>{if(localStorage.getItem(KEY+'submitted')==='true'||!PROG||!PROG.nm||(typeof REVIEW!=='undefined'&&REVIEW))return;
+ const box=document.createElement('div');box.id='resumeBox';
+ box.innerHTML=`<h3>${LK.resumeH}</h3><p>${LK.resumeP(esc(PROG.nm),esc(PROG.gr),hora(PROG.saved))}</p><div class="mrow" style="justify-content:flex-start"><button type="button" class="act" id="rsGo">${LK.resumeB}</button><button type="button" class="act alt" id="rsNo">${LK.discardB}</button></div>`;
+ const sc=$('start-container');sc.insertBefore(box,sc.querySelector('.student-info'));document.body.classList.add('hasprog');
+ $('rsGo').onclick=resumeExam;$('rsNo').onclick=discardExam});
 </script>
+<div id="lockov" style="display:none"><div class="lkcard"><svg viewBox="0 0 640 300" role="img" aria-label="Paisaje de Costa Rica con un perezoso y una rana">
+<defs>
+<linearGradient id="lkSky" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#7cc6e8"/><stop offset=".65" stop-color="#cdeaf2"/><stop offset="1" stop-color="#fbe3b8"/></linearGradient>
+<linearGradient id="lkSea" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#2fa4b9"/><stop offset="1" stop-color="#1b7f95"/></linearGradient>
+<linearGradient id="lkVol" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#6d7f6a"/><stop offset="1" stop-color="#3f6b47"/></linearGradient>
+</defs>
+<rect width="640" height="300" fill="url(#lkSky)"/>
+<circle cx="110" cy="62" r="30" fill="#ffd36b"/><circle cx="110" cy="62" r="42" fill="#ffd36b" opacity=".25"/>
+<g fill="#fff" opacity=".9"><ellipse cx="250" cy="48" rx="34" ry="11"/><ellipse cx="275" cy="40" rx="22" ry="12"/><ellipse cx="470" cy="66" rx="30" ry="9"/><ellipse cx="490" cy="59" rx="18" ry="10"/></g>
+<!-- volcán -->
+<path d="M210 210 L318 92 Q330 82 342 92 L460 210 Z" fill="url(#lkVol)"/>
+<path d="M306 104 Q330 90 354 104 L344 112 Q330 104 316 112 Z" fill="#4b5a49"/>
+<g fill="#e9eef0" opacity=".85"><circle cx="333" cy="78" r="9"/><circle cx="344" cy="64" r="12"/><circle cx="360" cy="48" r="15"/><circle cx="380" cy="34" r="17"/></g>
+<!-- colinas y bosque -->
+<path d="M0 205 Q90 165 180 196 T360 190 T540 186 T640 196 V300 H0 Z" fill="#4f9b4f"/>
+<path d="M0 228 Q120 196 240 224 T480 220 T640 226 V300 H0 Z" fill="#2f7d3c"/>
+<g fill="#25693a"><circle cx="40" cy="214" r="18"/><circle cx="70" cy="206" r="20"/><circle cx="160" cy="216" r="16"/><circle cx="430" cy="210" r="18"/><circle cx="560" cy="206" r="20"/><circle cx="600" cy="214" r="16"/></g>
+<!-- mar y playa -->
+<path d="M0 262 Q160 248 320 258 T640 254 V300 H0 Z" fill="url(#lkSea)"/>
+<path d="M0 282 Q180 270 360 280 T640 276 V300 H0 Z" fill="#f2d49b"/>
+<g stroke="#fff" stroke-width="2" fill="none" opacity=".7"><path d="M60 266 q10 -4 20 0"/><path d="M250 262 q10 -4 20 0"/><path d="M420 264 q10 -4 20 0"/></g>
+<!-- palmera -->
+<g><path d="M598 286 Q590 240 604 196" stroke="#8a6440" stroke-width="7" fill="none" stroke-linecap="round"/>
+<g fill="#2e8b47"><path d="M604 196 q-40 -6 -62 16 q30 -10 62 -16"/><path d="M604 196 q36 -14 34 18 q-12 -20 -34 -18"/><path d="M604 196 q-14 -32 -46 -30 q30 6 46 30"/><path d="M604 196 q18 -30 30 -26 q-20 4 -30 26"/></g></g>
+<!-- rama y perezoso -->
+<path d="M352 116 Q470 98 640 112" stroke="#6b4a2b" stroke-width="10" fill="none" stroke-linecap="round"/>
+<g fill="#3e8e41"><ellipse cx="380" cy="108" rx="14" ry="6" transform="rotate(-20 380 108)"/><ellipse cx="560" cy="102" rx="15" ry="6" transform="rotate(18 560 102)"/><ellipse cx="610" cy="106" rx="12" ry="5" transform="rotate(-12 610 106)"/></g>
+<g>
+ <path d="M452 114 Q446 138 458 158" stroke="#9c7a55" stroke-width="12" fill="none" stroke-linecap="round"/>
+ <path d="M516 110 Q526 136 512 158" stroke="#9c7a55" stroke-width="12" fill="none" stroke-linecap="round"/>
+ <g stroke="#3b2a1a" stroke-width="2.5" stroke-linecap="round"><path d="M446 112 l2 -8"/><path d="M452 112 l1 -9"/><path d="M458 113 l0 -8"/><path d="M510 108 l-1 -8"/><path d="M516 108 l1 -9"/><path d="M522 109 l2 -8"/></g>
+ <ellipse cx="486" cy="172" rx="44" ry="30" fill="#a98463"/>
+ <ellipse cx="486" cy="180" rx="30" ry="18" fill="#bd9a77"/>
+ <path d="M452 186 Q440 204 452 214" stroke="#9c7a55" stroke-width="11" fill="none" stroke-linecap="round"/>
+ <path d="M520 186 Q532 204 520 214" stroke="#9c7a55" stroke-width="11" fill="none" stroke-linecap="round"/>
+ <circle cx="486" cy="146" r="25" fill="#c9a882"/>
+ <ellipse cx="486" cy="150" rx="19" ry="15" fill="#f1e2c8"/>
+ <ellipse cx="477" cy="146" rx="7" ry="4.5" fill="#4a3322" transform="rotate(-18 477 146)"/>
+ <ellipse cx="495" cy="146" rx="7" ry="4.5" fill="#4a3322" transform="rotate(18 495 146)"/>
+ <circle cx="476" cy="146" r="2.3" fill="#fff"/><circle cx="494" cy="146" r="2.3" fill="#fff"/>
+ <ellipse cx="486" cy="154" rx="3.5" ry="2.5" fill="#3b2a1a"/>
+ <path d="M480 159 Q486 164 492 159" stroke="#3b2a1a" stroke-width="1.8" fill="none" stroke-linecap="round"/>
+</g>
+<!-- hoja y rana de ojos rojos -->
+<path d="M30 296 Q60 222 196 236 Q150 286 30 296 Z" fill="#3fa34d"/>
+<path d="M44 288 Q110 250 186 238" stroke="#2a7a37" stroke-width="2" fill="none"/>
+<g>
+ <path d="M84 254 q-14 10 -22 6" stroke="#f08a24" stroke-width="5" fill="none" stroke-linecap="round"/><circle cx="60" cy="260" r="4" fill="#f08a24"/>
+ <path d="M150 254 q14 10 22 6" stroke="#f08a24" stroke-width="5" fill="none" stroke-linecap="round"/><circle cx="174" cy="260" r="4" fill="#f08a24"/>
+ <ellipse cx="117" cy="246" rx="36" ry="22" fill="#43b649"/>
+ <path d="M86 248 q10 8 22 6 M126 254 q12 2 22 -6" stroke="#2a63c9" stroke-width="4" fill="none" stroke-linecap="round"/>
+ <path d="M96 236 q-14 -10 -22 2" stroke="#43b649" stroke-width="7" fill="none" stroke-linecap="round"/><circle cx="73" cy="240" r="4" fill="#f08a24"/>
+ <path d="M138 236 q14 -10 22 2" stroke="#43b649" stroke-width="7" fill="none" stroke-linecap="round"/><circle cx="161" cy="240" r="4" fill="#f08a24"/>
+ <circle cx="100" cy="222" r="12" fill="#43b649"/><circle cx="134" cy="222" r="12" fill="#43b649"/>
+ <circle cx="100" cy="221" r="9" fill="#e3262c"/><circle cx="134" cy="221" r="9" fill="#e3262c"/>
+ <ellipse cx="100" cy="221" rx="2.2" ry="6" fill="#111"/><ellipse cx="134" cy="221" rx="2.2" ry="6" fill="#111"/>
+ <path d="M104 240 Q117 248 130 240" stroke="#1f6b2a" stroke-width="2" fill="none" stroke-linecap="round"/>
+ <ellipse cx="117" cy="252" rx="18" ry="7" fill="#e9f5c9" opacity=".7"/>
+</g>
+<text x="320" y="28" text-anchor="middle" font-family="Georgia,serif" font-size="20" font-weight="bold" fill="#133565">¡Pura vida!</text>
+</svg>
+<div class="lkbody">
+ <h2>Quiz paused</h2>
+ <p>You left the quiz screen. Stay in your seat and raise your hand. Your teacher will enter the PIN so you can continue.</p>
+ <p class="lkok">Your answers are saved. Nothing was submitted.</p>
+ <div class="lkpin"><label for="lkPin">Teacher PIN</label><input type="password" id="lkPin" inputmode="numeric" autocomplete="off"><button type="button" class="act" id="lkGo">Continue</button></div>
+ <div class="err" id="lkErr"></div><p class="mut" style="margin:4px 0 0">Pause number <span id="lkN"></span></p>
+</div></div></div>
+
 </body>
 </html>
