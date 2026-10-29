@@ -178,8 +178,19 @@ body.rev #rvResumen20{display:block}
 .option .ltr{color:var(--nd);margin-right:2px}
 .theend{text-align:center;margin:28px 0 8px;font-weight:bold;color:var(--nd);letter-spacing:.05em}
 .theend p{font-weight:normal;font-style:italic;color:#4a5568;margin-top:8px;letter-spacing:0}
-body:not(.rev) .question .breakdown{display:none}
+body:not(.rev) .question .breakdown:not(.bk-show){display:none}
 .rules ol{padding-left:22px}.rules ol li{margin:4px 0}
+#lockov{position:fixed;inset:0;z-index:99999;background:rgba(10,32,58,.88);display:flex;align-items:center;justify-content:center;padding:16px;overflow:auto}
+.lkcard{background:#fff;border-radius:16px;max-width:660px;width:100%;overflow:hidden;box-shadow:0 18px 50px rgba(0,0,0,.4)}
+.lkcard svg{display:block;width:100%;height:auto}
+.lkbody{padding:16px 22px 20px}.lkbody h2{margin:0 0 6px;color:var(--nd)}.lkbody p{margin:6px 0}
+.lkok{color:#2f855a;font-weight:bold}
+.lkpin{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin-top:10px}.lkpin label{font-weight:bold;color:var(--nd)}
+.lkpin input{flex:1;min-width:140px;padding:9px 12px;font-size:1.05rem;border:2px solid var(--nb);border-radius:8px}
+#toast{position:fixed;left:50%;bottom:24px;transform:translateX(-50%) translateY(20px);background:#133565;color:#fff;padding:10px 18px;border-radius:10px;font-size:.95rem;opacity:0;pointer-events:none;transition:.25s;z-index:100000;max-width:90vw}
+#toast.on{opacity:1;transform:translateX(-50%) translateY(0)}
+#resumeBox{background:#FFF8E6;border:2px solid var(--go);border-radius:12px;padding:14px 18px;margin:12px 0}#resumeBox h3{margin:0 0 6px;color:var(--nd)}
+body.hasprog .btn-start{display:none}
 </style>
 </head>
 <body oncontextmenu="return false;">
@@ -223,7 +234,7 @@ body:not(.rev) .question .breakdown{display:none}
     <ol>
       <li>Lea toda la prueba con atención y asegúrese de entender lo que se le pide.</li>
       <li>La prueba consta de cinco partes: Selección única, Pareo, Respuesta corta, Simulaciones y Resolución de problemas. Verifique que tiene todas las partes.</li>
-      <li>No abra otras páginas, pestañas o aplicaciones. La prueba se abre en pantalla completa. Si sale de la pantalla de la prueba, recibirá una advertencia. La segunda vez, la prueba se envía automáticamente con el puntaje acumulado.</li>
+      <li>No abra otras páginas, pestañas o aplicaciones. La prueba se abre en pantalla completa. Si sale de la pantalla de la prueba, la prueba se pausa y el docente debe ingresar un PIN para que pueda continuar. Sus respuestas se guardan automáticamente.</li>
       <li>Trabaje en orden y con claridad. Use las hojas en blanco que entrega el docente para sus procedimientos. Escriba su nombre en cada hoja y entréguelas al finalizar.</li>
       <li>Los materiales permitidos son lapicero, lápiz, borrador y calculadora científica no programable. No se permite la calculadora del dispositivo.</li>
       <li>No se permite prestar ni pedir prestado material.</li>
@@ -325,6 +336,12 @@ body:not(.rev) .question .breakdown{display:none}
 const SCRIPT_URL='https://script.google.com/macros/s/AKfycbxdTiX_oWAwoSkdg9EXozwHeXlQlPa1UkZaJU5xtARiEAdfbGeECjlBvUKjRKII8w2E7g/exec';
 const KEY='ex4_'; // prefijo propio: no choca con los quices
 const PIN='2026';  // PIN del docente o aplicador
+/* ===== Avance guardado: semilla fija para que los datos aleatorios se recuperen igual ===== */
+const PKEY=KEY+'progress',SIMS={};
+let PROG=null;try{PROG=JSON.parse(localStorage.getItem(PKEY)||'null')}catch(e){}
+const SEED=(PROG&&PROG.seed)||(1+Math.floor(Math.random()*2147483646));
+const _rnd=Math.random;
+Math.random=(a=>()=>{a|=0;a=a+0x6D2B79F5|0;let t=Math.imul(a^a>>>15,1|a);t=t+Math.imul(t^t>>>7,61|t)^t;return((t^t>>>14)>>>0)/4294967296})(SEED);
 const $=id=>document.getElementById(id),C=$('quiz-container'),items=[],loops=[];
 let n=0,cn=0,startTime,timerInterval,focusLossCount=0,isExamActive=false;
 const num=v=>parseFloat(String(v).replace(',','.'));
@@ -407,13 +424,14 @@ const CRIT={
 'Tabla de posiciones':'1 pt por cada casilla correcta (4 casillas; margen de ±0.1 a ±0.15 m) · 0 pts por cada casilla incorrecta o vacía.',
 'Cálculo':'a) Altura máxima: 2 pts (margen de ±0.3 m) · b) Tiempo total de vuelo: 2 pts (margen de ±0.1 s) · 0 pts por cada respuesta incorrecta o vacía.'};
 function card(s,title,max,html,grade){const d=document.createElement('div');d.className='question';const q=++n;
- d.innerHTML=`<div class="hd"><b>${q}.<span class="qt"> ${title}</span></b>${html.includes('v-esp')?'<span class="m20">Ítem modificado (20 %)</span>':''}<span class="pts">${max} pts</span></div>${html}${CRIT[title]&&!NOCRIT.has(title)?`<div class="breakdown"><b>Puntaje:</b> ${CRIT[title]}</div>`:''}<div class="duda"><label for="duda${q}">Dudas sobre esta pregunta (opcional):</label><textarea id="duda${q}"></textarea></div>`;
+ d.innerHTML=`<div class="hd"><b>${q}.<span class="qt"> ${title}</span></b>${html.includes('v-esp')?'<span class="m20">Ítem modificado (20 %)</span>':''}<span class="pts">${max} pts</span></div>${html}${CRIT[title]&&(!NOCRIT.has(title)||SHOWCRIT.has(title))?`<div class="breakdown${SHOWCRIT.has(title)?' bk-show':''}"><b>Puntaje:</b> ${CRIT[title]}</div>`:''}<div class="duda"><label for="duda${q}">Dudas sobre esta pregunta (opcional):</label><textarea id="duda${q}"></textarea></div>`;
  if(html.includes('v-esp'))d.classList.add('q20');C.appendChild(d);items.push({el:d,sec:s,max,grade,title,esp:html.includes('v-esp')});return d}
 const numBox=(id,u)=>`<input type="text" class="ans" id="${id}" inputmode="decimal" autocomplete="off"> ${u}`;
 (function loop(){loops.forEach(f=>f());requestAnimationFrame(loop)})();
 document.addEventListener('input',e=>{if(e.target.type==='range')e.target.dataset.touched='1'});
 
 var NOCRIT=new Set(['Selección única','Densidad','Presión de un sólido','Diferencia de presión']);
+var SHOWCRIT=new Set(['Sensor manométrico','Ley de Boyle','Prensa hidráulica','Cañón: lanzamiento con ángulo','Cañón: lanzamiento horizontal']);
 function dragDrop(ddId,poolId){const dd=$(ddId),pool=$(poolId);let sel=null;
  const pick=c=>{if(sel)sel.classList.remove('sel');sel=c;c.classList.add('sel')};
  const put=b=>{if(!sel)return;if(b.firstChild)pool.appendChild(b.firstChild);b.appendChild(sel);sel.classList.remove('sel');sel=null};
@@ -472,9 +490,9 @@ part('I Parte. Selección única. 14 puntos.','Marque la opción que corresponde
  [`Sin resistencia del aire, ¿qué forma tiene la ${kw('trayectoria')} de un proyectil?`,"Parábola",["Línea recta","Círculo","Parábola","Espiral"],'P']
 ].forEach((q,k)=>mc(q[3],q,'m'+k));
 
-part('II Parte. Pareo. 10 puntos.','Arrastre cada cuadro hasta su espacio, o toque el cuadro y luego el espacio. 1 punto por cada cuadro bien colocado. Algunos cuadros no se utilizan.');
+part('II Parte. Pareo. 10 puntos.','Relacione cada elemento con su respuesta correcta. Arrastre el cuadro correspondiente al espacio junto a cada elemento, o toque el cuadro y luego toque el espacio. Coloque un cuadro en cada espacio. Algunos cuadros no se utilizarán. 1 punto por cada respuesta correcta.');
 const CHH={Pa:'Pa',dens:'kg/m³',N:'N',m3:'m³',m2:'m²',kg:'kg',ms:'m/s'};
-card('H','Magnitudes y unidades de hidrostática',5,`<p>Arrastra a cada ${kw('magnitud')} su ${kw('unidad')} en el Sistema Internacional (5 pts):</p>
+card('H','Magnitudes y unidades de hidrostática',5,`<p>Relacione cada ${kw('magnitud')} con su ${kw('unidad')} en el Sistema Internacional. Coloque un cuadro en cada espacio. Algunos cuadros no se utilizarán. 1 punto por cada respuesta correcta (5 pts).</p>
 <div id="ddh"><div class="pool" id="poolh">${Object.keys(CHH).sort(()=>Math.random()-.5).map(k=>`<span class="chip" draggable="true" data-v="${k}">${CHH[k]}</span>`).join('')}</div>
 <div class="stm">Presión: <span class="blank" data-a="Pa"></span></div>
 <div class="stm">Densidad: <span class="blank" data-a="dens"></span></div>
@@ -484,7 +502,7 @@ card('H','Magnitudes y unidades de hidrostática',5,`<p>Arrastra a cada ${kw('ma
 dragDrop('ddh','poolh');
 
 const CHP={v0:'rapidez inicial',th:'ángulo de lanzamiento',H:'altura máxima',tv:'tiempo de vuelo',R:'alcance horizontal',m:'masa',F:'fuerza'};
-card('P','Magnitudes del movimiento parabólico',5,`<p>Arrastra a cada ${kw('símbolo')} el ${kw('nombre de la magnitud')} que representa (5 pts):</p>
+card('P','Magnitudes del movimiento parabólico',5,`<p>Relacione cada ${kw('símbolo')} con el ${kw('nombre de la magnitud')} que representa. Coloque un cuadro en cada espacio. Algunos cuadros no se utilizarán. 1 punto por cada respuesta correcta (5 pts).</p>
 <div id="dd"><div class="pool" id="pool">${Object.keys(CHP).sort(()=>Math.random()-.5).map(k=>`<span class="chip" draggable="true" data-v="${k}">${CHP[k]}</span>`).join('')}</div>
 <div class="stm">${T`v_0`}: <span class="blank" data-a="v0"></span></div>
 <div class="stm">${T`\theta`}: <span class="blank" data-a="th"></span></div>
@@ -493,35 +511,42 @@ card('P','Magnitudes del movimiento parabólico',5,`<p>Arrastra a cada ${kw('sí
 <div class="stm">${T`R`}: <span class="blank" data-a="R"></span></div></div>`,()=>[...document.querySelectorAll('#dd .blank')].filter(b=>b.firstChild&&b.firstChild.dataset.v===b.dataset.a).length);
 dragDrop('dd','pool');
 
-part('III Parte. Respuesta corta. 18 puntos.','Responda cada pregunta en el espacio indicado. Escriba solo el valor en la unidad indicada y redondee a dos decimales. Use la hoja en blanco para sus cálculos.');
+part('III Parte. Respuesta corta. 18 puntos.','Responda cada pregunta en el espacio indicado. Escriba el valor redondeado a dos decimales y elija su unidad. Cada respuesta numérica vale 2 puntos: 1 punto por el valor correcto y 1 punto por la unidad correcta, salvo que se indique otro puntaje. Use la hoja en blanco para sus cálculos.');
+const UA=id=>`<input type="text" class="ans" id="${id}" inputmode="decimal" autocomplete="off"> <select id="${id}un" aria-label="unidad"><option value="">Unidad…</option>${UNID.map(x=>`<option>${x}</option>`).join('')}</select>`;
+const gU=(id,alts)=>{const t=$(id).value.trim(),v=num(t),u=$(id+'un').value;return Math.max(...alts.map(([val,tol,un])=>(near(v,val,tol)?1:0)+(t&&u===un?1:0)))};
+const BK='2 pts: 1 pt por el valor correcto, 1 pt por la unidad correcta';
+CRIT['Densidad']=CRIT['Diferencia de presión']='1 pt por el valor correcto · 1 pt por la unidad correcta.';
+CRIT['Presión de un sólido']='a) Peso: 1 pt · b) Presión: 1 pt por el valor y 1 pt por la unidad (se acepta en Pa o en kPa).';
+CRIT['Velocidad en un instante']='a) y b): 1 pt por el valor correcto · 1 pt por la unidad correcta (2 pts cada una).';
 
 
 
-card('H','Principio de Arquímedes',3,`<p>Un tanque contiene <b>agua dulce</b>. Predice qué ocurre con cada bloque al soltarlo: compara su ${kw('densidad')} con la del agua (1 pt cada uno):</p>
+
+card('H','Principio de Arquímedes',3,`<p>Un tanque contiene <b>agua dulce</b>. Predice qué ocurre con cada bloque al soltarlo: compara su ${kw('densidad')} con la del agua (3 pts: 1 pt por cada bloque):</p>
 <canvas id="ac" width="520" height="190"></canvas>
 ${[['Madera',T`(600\ \text{kg/m}^3)`,'a1'],['Plomo',T`(11\,340\ \text{kg/m}^3)`,'a2'],['Hielo',T`(917\ \text{kg/m}^3)`,'a3']].map(([t,r,i])=>`<div class="ctl"><span data-lbl="${t}">${t} ${r}:</span> <select id="${i}"><option value="">Elige…</option><option value="f">Flota</option><option value="s">Se hunde</option></select></div>`).join('')}`,()=>(($('a1').value==='f')+($('a2').value==='s')+($('a3').value==='f')));
 (function(){const x=$('ac').getContext('2d');x.fillStyle='rgba(80,170,215,.45)';x.fillRect(120,80,280,100);x.strokeStyle='#215CAF';x.strokeRect(120,40,280,140);
  [['Madera',150,'#b8895a'],['Plomo',250,'#5a6b80'],['Hielo',340,'#dbeef7']].forEach(([t,px,c])=>{x.fillStyle=c;x.fillRect(px,20,50,40);x.strokeStyle='#133565';x.strokeRect(px,20,50,40);x.fillStyle='#133565';x.font='12px Georgia';x.fillText(t,px+4,14)});
  x.fillStyle='#133565';x.fillText('Agua dulce',410,130)})();
 
-card('H','Densidad',2,`<p class="v-ord">Una pieza metálica tiene una masa de ${T`7.8\ \text{kg}`} y ocupa un volumen de ${T`1.0\ \text{L}`}. Calcula su densidad (2 pts):</p>
+card('H','Densidad',2,`<p class="v-ord">Una pieza metálica tiene una masa de ${T`7.8\ \text{kg}`} y ocupa un volumen de ${T`1.0\ \text{L}`}. Calcula su densidad (${BK}):</p>
 <div class="v-esp"><p class="step">Una pieza metálica tiene ${kw('masa')} ${T`m = 7.8\ \text{kg}`} y ${kw('volumen')} ${T`V = 1.0\ \text{L}`}.</p>
 <p class="step"><b>Paso 1.</b> Convierte el volumen a metros cúbicos.</p>
 <p class="step"><b>Paso 2.</b> Calcula la ${kw('densidad')} con la masa y el volumen en metros cúbicos.</p></div>
-${numBox('d1',T`\text{kg/m}^3`)}`,()=>near(num($('d1').value),7800,40)?2:0);
+${UA('d1')}`,()=>gU('d1',[[7800,40,'kg/m³']]));
 
-card('H','Presión de un sólido',3,`<p class="v-ord">Una caja de ${T`50\ \text{kg}`} descansa sobre el piso. Su base tiene un área de ${T`0.25\ \text{m}^2`}. Calcula la ${kw('presión')} que ejerce sobre el piso (3 pts):</p>
+card('H','Presión de un sólido',3,`<p class="v-ord">Una caja de ${T`50\ \text{kg}`} descansa sobre el piso. Su base tiene un área de ${T`0.25\ \text{m}^2`}. Calcula:</p>
 <div class="v-esp"><p class="step">Una caja de ${kw('masa')} ${T`m = 50\ \text{kg}`} descansa sobre el piso. ${kw('Área')} de la base: ${T`A = 0.25\ \text{m}^2`}.</p>
 <p class="step"><b>Paso 1.</b> Calcula el ${kw('peso')} de la caja: es la fuerza que ejerce sobre el piso.</p>
 <p class="step"><b>Paso 2.</b> Calcula la ${kw('presión')} con esa fuerza y el área.</p></div>
-${numBox('ps1','Pa')}`,()=>near(num($('ps1').value),1960,20)?3:0);
+<p>a) El ${kw('peso')} de la caja (1 pt): ${numBox('ps0','N')}</p><p>b) La ${kw('presión')} que ejerce sobre el piso (${BK}): ${UA('ps1')}</p>`,()=>(near(num($('ps0').value),490,2)?1:0)+gU('ps1',[[1960,20,'Pa'],[1.96,.02,'kPa']]));
 
-card('H','Diferencia de presión',3,`<p>Dos sensores están sumergidos en una piscina de agua dulce, uno a ${T`2.0\ \text{m}`} y otro a ${T`7.0\ \text{m}`} de profundidad. Calcula la ${kw('diferencia de presión')} entre ambos sensores (3 pts):</p>
-${numBox('dp1','kPa')}`,()=>near(num($('dp1').value),49,1)?3:0);
+card('H','Diferencia de presión',2,`<p>Dos sensores están sumergidos en una piscina de agua dulce, uno a ${T`2.0\ \text{m}`} y otro a ${T`7.0\ \text{m}`} de profundidad. Calcula la ${kw('diferencia de presión')} entre ambos sensores (${BK}):</p>
+${UA('dp1')}`,()=>gU('dp1',[[49,1,'kPa'],[49000,1000,'Pa']]));
 
-card('P','Velocidad en un instante',3,`<p>Un proyectil se lanza con ${T`v_0 = 15\ \text{m/s}`} y ${T`\theta = 40^\circ`}. Calcula las componentes de su ${kw('velocidad')} en ${T`t = 1.0\ \text{s}`}:</p>
-<p>a) ${T`v_x`} (1 pt): ${numBox('vi1','m/s')}</p><p>b) ${T`v_y`}, con su signo (2 pts): ${numBox('vi2','m/s')}</p>`,
- ()=>(near(num($('vi1').value),15*Math.cos(40*Math.PI/180),.1)?1:0)+(near(num($('vi2').value),15*Math.sin(40*Math.PI/180)-9.8,.1)?2:0));
+card('P','Velocidad en un instante',4,`<p>Un proyectil se lanza con ${T`v_0 = 15\ \text{m/s}`} y ${T`\theta = 40^\circ`}. Calcula las componentes de su ${kw('velocidad')} en ${T`t = 1.0\ \text{s}`}:</p>
+<p>a) ${T`v_x`} (${BK}): ${UA('vi1')}</p><p>b) ${T`v_y`}, con su signo (${BK}): ${UA('vi2')}</p>`,
+ ()=>gU('vi1',[[15*Math.cos(40*Math.PI/180),.1,'m/s']])+gU('vi2',[[15*Math.sin(40*Math.PI/180)-9.8,.1,'m/s']]));
 
 card('P','Tabla de posiciones',4,`<p>Un proyectil se lanza desde el suelo con ${T`v_0 = 16\ \text{m/s}`} y ${T`\theta = 60^\circ`}. Completa la tabla de ${kw('posiciones')} en metros (1 pt por casilla):</p>
 <table class="tb" style="max-width:420px"><tr><th>Tiempo</th><th>${T`x`} (m)</th><th>${T`y`} (m)</th></tr>
@@ -566,6 +591,7 @@ const x=$('pc').getContext('2d'),d=()=>{x.clearRect(0,0,520,260);const L=ok?30:0
  x.fillStyle='#C69214';x.fillRect(70,138+a,30,12);x.fillRect(320,138-L,100,12);
  x.fillStyle='#133565';x.fillRect(335,98-L,70,40);x.fillStyle='#fff';x.font='13px Georgia';x.fillText('Auto',356,123-L);
  x.fillStyle='#133565';x.fillText('A₁',78,200);x.fillText('A₂',360,200);x.fillText(!tries?'Listo para aplicar la fuerza':ok?'El auto se levanta':'La fuerza no alcanza para levantarlo',150,30)};
+SIMS.pr={get:()=>({tries,best,ok,log}),set:o=>{tries=o.tries||0;best=o.best||0;ok=o.ok||0;log=o.log||[];$('pm').textContent=log.join(' ');$('pb').disabled=tries>=2;$('pb').textContent=tries>=2?'Sin intentos':tries?'Aplicar fuerza (intento 2 de 2)':'Aplicar fuerza (intento 1 de 2)';d()}};
 $('pb').onclick=()=>{if(tries>=2)return;const v=num($('pi').value);if(!(v>0)){alert('Escribe el valor de F₁ en newtons.');return}tries++;ok=v>=Fm*.99;best=Math.max(best,sc(v));
  log.push(`Intento ${tries}: ${v} N, ${ok?'el auto se levanta':'no se levanta'}.`);$('pm').textContent=log.join(' ');
  if(tries>=2){$('pb').disabled=true;$('pb').textContent='Sin intentos'}else $('pb').textContent='Aplicar fuerza (intento 2 de 2)';d()};d()}
@@ -585,6 +611,7 @@ function cannon(title,intro,o){const id='cn'+(++cn);let shots=0,res=null,run=nul
   r.cx=X(r.vx*t);r.cy=Y((o.y0||0)+r.vy*t-4.9*t*t);tr.push([r.cx,r.cy,1]);
   if(tt>=r.tl){const e=Math.abs(r.xl-o.tx);res=res===null?e:Math.min(res,e);run=null;log.push(`Intento ${shots}: cayó a ${r.xl.toFixed(1)} m${e<=o.tol?' (impacto)':''}.`);$(id+'m').textContent=log.join(' ')}
   draw();if(run)requestAnimationFrame(step)}
+ SIMS[id]={get:()=>({shots,res,log}),set:o=>{shots=o.shots||0;res=o.res;log=o.log||[];$(id+'m').textContent=log.join(' ');$(id+'f').disabled=shots>=2;$(id+'f').textContent=shots>=2?'Sin intentos':shots?'Disparar (intento 2 de 2)':'Disparar (intento 1 de 2)'}};
  $(id+'f').onclick=()=>{if(run||shots>=2)return;const v=val();if(!(v>0)||(o.ask==='a'?v>=90:v>60)){alert(o.ask==='a'?'Escribe un ángulo entre 0 y 90.':'Escribe una rapidez entre 0 y 60 m/s.');return}
   shots++;tr.forEach(q=>q[2]=0);$(id+'f').disabled=shots>=2;$(id+'f').textContent=shots>=2?'Sin intentos':'Disparar (intento 2 de 2)';
   const a=ang(),sp=o.ask==='a'?o.v:v,vx=sp*Math.cos(a),vy=sp*Math.sin(a),tl=(vy+Math.sqrt(vy*vy+19.6*(o.y0||0)))/9.8;
@@ -635,6 +662,7 @@ guiado('P','Lanzamiento horizontal',{id:'g5',intro:`<b>Problema 5 (4 pts):</b> U
 
 C.insertAdjacentHTML('beforeend',`<div class="theend">-Fin-<p>"Todo lo puedo en Cristo que me fortalece"<br>Filipenses 4:13</p></div>`);
 
+Math.random=_rnd;   // fin de la construcción de ítems con semilla
 /* ================= BOLETA DIGITAL ================= */
 Object.keys(ROSTER).forEach(s=>$('studentGrade').insertAdjacentHTML('beforeend',`<option value="${s}">${s}</option>`));
 $('studentGrade').addEventListener('change',e=>{const g=e.target.value,sel=$('studentName');
@@ -676,7 +704,7 @@ function renderPanel(){const nm=$('studentName').value,gr=$('studentGrade').valu
 $('btnVisit').addEventListener('click',()=>{if(!isExamActive)return;askPin('Registrar paso del docente',{nota:true},v=>{S.visitas.push({t:Date.now(),nota:v});renderPanel()})});
 
 /* ================= SEGURIDAD, TIEMPO Y ENVÍO ================= */
-function startExam(){
+function startExam(resume){
  const nm=$('studentName').value,gr=$('studentGrade').value;
  if(!nm||!gr){alert('Por favor, selecciona tu sección y tu nombre completo antes de comenzar.');return}
  teacher=false;renderBoleta();
@@ -684,8 +712,8 @@ function startExam(){
  $('student-header').innerText=`Estudiante: ${nm} | Sección: ${gr} | Prueba ${tipoTxt(S.tipo).toLowerCase()}`;
  const d=document.documentElement;if(d.requestFullscreen)d.requestFullscreen();else if(d.webkitRequestFullscreen)d.webkitRequestFullscreen();
  $('start-container').style.display='none';$('quiz-layout').style.display='block';
- isExamActive=true;startTime=Date.now();S.inicio=startTime;timerInterval=setInterval(updateTimer,1000);setupSecurityListeners();
- $('tpanel').style.display='block';$('tpanel').open=window.innerWidth>=1460;renderPanel();window.scrollTo(0,0)}
+ isExamActive=true;startTime=resume&&PROG?PROG.startTime:Date.now();S.inicio=resume&&PROG&&PROG.S&&PROG.S.inicio?PROG.S.inicio:startTime;timerInterval=setInterval(updateTimer,1000);setupSecurityListeners();
+ $('tpanel').style.display='block';$('tpanel').open=window.innerWidth>=1460;renderPanel();window.scrollTo(0,0);saveProg()}
 function updateTimer(){const e=Math.floor((Date.now()-startTime)/1000);$('time-display').innerText=String(Math.floor(e/60)).padStart(2,'0')+':'+String(e%60).padStart(2,'0')}
 function setupSecurityListeners(){
  window.addEventListener('blur',triggerSecurityWarning);
@@ -693,10 +721,8 @@ function setupSecurityListeners(){
  document.addEventListener('visibilitychange',()=>{if(document.visibilityState==='hidden')triggerSecurityWarning()});
  document.addEventListener('keydown',e=>{if(e.ctrlKey&&['c','v','u','p'].includes(e.key)){e.preventDefault();alert('Función deshabilitada por seguridad.')}})}
 let inWarn=false,lastT=0;
-function triggerSecurityWarning(){if(!isExamActive||inWarn||Date.now()-lastT<1500)return;inWarn=true;_warn();inWarn=false;lastT=Date.now()}
-function _warn(){focusLossCount++;
- if(focusLossCount===1)alert('ADVERTENCIA:\nHas salido de la pantalla del examen. Si vuelves a hacerlo, tu prueba será enviada automáticamente con la nota acumulada.');
- else{alert('EXAMEN BLOQUEADO:\nHas infringido las normas saliendo de la pestaña por segunda vez. Tu prueba ha sido enviada.');closeModal();evaluateExam(true)}}
+function triggerSecurityWarning(){if(!isExamActive||locked||inWarn||Date.now()-lastT<1500)return;inWarn=true;_warn();inWarn=false;lastT=Date.now()}
+function _warn(){focusLossCount++;lockScreen()}
 
 /* ¿La pregunta tiene respuesta? (para la revisión de finalización) */
 function answered(it){const el=it.el;
@@ -725,7 +751,7 @@ function pedirEntrega(){if(REVIEW){vistaPrevia();return}if(!isExamActive)return;
  $('rvNo').onclick=closeModal;$('rvOk').onclick=()=>askPin('Verificación del aplicador',{},()=>{S.revisionVerificada=true;evaluateExam(false,true)})}
 
 function evaluateExam(forced=false,skip=false){
- if(!forced&&!skip&&!confirm('¿Estás seguro de que deseas finalizar tu examen? Ya no podrás realizar modificaciones.'))return;
+ if(!forced&&!skip){openModal(`<h3>${LK.finT}</h3><p>${LK.finQ}</p><div class="mrow"><button type="button" class="act alt" id="fNo">${LK.no}</button><button type="button" class="act" id="fOk">${LK.yes}</button></div>`);$('fNo').onclick=closeModal;$('fOk').onclick=()=>{closeModal();evaluateExam(false,true)};return}
  if(!isExamActive)return;
  isExamActive=false;clearInterval(timerInterval);window.removeEventListener('blur',triggerSecurityWarning);
  S.fin=Date.now();renderPanel();$('btnVisit').disabled=true;
@@ -733,14 +759,14 @@ function evaluateExam(forced=false,skip=false){
  items.forEach(it=>{const p=it.grade();it.p=p;it.resp=summary(it);score+=p;scs[it.sec]+=p;it.el.className='question '+(p>=it.max?'correct':p>0?'partial':'incorrect');it.el.querySelector('.pts').textContent=`${p} / ${it.max} pts`});
  const grade=(score/total*100).toFixed(2),ts=Math.floor((Date.now()-startTime)/1000),timeStr=`${Math.floor(ts/60)}m ${ts%60}s`;
  const nm=localStorage.getItem(KEY+'name'),gr=localStorage.getItem(KEY+'grade');
- let st='Completado Seguro';if(forced)st='Bloqueado (Salida de pestaña)';else if(focusLossCount>0)st=`Advertencias: ${focusLossCount}`;
+ let st=estadoSeguridad();
  $('rep-student').innerText=`Estudiante: ${nm} (${gr})`;
  $('rep-score').innerText=`Puntaje: ${score} / ${total}`;
  $('rep-sec').innerText=`Hidrostática: ${scs.H} / ${MXs('H')} · Parabólico: ${scs.P} / ${MXs('P')}`;
  $('rep-grade').innerText=`Calificación: ${grade}% · Prueba ${tipoTxt(S.tipo).toLowerCase()}`;
  $('rep-time').innerText=`Tiempo empleado: ${timeStr}`;
  $('rep-status').innerText=`Seguridad: ${st}`;
- $('report-card').style.display='block';localStorage.setItem(KEY+'submitted','true');lockExam();
+ $('report-card').style.display='block';localStorage.setItem(KEY+'submitted','true');localStorage.removeItem(PKEY);lockExam();
  renderComite({nm,gr,score,total,grade,timeStr,st,scs});
  $('drive-box').style.display='block';setTimeout(()=>subirPDF(false),600);
  const dudas=items.map((it,i)=>{const d=it.el.querySelector('.duda textarea').value.trim();return d?`P${i+1}: ${d}`:''}).filter(Boolean).join(' | ');
@@ -905,13 +931,137 @@ function dlTxt(){const a=document.createElement('a');a.href=URL.createObjectURL(
 cargarRevision();
 
 /* Equipo de recinto aparte: el docente puede habilitarlo para otro estudiante */
-function resetDevice(){askPin('Habilitar equipo para otro estudiante',{},()=>{['name','grade','submitted'].forEach(k=>localStorage.removeItem(KEY+k));location.reload()})}
+function resetDevice(){askPin('Habilitar equipo para otro estudiante',{},()=>{['name','grade','submitted'].forEach(k=>localStorage.removeItem(KEY+k));localStorage.removeItem(PKEY);location.reload()})}
 
 document.addEventListener('DOMContentLoaded',()=>{if(window.renderMathInElement)renderMathInElement(document.body,{delimiters:[{left:'\\(',right:'\\)',display:false},{left:'\\[',right:'\\]',display:true}],throwOnError:false})});
 window.addEventListener('load',()=>{if(localStorage.getItem(KEY+'submitted')==='true'){
  $('start-container').style.display='none';$('quiz-layout').style.display='block';$('submitBtn').style.display='none';
  $('report-card').style.display='block';$('report-card').innerHTML='<h3>Examen previamente completado. Los resultados ya se registraron en este dispositivo.</h3><button type="button" class="act alt" onclick="resetDevice()">Habilitar para otro estudiante (docente)</button> <button type="button" class="act alt" onclick="pedirRevision()">Revisión de la prueba</button>';
  document.querySelectorAll('#quiz-container').forEach(e=>e.style.display='none')}});
+const LK={bad:'PIN incorrecto.',ok:'Completada sin incidentes',paused:n=>`Pausada ${n} ${n>1?'veces':'vez'} (reanudada con PIN del docente)`,
+ resumeT:'Continuar la prueba',discardT:'Descartar la prueba guardada',resumeH:'Prueba en curso',
+ resumeP:(nm,gr,t)=>`En este equipo hay una prueba sin terminar de <b>${nm}</b> (${gr}), guardada por última vez: ${t}. El docente debe ingresar el PIN para continuar. Las respuestas se recuperan.`,
+ resumeB:'Continuar prueba (PIN del docente)',discardB:'Descartar (PIN del docente)',finT:'Finalizar la prueba',finQ:'¿Estás seguro de que deseas finalizar tu prueba? Ya no podrás cambiar tus respuestas.',no:'Volver',yes:'Finalizar y enviar'};
+/* =====================================================================
+   PAUSA CON PIN Y AVANCE GUARDADO
+   - Si el estudiante sale de la pantalla, la prueba se pausa (no se envía).
+     El docente ingresa el PIN y el estudiante continúa. Sin límite de pausas.
+   - Las respuestas se guardan en el equipo cada pocos segundos. Si la
+     computadora se apaga o se cierra la pestaña, al abrir de nuevo el enlace
+     el docente ingresa el PIN y la prueba continúa donde quedó.
+   ===================================================================== */
+let locked=false,incid=[];
+function toast(m){let t=$('toast');if(!t){t=document.createElement('div');t.id='toast';document.body.appendChild(t)}t.textContent=m;t.classList.add('on');clearTimeout(t._h);t._h=setTimeout(()=>t.classList.remove('on'),3200)}
+window.alert=m=>toast(String(m));
+function collect(){const c=$('quiz-container'),o={v:{},r:{},g:{},b:[],t:{},sims:{}};
+ c.querySelectorAll('input.ans,select').forEach(e=>{if(e.id)o.v[e.id]=e.value});
+ c.querySelectorAll('input[type=radio]:checked').forEach(r=>o.r[r.name]=r.value);
+ c.querySelectorAll('input[type=range]').forEach(g=>o.g[g.id]=[g.value,g.dataset.touched||'']);
+ o.b=[...c.querySelectorAll('.blank')].map(b=>b.firstChild&&b.firstChild.dataset?b.firstChild.dataset.v:null);
+ c.querySelectorAll('.duda textarea').forEach(t=>o.t[t.id]=t.value);
+ for(const k in SIMS){try{o.sims[k]=SIMS[k].get()}catch(e){}}
+ return o}
+function applyAns(o){if(!o)return;const c=$('quiz-container');
+ for(const id in o.v){const e=$(id);if(e)e.value=o.v[id]}
+ for(const n in o.r){const r=[...c.querySelectorAll('input[type=radio]')].find(x=>x.name===n&&x.value===o.r[n]);if(r)r.checked=true}
+ for(const id in o.g){const e=$(id);if(e){e.value=o.g[id][0];if(o.g[id][1])e.dataset.touched='1';e.dispatchEvent(new Event('input'))}}
+ const bl=[...c.querySelectorAll('.blank')];(o.b||[]).forEach((v,i)=>{if(!v||!bl[i])return;const dd=bl[i].closest('[id]'),pool=dd&&dd.querySelector('.pool');if(!pool)return;
+  const ch=[...pool.querySelectorAll('.chip')].find(x=>x.dataset.v===v);if(ch)bl[i].appendChild(ch)});
+ for(const id in o.t){const e=$(id);if(e)e.value=o.t[id]}
+ for(const k in o.sims||{}){if(SIMS[k])try{SIMS[k].set(o.sims[k])}catch(e){}}}
+function saveProg(){if(!isExamActive||(typeof REVIEW!=='undefined'&&REVIEW))return;
+ try{localStorage.setItem(PKEY,JSON.stringify({seed:SEED,nm:$('studentName').value,gr:$('studentGrade').value,startTime,incid,saved:Date.now(),
+  S:{tipo:S.tipo,tipoAuto:S.tipoAuto,apl:S.apl,exp:S.exp,kw:S.kw,form:S.form,nota:S.nota,visitas:S.visitas,inicio:S.inicio,revisionVerificada:S.revisionVerificada},a:collect()}))}catch(e){}}
+let _svT=0;const saveSoon=()=>{clearTimeout(_svT);_svT=setTimeout(saveProg,400)};
+['input','change','click'].forEach(ev=>document.addEventListener(ev,()=>{if(isExamActive)saveSoon()},true));
+setInterval(saveProg,4000);window.addEventListener('pagehide',saveProg);
+function lockScreen(){if(!isExamActive||locked)return;locked=true;incid.push({t:Date.now()});saveProg();
+ $('lkN').textContent=incid.length;$('lkPin').value='';$('lkErr').textContent='';$('lockov').style.display='flex';setTimeout(()=>$('lkPin').focus(),60)}
+function unlockScreen(){if($('lkPin').value!==PIN){$('lkErr').textContent=LK.bad;$('lkPin').value='';$('lkPin').focus();return}
+ incid[incid.length-1].fin=Date.now();locked=false;$('lockov').style.display='none';lastT=Date.now();
+ const d=document.documentElement;if(!document.fullscreenElement){const f=d.requestFullscreen||d.webkitRequestFullscreen;if(f)try{const pr=f.call(d);if(pr&&pr.catch)pr.catch(()=>{})}catch(e){}}
+ saveProg()}
+document.addEventListener('DOMContentLoaded',()=>{$('lkGo').onclick=unlockScreen;$('lkPin').onkeydown=e=>{if(e.key==='Enter')unlockScreen()}});
+function estadoSeguridad(){if(!incid.length)return LK.ok;return LK.paused(incid.length)+': '+incid.map(x=>hora(x.t)).join(', ')}
+/* Prueba sin terminar en este equipo */
+function resumeExam(){askPin(LK.resumeT,{},()=>{const g=$('studentGrade');g.value=PROG.gr;g.dispatchEvent(new Event('change'));
+ const n=$('studentName');n.value=PROG.nm;n.dispatchEvent(new Event('change'));
+ Object.assign(S,PROG.S||{});incid=PROG.incid||[];renderBoleta();document.body.classList.remove('hasprog');const rb=$('resumeBox');if(rb)rb.remove();applyAns(PROG.a);startExam(true)})}
+function discardExam(){askPin(LK.discardT,{},()=>{localStorage.removeItem(PKEY);location.reload()})}
+window.addEventListener('load',()=>{if(localStorage.getItem(KEY+'submitted')==='true'||!PROG||!PROG.nm||(typeof REVIEW!=='undefined'&&REVIEW))return;
+ const box=document.createElement('div');box.id='resumeBox';
+ box.innerHTML=`<h3>${LK.resumeH}</h3><p>${LK.resumeP(esc(PROG.nm),esc(PROG.gr),hora(PROG.saved))}</p><div class="mrow" style="justify-content:flex-start"><button type="button" class="act" id="rsGo">${LK.resumeB}</button><button type="button" class="act alt" id="rsNo">${LK.discardB}</button></div>`;
+ const sc=$('start-container');sc.insertBefore(box,sc.querySelector('.student-info'));document.body.classList.add('hasprog');
+ $('rsGo').onclick=resumeExam;$('rsNo').onclick=discardExam});
 </script>
+<div id="lockov" style="display:none"><div class="lkcard"><svg viewBox="0 0 640 300" role="img" aria-label="Paisaje de Costa Rica con un perezoso y una rana">
+<defs>
+<linearGradient id="lkSky" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#7cc6e8"/><stop offset=".65" stop-color="#cdeaf2"/><stop offset="1" stop-color="#fbe3b8"/></linearGradient>
+<linearGradient id="lkSea" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#2fa4b9"/><stop offset="1" stop-color="#1b7f95"/></linearGradient>
+<linearGradient id="lkVol" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#6d7f6a"/><stop offset="1" stop-color="#3f6b47"/></linearGradient>
+</defs>
+<rect width="640" height="300" fill="url(#lkSky)"/>
+<circle cx="110" cy="62" r="30" fill="#ffd36b"/><circle cx="110" cy="62" r="42" fill="#ffd36b" opacity=".25"/>
+<g fill="#fff" opacity=".9"><ellipse cx="250" cy="48" rx="34" ry="11"/><ellipse cx="275" cy="40" rx="22" ry="12"/><ellipse cx="470" cy="66" rx="30" ry="9"/><ellipse cx="490" cy="59" rx="18" ry="10"/></g>
+<!-- volcán -->
+<path d="M210 210 L318 92 Q330 82 342 92 L460 210 Z" fill="url(#lkVol)"/>
+<path d="M306 104 Q330 90 354 104 L344 112 Q330 104 316 112 Z" fill="#4b5a49"/>
+<g fill="#e9eef0" opacity=".85"><circle cx="333" cy="78" r="9"/><circle cx="344" cy="64" r="12"/><circle cx="360" cy="48" r="15"/><circle cx="380" cy="34" r="17"/></g>
+<!-- colinas y bosque -->
+<path d="M0 205 Q90 165 180 196 T360 190 T540 186 T640 196 V300 H0 Z" fill="#4f9b4f"/>
+<path d="M0 228 Q120 196 240 224 T480 220 T640 226 V300 H0 Z" fill="#2f7d3c"/>
+<g fill="#25693a"><circle cx="40" cy="214" r="18"/><circle cx="70" cy="206" r="20"/><circle cx="160" cy="216" r="16"/><circle cx="430" cy="210" r="18"/><circle cx="560" cy="206" r="20"/><circle cx="600" cy="214" r="16"/></g>
+<!-- mar y playa -->
+<path d="M0 262 Q160 248 320 258 T640 254 V300 H0 Z" fill="url(#lkSea)"/>
+<path d="M0 282 Q180 270 360 280 T640 276 V300 H0 Z" fill="#f2d49b"/>
+<g stroke="#fff" stroke-width="2" fill="none" opacity=".7"><path d="M60 266 q10 -4 20 0"/><path d="M250 262 q10 -4 20 0"/><path d="M420 264 q10 -4 20 0"/></g>
+<!-- palmera -->
+<g><path d="M598 286 Q590 240 604 196" stroke="#8a6440" stroke-width="7" fill="none" stroke-linecap="round"/>
+<g fill="#2e8b47"><path d="M604 196 q-40 -6 -62 16 q30 -10 62 -16"/><path d="M604 196 q36 -14 34 18 q-12 -20 -34 -18"/><path d="M604 196 q-14 -32 -46 -30 q30 6 46 30"/><path d="M604 196 q18 -30 30 -26 q-20 4 -30 26"/></g></g>
+<!-- rama y perezoso -->
+<path d="M352 116 Q470 98 640 112" stroke="#6b4a2b" stroke-width="10" fill="none" stroke-linecap="round"/>
+<g fill="#3e8e41"><ellipse cx="380" cy="108" rx="14" ry="6" transform="rotate(-20 380 108)"/><ellipse cx="560" cy="102" rx="15" ry="6" transform="rotate(18 560 102)"/><ellipse cx="610" cy="106" rx="12" ry="5" transform="rotate(-12 610 106)"/></g>
+<g>
+ <path d="M452 114 Q446 138 458 158" stroke="#9c7a55" stroke-width="12" fill="none" stroke-linecap="round"/>
+ <path d="M516 110 Q526 136 512 158" stroke="#9c7a55" stroke-width="12" fill="none" stroke-linecap="round"/>
+ <g stroke="#3b2a1a" stroke-width="2.5" stroke-linecap="round"><path d="M446 112 l2 -8"/><path d="M452 112 l1 -9"/><path d="M458 113 l0 -8"/><path d="M510 108 l-1 -8"/><path d="M516 108 l1 -9"/><path d="M522 109 l2 -8"/></g>
+ <ellipse cx="486" cy="172" rx="44" ry="30" fill="#a98463"/>
+ <ellipse cx="486" cy="180" rx="30" ry="18" fill="#bd9a77"/>
+ <path d="M452 186 Q440 204 452 214" stroke="#9c7a55" stroke-width="11" fill="none" stroke-linecap="round"/>
+ <path d="M520 186 Q532 204 520 214" stroke="#9c7a55" stroke-width="11" fill="none" stroke-linecap="round"/>
+ <circle cx="486" cy="146" r="25" fill="#c9a882"/>
+ <ellipse cx="486" cy="150" rx="19" ry="15" fill="#f1e2c8"/>
+ <ellipse cx="477" cy="146" rx="7" ry="4.5" fill="#4a3322" transform="rotate(-18 477 146)"/>
+ <ellipse cx="495" cy="146" rx="7" ry="4.5" fill="#4a3322" transform="rotate(18 495 146)"/>
+ <circle cx="476" cy="146" r="2.3" fill="#fff"/><circle cx="494" cy="146" r="2.3" fill="#fff"/>
+ <ellipse cx="486" cy="154" rx="3.5" ry="2.5" fill="#3b2a1a"/>
+ <path d="M480 159 Q486 164 492 159" stroke="#3b2a1a" stroke-width="1.8" fill="none" stroke-linecap="round"/>
+</g>
+<!-- hoja y rana de ojos rojos -->
+<path d="M30 296 Q60 222 196 236 Q150 286 30 296 Z" fill="#3fa34d"/>
+<path d="M44 288 Q110 250 186 238" stroke="#2a7a37" stroke-width="2" fill="none"/>
+<g>
+ <path d="M84 254 q-14 10 -22 6" stroke="#f08a24" stroke-width="5" fill="none" stroke-linecap="round"/><circle cx="60" cy="260" r="4" fill="#f08a24"/>
+ <path d="M150 254 q14 10 22 6" stroke="#f08a24" stroke-width="5" fill="none" stroke-linecap="round"/><circle cx="174" cy="260" r="4" fill="#f08a24"/>
+ <ellipse cx="117" cy="246" rx="36" ry="22" fill="#43b649"/>
+ <path d="M86 248 q10 8 22 6 M126 254 q12 2 22 -6" stroke="#2a63c9" stroke-width="4" fill="none" stroke-linecap="round"/>
+ <path d="M96 236 q-14 -10 -22 2" stroke="#43b649" stroke-width="7" fill="none" stroke-linecap="round"/><circle cx="73" cy="240" r="4" fill="#f08a24"/>
+ <path d="M138 236 q14 -10 22 2" stroke="#43b649" stroke-width="7" fill="none" stroke-linecap="round"/><circle cx="161" cy="240" r="4" fill="#f08a24"/>
+ <circle cx="100" cy="222" r="12" fill="#43b649"/><circle cx="134" cy="222" r="12" fill="#43b649"/>
+ <circle cx="100" cy="221" r="9" fill="#e3262c"/><circle cx="134" cy="221" r="9" fill="#e3262c"/>
+ <ellipse cx="100" cy="221" rx="2.2" ry="6" fill="#111"/><ellipse cx="134" cy="221" rx="2.2" ry="6" fill="#111"/>
+ <path d="M104 240 Q117 248 130 240" stroke="#1f6b2a" stroke-width="2" fill="none" stroke-linecap="round"/>
+ <ellipse cx="117" cy="252" rx="18" ry="7" fill="#e9f5c9" opacity=".7"/>
+</g>
+<text x="320" y="28" text-anchor="middle" font-family="Georgia,serif" font-size="20" font-weight="bold" fill="#133565">¡Pura vida!</text>
+</svg>
+<div class="lkbody">
+ <h2>Prueba en pausa</h2>
+ <p>Saliste de la pantalla de la prueba. Quédate en tu lugar y levanta la mano. El docente ingresará el PIN para que puedas continuar.</p>
+ <p class="lkok">Tus respuestas están guardadas. La prueba no se envió.</p>
+ <div class="lkpin"><label for="lkPin">PIN del docente</label><input type="password" id="lkPin" inputmode="numeric" autocomplete="off"><button type="button" class="act" id="lkGo">Continuar</button></div>
+ <div class="err" id="lkErr"></div><p class="mut" style="margin:4px 0 0">Pausa número <span id="lkN"></span></p>
+</div></div></div>
+
 </body>
 </html>
