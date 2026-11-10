@@ -313,7 +313,7 @@ body:not(.kwon) .question :is(p,label,div,td,span,sup) b{font-weight:inherit}
 <script>
 const SCRIPT_URL='https://script.google.com/macros/s/AKfycbxdTiX_oWAwoSkdg9EXozwHeXlQlPa1UkZaJU5xtARiEAdfbGeECjlBvUKjRKII8w2E7g/exec';
 const KEY='q4i_'; // prefijo propio: no choca con el quiz anterior
-const PIN='2026';  // PIN del docente o aplicador
+const PIN='0612';  // PIN del docente o aplicador
 const $=id=>document.getElementById(id),C=$('quiz-container'),items=[],loops=[];
 let n=0,cn=0,startTime,timerInterval,focusLossCount=0,isExamActive=false;
 const num=v=>parseFloat(String(v).replace(',','.'));
@@ -538,8 +538,8 @@ $('btnTeacher').addEventListener('click',()=>{if(teacher){teacher=false;renderBo
 function openModal(h){$('mbox').innerHTML=h;$('modal').style.display='grid'}
 function closeModal(){$('modal').style.display='none'}
 function askPin(title,{nota=false}={},ok){
- openModal(`<h3>${title}</h3><label for="pinIn">PIN del docente o aplicador</label><input type="password" id="pinIn" inputmode="numeric" autocomplete="off">${nota?'<label for="pinNota">Dudas atendidas en esta visita (opcional)</label><textarea id="pinNota" rows="3"></textarea>':''}<div class="err" id="pinErr"></div><div class="mrow"><button type="button" class="act alt" id="pinNo">Cancelar</button><button type="button" class="act" id="pinOk">Confirmar</button></div>`);
- setTimeout(()=>$('pinIn').focus(),30);$('pinNo').onclick=closeModal;
+ openModal(`<h3>${title}</h3><label for="pinIn"> del docente o aplicador</label><input type="password" id="In" inputmode="numeric" autocomplete="off">${nota?'<label for="Nota">Dudas atendidas en esta visita (opcional)</label><textarea id="Nota" rows="3"></textarea>':''}<div class="err" id="Err"></div><div class="mrow"><button type="button" class="act alt" id="No">Cancelar</button><button type="button" class="act" id="Ok">Confirmar</button></div>`);
+ setTimeout(()=>$('In').focus(),30);$('pinNo').onclick=closeModal;
  const go=()=>{if($('pinIn').value!==PIN){$('pinErr').textContent='PIN incorrecto.';$('pinIn').value='';return}const v=nota?$('pinNota').value.trim():'';closeModal();ok(v)};
  $('pinOk').onclick=go;$('pinIn').onkeydown=e=>{if(e.key==='Enter')go()}}
 
